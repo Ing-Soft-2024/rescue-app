@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140859937803",
+    "project_id": "rescue-app-12398",
+    "storage_bucket": "rescue-app-12398.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140859937803:android:bafe752e622b878da4a30e",
+        "android_client_info": {
+          "package_name": "com.kepleris.rescue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA62ua9IAGJR7HtL58h3Li3CrMPTb_LYBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
