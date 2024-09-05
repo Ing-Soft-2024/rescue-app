@@ -1,18 +1,19 @@
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
-export function SearchBar() {
+interface SearchBarProps {
+  val: string;
+  onChange: (text: string) => any;
+}
 
-  function handleText(newText: string) {
-    alert(newText);
-  }
-
+export function SearchBar({val, onChange }: SearchBarProps) {
   return (
     <View>
       <TextInput
+        value={val}
         style={styles.input}
         placeholder="Type Here"
-        onChangeText={(newText) => handleText(newText)}
+        onChangeText={(newText) => onChange(newText)}
       ></TextInput>
     </View>
   );
@@ -37,3 +38,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
+
+
