@@ -18,8 +18,8 @@ export function CategoryTab({ arr }: CategoryTabProps) {
       <FlatList
         data={arr}
         horizontal={true}
-        ItemSeparatorComponent={View}
         contentContainerStyle={styles.listContainer}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <ProductTemp title={item.title} id={item.id} color={item.color} />
         )}
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     // marginBottom: 10,
     padding: 10,
     borderRadius: 10,
+    margin: 10,
   },
   listContainer: {
     alignItems: "center", // Center items horizontally within the FlatList
@@ -43,5 +44,8 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 32,
+  },
+  separator: {
+    width: 20, // Adjust the width of the separator if needed
   },
 });
