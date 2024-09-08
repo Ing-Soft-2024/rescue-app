@@ -1,4 +1,4 @@
-import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, TextInput, View, FlatList } from "react-native";
 import { AppleSignInComponent } from "./(screens)/components/apple.component";
 import { GoogleComponent } from "./(screens)/components/google.component";
 import { useRouter } from 'expo-router';
@@ -6,8 +6,8 @@ import { useRouter } from 'expo-router';
 export default function AuthLayout() {
     const router = useRouter();
 
-    const navigateToCompany = () => {
-        router.push('./company');  // lleva al usuario a la pantalla de company
+    const navigateToIndex = () => {
+        router.push('./(screens)/index.tsx');  // lleva al usuario a la pantalla de home (index)
     };
 
     return (
@@ -57,7 +57,7 @@ export default function AuthLayout() {
                 <Button
                     title="Login"
                     onPress={() => { }}
-                    // onPress={navigateToCompany}
+                    // onPress={navigateToIndex}
                 />
             </View>
 
@@ -70,6 +70,7 @@ export default function AuthLayout() {
                 <GoogleComponent />
                 <AppleSignInComponent />
             </View>
+
         </KeyboardAvoidingView>
     )
 }
