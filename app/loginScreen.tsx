@@ -1,7 +1,7 @@
+import { useRouter } from 'expo-router';
 import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
 import { AppleSignInComponent } from "./(screens)/components/apple.component";
 import { GoogleComponent } from "./(screens)/components/google.component";
-import { useRouter } from 'expo-router';
 
 export default function AuthLayout() {
     const router = useRouter();
@@ -57,7 +57,6 @@ export default function AuthLayout() {
                 <Button
                     title="Login"
                     onPress={() => { }}
-                    // onPress={navigateToCompany}
                 />
             </View>
 
