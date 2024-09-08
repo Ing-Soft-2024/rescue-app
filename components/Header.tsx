@@ -17,7 +17,7 @@ export function HeaderComp ({ onPressButton, screenName }: HeaderProps) {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: '#6200EE',
+    // backgroundColor: '#6200EE',
     padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
