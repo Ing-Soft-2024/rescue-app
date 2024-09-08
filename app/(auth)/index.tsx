@@ -1,7 +1,15 @@
 import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
 import { AppleSignInComponent } from "./components/apple.component";
 import { GoogleComponent } from "./components/google.component";
+import { useRouter } from 'expo-router';
+
 export default function AuthLayout() {
+    const router = useRouter();
+
+    const navigateToCompany = () => {
+        router.push('./company');  // lleva al usuario a la pantalla de company
+    };
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -49,6 +57,7 @@ export default function AuthLayout() {
                 <Button
                     title="Login"
                     onPress={() => { }}
+                    // onPress={navigateToCompany}
                 />
             </View>
 
