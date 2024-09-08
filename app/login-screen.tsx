@@ -1,14 +1,10 @@
-import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
-import { AppleSignInComponent } from "./(screens)/components/apple.component";
-import { GoogleComponent } from "./(screens)/components/google.component";
-import { useRouter } from 'expo-router';
+import { AppleIDButton } from '@/src/components/auth/appleid.button';
+import { GoogleComponent } from '@/src/components/auth/google.button';
+import { useSession } from '@/src/context/session.context';
+import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
 
 export default function AuthLayout() {
-    const router = useRouter();
-
-    const navigateToCompany = () => {
-        router.push('./company');  // lleva al usuario a la pantalla de company
-    };
+    const { signInWith } = useSession();
 
     return (
         <KeyboardAvoidingView
@@ -57,7 +53,6 @@ export default function AuthLayout() {
                 <Button
                     title="Login"
                     onPress={() => { }}
-                    // onPress={navigateToCompany}
                 />
             </View>
 
@@ -68,8 +63,24 @@ export default function AuthLayout() {
                 gap: 5,
             }}>
                 <GoogleComponent />
-                <AppleSignInComponent />
+                <AppleIDButton />
             </View>
+
+            <Pressable
+                style={({ pressed }) => ({
+                    marginTop: 40,
+                    padding: 10,
+                    alignItems: 'center',
+                    borderRadius: 5,
+                    backgroundColor: pressed ? "#ddd" : "#fafafa",
+                })}
+                onPress={() => signInWith("Guest")}
+            >
+                <Text style={{
+                    color: "#aaa",
+                    fontSize: 16,
+                }} >Iniciar sesión como invitado</Text>
+            </Pressable>
         </KeyboardAvoidingView>
     )
 }
