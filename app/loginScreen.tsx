@@ -1,6 +1,6 @@
 import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
-import { AppleSignInComponent } from "./components/apple.component";
-import { GoogleComponent } from "./components/google.component";
+import { AppleSignInComponent } from "./(screens)/components/apple.component";
+import { GoogleComponent } from "./(screens)/components/google.component";
 import { useRouter } from 'expo-router';
 
 export default function AuthLayout() {
