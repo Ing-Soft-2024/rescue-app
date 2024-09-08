@@ -1,7 +1,7 @@
+import { AppleIDButton } from '@/src/components/auth/appleid.button';
+import { GoogleComponent } from '@/src/components/auth/google.button';
 import { useRouter } from 'expo-router';
 import { Button, KeyboardAvoidingView, Platform, TextInput, View } from "react-native";
-import { AppleSignInComponent } from "./(screens)/components/apple.component";
-import { GoogleComponent } from "./(screens)/components/google.component";
 
 export default function AuthLayout() {
     const router = useRouter();
@@ -67,7 +67,7 @@ export default function AuthLayout() {
                 gap: 5,
             }}>
                 <GoogleComponent />
-                <AppleSignInComponent />
+                <AppleIDButton />
             </View>
         </KeyboardAvoidingView>
     )
