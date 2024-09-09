@@ -2,9 +2,15 @@ import { AppleIDButton } from '@/src/components/auth/appleid.button';
 import { GoogleComponent } from '@/src/components/auth/google.button';
 import { useSession } from '@/src/context/session.context';
 import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { useRouter } from 'expo-router';
 
 export default function AuthLayout() {
     const { signInWith } = useSession();
+    const router = useRouter();
+
+    const navigateToIndex = () => {
+        router.push('./(screens)/index.tsx');  // lleva al usuario a la pantalla de home (index)
+    };
 
     return (
         <KeyboardAvoidingView
@@ -53,6 +59,8 @@ export default function AuthLayout() {
                 <Button
                     title="Login"
                     onPress={() => { }}
+                    // onPress={navigateToIndex}
+
                 />
             </View>
 
