@@ -1,9 +1,11 @@
-import { Button, KeyboardAvoidingView, Platform, TextInput, View, FlatList } from "react-native";
-import { AppleSignInComponent } from "./(screens)/components/apple.component";
-import { GoogleComponent } from "./(screens)/components/google.component";
+import { AppleIDButton } from '@/src/components/auth/appleid.button';
+import { GoogleComponent } from '@/src/components/auth/google.button';
+import { useSession } from '@/src/context/session.context';
+import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { useRouter } from 'expo-router';
 
 export default function AuthLayout() {
+    const { signInWith } = useSession();
     const router = useRouter();
 
     const navigateToIndex = () => {
@@ -58,6 +60,7 @@ export default function AuthLayout() {
                     title="Login"
                     onPress={() => { }}
                     // onPress={navigateToIndex}
+
                 />
             </View>
 
@@ -68,9 +71,24 @@ export default function AuthLayout() {
                 gap: 5,
             }}>
                 <GoogleComponent />
-                <AppleSignInComponent />
+                <AppleIDButton />
             </View>
 
+            <Pressable
+                style={({ pressed }) => ({
+                    marginTop: 40,
+                    padding: 10,
+                    alignItems: 'center',
+                    borderRadius: 5,
+                    backgroundColor: pressed ? "#ddd" : "#fafafa",
+                })}
+                onPress={() => signInWith("Guest")}
+            >
+                <Text style={{
+                    color: "#aaa",
+                    fontSize: 16,
+                }} >Iniciar sesión como invitado</Text>
+            </Pressable>
         </KeyboardAvoidingView>
     )
 }

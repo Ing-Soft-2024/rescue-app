@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { SessionProvider } from '@/src/context/session.context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -29,7 +30,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot></Slot>
+      <SessionProvider>
+        <Slot />
+      </SessionProvider>
     </ThemeProvider>
   );
 }
