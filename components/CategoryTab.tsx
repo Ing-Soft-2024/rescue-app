@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { ProductTemp, ProductTempProps } from "./ProductTemp";
 
-interface CategoryTabProps {
+export interface CategoryTabProps {
   arr: ProductTempProps[];
 }
 
