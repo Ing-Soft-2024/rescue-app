@@ -19,7 +19,7 @@ export default function ProductLayout() {
 
   const product: ProductType = {
     title: "Hamburguesa de carne",
-    description: "Texto descriptivo del producto definido por el vendedor",
+    description: "Hamburguesa de carne 100% vacuna.\nIncluye queso, pepinillos, tomate y lechuga.",
     price: "$9.99",
     category: "Fast Food",
     imageUrl: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
