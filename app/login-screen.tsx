@@ -1,8 +1,8 @@
 import { AppleIDButton } from '@/src/components/auth/appleid.button';
 import { GoogleComponent } from '@/src/components/auth/google.button';
 import { useSession } from '@/src/context/session.context';
-import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
 import { useRouter } from 'expo-router';
+import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View } from "react-native";
 
 export default function AuthLayout() {
     const { signInWith } = useSession();
@@ -21,6 +21,7 @@ export default function AuthLayout() {
                 justifyContent: 'center',
                 // alignItems: 'center',
                 gap: 10,
+                backgroundColor: '#fafafa',
                 padding: 10,
             }}
         >
@@ -43,6 +44,9 @@ export default function AuthLayout() {
                         padding: 10,
                         borderRadius: 5,
                         fontSize: 16,
+                        shadowColor: 'black',
+                        shadowOpacity: 0.1,
+                        shadowOffset: { width: 0, height: 1 },
                     }}
                 />
 
@@ -53,13 +57,16 @@ export default function AuthLayout() {
                         padding: 10,
                         borderRadius: 5,
                         fontSize: 16,
+                        shadowColor: 'black',
+                        shadowOpacity: 0.1,
+                        shadowOffset: { width: 0, height: 1 },
                     }}
                     textContentType="password"
                 />
                 <Button
                     title="Login"
                     onPress={() => { }}
-                    // onPress={navigateToIndex}
+                // onPress={navigateToIndex}
 
                 />
             </View>
