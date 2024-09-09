@@ -3,8 +3,8 @@ import { View, Text, Button, FlatList, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import Header from '../../components/Header'; 
 import { ProductTemp, ProductTempProps } from "../../components/ProductTemp";
-import { CategoryTab } from '@/components/CategoryTab';
-import { CompanyDataTab } from '@/components/CompanyDataTab';
+import { CategoryTab } from '../../components/CategoryTab';
+import { CompanyDataTab } from '../../components/CompanyDataTab';
 
 interface Product {
   id: string;
