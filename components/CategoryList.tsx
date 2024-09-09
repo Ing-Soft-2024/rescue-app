@@ -6,13 +6,13 @@ import {
   StatusBar,
   View,
 } from "react-native";
-import { CategoryBtn, CategoryBtnProps } from "./CategoryBtn";
+import { ProductTemp, ProductTempProps } from "./ProductTemp";
 
-export interface CategoryTabProps {
-  arr: CategoryBtnProps[];
+export interface CategoryListProps {
+  arr: ProductTempProps[];
 }
 
-export function CategoryTab({ arr }: CategoryTabProps) {
+export function CategoryList({ arr }: CategoryListProps) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -21,11 +21,7 @@ export function CategoryTab({ arr }: CategoryTabProps) {
         contentContainerStyle={styles.listContainer}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <CategoryBtn
-            title={item.title}
-            tab={item.tab}
-            scrollView={item.scrollView}
-          />
+          <ProductTemp title={item.title} id={item.id} color={item.color} />
         )}
       />
     </SafeAreaView>
