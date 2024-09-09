@@ -1,13 +1,50 @@
-import { View, Text, Button, FlatList } from 'react-native';
-import { useRouter } from 'expo-router';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Header } from '@/components/product/ProductHeader';
+import { ProductDescription } from '@/components/product/ProductDescription';
+import { AddToCart } from '@/components/product/ProductAddToCart';
 
-export default function productScreen() {
-    const router = useRouter();
+export default function ProductLayout() {
+  const productDescription = "Texto descriptivo del producto definido por el vendedor";
+  const productImageUrl = "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg"; // URL de la imagen del producto
+  const productTitle = "Hamburguesa de carne"; // El nombre del producto
+  const productPrice = "$9.99"; // El precio del producto
+  const productCategory = "Fast Food"; // Nueva categoría
 
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Product</Text>
-          <Button title="Go back to Home" onPress={() => router.push('./index')} />
-        </View>
-      );
+  return (
+    <View style={styles.container}>
+      {/* Header con imagen y botones */}
+      <Header
+        imageUrl={productImageUrl}
+        onBackPress={() => console.log("Back pressed")}
+        onSharePress={() => console.log("Share pressed")}
+        onFavoritePress={() => console.log("Favorite pressed")}
+      />
+
+      {/* Detalles del producto */}
+      <ProductDescription
+        category={productCategory}
+        description={productDescription}
+        title={productTitle}
+        price={productPrice}
+      />
+
+      {/* Banner inferior para agregar al carrito */}
+      <AddToCart onAddToCartPress={() => console.log("Añadido al carrito")} />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "stretch",
+    justifyContent: "flex-start", // Alinear todo al principio (arriba)
+    backgroundColor: "#fff",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    margin: 20,
+  },
+});
