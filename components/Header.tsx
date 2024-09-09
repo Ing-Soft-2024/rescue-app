@@ -1,15 +1,18 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface HeaderProps {
-  onPressButton: () => void; 
+  onBackPress: () => void;
   screenName: string;       
 }
 
-export default function HeaderComp ({ onPressButton, screenName }: HeaderProps) {
+export default function HeaderComp ({ onBackPress, screenName }: HeaderProps) {
   return (
     <View style={styles.headerContainer}>
-      <Button title="Back" onPress={onPressButton} />
+      <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="white" />
+      </TouchableOpacity>
       <Text style={styles.headerText}> { screenName } </Text>
     </View>
   );
@@ -30,6 +33,14 @@ const styles = StyleSheet.create({
     flex: 1,  // El texto toma todo el espacio disponible
     textAlign: 'center', 
     marginRight: 50, 
+  },
+  backButton: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 8,
+    borderRadius: 20,
   },
 });
 

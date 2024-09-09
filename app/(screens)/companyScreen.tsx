@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, FlatList, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Header from '../../components/Header'; 
 import { ProductTemp, ProductTempProps } from "../../components/ProductTemp";
@@ -17,9 +17,13 @@ export default function CompanyScreen() {
 
   const screen = "Company";
   
-  const navigateToIndex = () => {
+  const onPressBack = () => {
     router.push('./(screens)/index.tsx');  
-};
+  };
+  
+  // const navigateToIndex = () => {
+  //     router.push('./(screens)/index.tsx');  
+  // };
   // Datos de la empresa (ejemplo)
   // Ver como implementar el listado de los productos de cada empresa
 
@@ -67,7 +71,8 @@ export default function CompanyScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header onPressButton={navigateToIndex} screenName={screen} />
+      <Header onBackPress={onPressBack} screenName={screen} />
+
 
       {/* <View style={styles.imageContainer}>
         <Image source={{ uri: -company.image- }} style={styles.image} />
@@ -78,8 +83,13 @@ export default function CompanyScreen() {
         location={company.ubication} 
         rating={company.rating}
       />
-
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <CategoryList arr={arr1} />
+    <CategoryList arr={arr1} />
+    <CategoryList arr={arr1} />
+    <CategoryList arr={arr1} />
+    </ScrollView>
+
 
       {/* <FlatList
         data={company.products}  // Datos de productos
@@ -114,6 +124,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: 20,
     alignItems: 'center',
+  },
+  scrollContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20, // Añadir espacio al final del scroll
   },
 });
 
