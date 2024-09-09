@@ -10,25 +10,28 @@ import React, { useRef } from "react";
 
 export interface CategoryBtnProps {
   title: string;
-  //tab: ;
-  scrollView: ScrollView;
+  tab: React.RefObject<View>;
+  scrollView: React.RefObject<ScrollView>;
 }
 
 export function CategoryBtn({ title, tab, scrollView }: CategoryBtnProps) {
-  const scrollViewRef = useRef<ScrollView>(null);
-  const targetRef = useRef<View>(null);
-
-  const scrollToElement = () => {
-    if (targetRef.current && scrollViewRef.current) {
-      targetRef.current.measure((x, y, width, height, pageX, pageY) => {
-        scrollViewRef.current.scrollTo({ y: pageY, animated: true });
-      });
+  const scrollToComponent = () => {
+    if (scrollView.current && tab.current) {
+      tab.current.measureLayout(
+        scrollView.current.getInnerViewNode(),
+        (x, y) => {
+          scrollView.current.scrollTo({ y, animated: true });
+        },
+        (error: any) => {
+          console.error("Measurement error: ", error);
+        }
+      );
     }
   };
 
   return (
     <View style={styles.box}>
-      <Pressable onPress={scrollToElement}>
+      <Pressable onPress={scrollToComponent}>
         <Text style={styles.text}>{title}</Text>
       </Pressable>
     </View>
