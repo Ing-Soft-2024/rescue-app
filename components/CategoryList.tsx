@@ -8,11 +8,11 @@ import {
 } from "react-native";
 import { ProductTemp, ProductTempProps } from "./ProductTemp";
 
-interface CategoryTabProps {
+interface CategoryListProps {
   arr: ProductTempProps[];
 }
 
-export function CategoryTab({ arr }: CategoryTabProps) {
+export function CategoryList({ arr }: CategoryListProps) {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
