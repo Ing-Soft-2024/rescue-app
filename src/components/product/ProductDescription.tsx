@@ -1,31 +1,32 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-interface ProductDescriptionProps {
-  category: string;
-  description: string;
+type ProductType = {
   title: string;
+  description: string;
   price: string;
+  category: string;
+};
+
+interface ProductDescriptionProps {
+  title: string;
+  description: string;
+  price: string;
+  category: string;
 }
 
-export function ProductDescription({
-  category,
-  description,
-  title,
-  price,
-}: ProductDescriptionProps) {
+export function ProductDescription({ title, description, price, category }: ProductDescriptionProps) {
   return (
     <View style={styles.container}>
 
       <Text style={styles.category}>{category}</Text>
-      {/* Título más grande y precio */}
-      <View style={styles.titlePriceContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.price}>{price}</Text>
-      </View>
 
-      {/* Descripción sin caja */}
-      <Text style={styles.description}>{description}</Text>
+    <View style={styles.titlePriceContainer}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.price}>{price}</Text>
+    </View>
+
+    <Text style={styles.description}>{description}</Text>
     </View>
   );
 }

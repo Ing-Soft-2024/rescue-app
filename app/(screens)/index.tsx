@@ -11,6 +11,7 @@ export default function homeScreen() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Go to company profile" onPress={() => router.push('./companyScreen')} />
       <Button title="Cerrar sesión" onPress={signOut} />
+      <Button title="Go to product view" onPress={() => router.push('./productScreen')} />
     </View>
   );
 
