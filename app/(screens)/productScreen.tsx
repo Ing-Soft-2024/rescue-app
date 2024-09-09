@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Header } from '@/components/product/ProductHeader';
-import { ProductDescription } from '@/components/product/ProductDescription';
-import { AddToCart } from '@/components/product/ProductAddToCart';
+import { Header } from '@/src/components/product/ProductHeader';
+import { ProductDescription } from '@/src/components/product/ProductDescription';
+import { AddToCart } from '@/src/components/product/ProductAddToCart';
 
 export default function ProductLayout() {
   const productDescription = "Texto descriptivo del producto definido por el vendedor";
