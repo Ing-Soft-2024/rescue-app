@@ -3,10 +3,13 @@ import { View, Text, Button, FlatList, Image, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import Header from '../../components/Header'; 
 import { ProductTemp, ProductTempProps } from "../../components/ProductTemp";
+import { CategoryTab } from '@/components/CategoryTab';
+import { CompanyDataTab } from '@/components/CompanyDataTab';
 
 interface Product {
   id: string;
-  name: string;
+  title: string;
+  color: string;
 }
 
 export default function CompanyScreen() {
@@ -20,18 +23,19 @@ export default function CompanyScreen() {
   // Datos de la empresa (ejemplo)
   // Ver como implementar el listado de los productos de cada empresa
   const company = {
-    name: 'TechCorp',
+    name: 'ITBA',
     ubication: 'San Martin 202',
-    rating: '4.0'
-    // image: 
+    rating: 4,
     products: [
       // categoryTab (insertar las tablas horizontales)
-    ],
+      { id: '1', title: 'Product 1', color: "#0f0" },
+      { id: '2', title: 'Product 2', color: "#0f0" }
+    ]
   };
 
   // Renderizado de cada producto
   const renderProduct = ({ item }: { item: Product }) => (
-    <ProductTemp productName={item.name} />
+    <CategoryTab arr={company.products}/>
   );
 
   return (
@@ -42,7 +46,11 @@ export default function CompanyScreen() {
         <Image source={{ uri: -company.image- }} style={styles.image} />
       </View> */}
 
-      <Text style={styles.companyName}>{company.name}</Text>
+      <CompanyDataTab 
+        companyName={company.name} 
+        location={company.ubication} 
+        rating={company.rating}
+      />
 
       <FlatList
         data={company.products}  // Datos de productos

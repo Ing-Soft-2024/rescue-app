@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center', // Centrar verticalmente el contenido de texto
+    justifyContent: 'center', 
   },
   companyName: {
     fontSize: 20,

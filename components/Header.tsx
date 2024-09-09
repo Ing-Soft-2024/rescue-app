@@ -6,7 +6,7 @@ interface HeaderProps {
   screenName: string;       
 }
 
-export function HeaderComp ({ onPressButton, screenName }: HeaderProps) {
+export default function HeaderComp ({ onPressButton, screenName }: HeaderProps) {
   return (
     <View style={styles.headerContainer}>
       <Button title="Back" onPress={onPressButton} />
