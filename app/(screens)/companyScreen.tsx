@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, Text, Button, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import Header from '../../components/Header'; 
-import { ProductTemp, ProductTempProps } from "../../components/ProductTemp";
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
+import Header from '../../components/Header';
+import { ProductTempProps } from "../../components/ProductTemp";
 
 interface Product {
   id: string;
@@ -16,11 +16,11 @@ export default function CompanyScreen() {
   const router = useRouter();
 
   const screen = "Company";
-  
+
   const onPressBack = () => {
-    router.push('./(screens)/index.tsx');  
+    router.back();
   };
-  
+
   // const navigateToIndex = () => {
   //     router.push('./(screens)/index.tsx');  
   // };
@@ -60,7 +60,7 @@ export default function CompanyScreen() {
     ubication: 'San Martin 202',
     rating: 4,
     products: [
-      <CategoryList arr={arr1} /> 
+      <CategoryList arr={arr1} />
     ]
   };
 
@@ -78,17 +78,17 @@ export default function CompanyScreen() {
         <Image source={{ uri: -company.image- }} style={styles.image} />
       </View> */}
 
-      <CompanyDataTab 
-        companyName={company.name} 
-        location={company.ubication} 
+      <CompanyDataTab
+        companyName={company.name}
+        location={company.ubication}
         rating={company.rating}
       />
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-    <CategoryList arr={arr1} />
-    <CategoryList arr={arr1} />
-    <CategoryList arr={arr1} />
-    <CategoryList arr={arr1} />
-    </ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <CategoryList arr={arr1} />
+        <CategoryList arr={arr1} />
+        <CategoryList arr={arr1} />
+        <CategoryList arr={arr1} />
+      </ScrollView>
 
 
       {/* <FlatList
