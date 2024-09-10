@@ -27,6 +27,7 @@ export function CategoryList({ categoryTitle, products: arr }: CategoryListProps
           <ProductCard product={item} />
         )}
         showsHorizontalScrollIndicator={false}
+        keyExtractor={(_, index) => index.toString()}
       />
     </SafeAreaView>
   );
@@ -47,7 +48,8 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 32,
+    fontSize: 20,
+    paddingVertical: 5,
   },
   separator: {
     width: 10, // Adjust the width of the separator if needed

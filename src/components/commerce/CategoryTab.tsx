@@ -19,13 +19,15 @@ export function CategoryTab({ arr }: CategoryTabProps) {
         horizontal={true}
         contentContainerStyle={styles.listContainer}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <CategoryBtn
             title={item.title}
             tab={item.tab}
             scrollView={item.scrollView}
           />
         )}
+
+        keyExtractor={(_, index) => index.toString()}
       />
     </SafeAreaView>
   );

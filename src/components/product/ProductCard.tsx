@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
     return (
         <Pressable
             onPress={() => {
-                // router.push(`/product/${encodedProduct}`);
+                router.push('/(screens)/productScreen');
             }}
             style={{
                 flexDirection: "column",
