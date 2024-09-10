@@ -1,5 +1,8 @@
+// import HeaderComp from '@/components/Header';
+import { ProductTempProps } from '@/components/product/ProductTemp';
+import { Header } from '@/src/components/product/ProductHeader';
 import { useRouter } from 'expo-router';
-import { default as React, default as React, useRef } from 'react';
+import { default as React, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { CategoryBtn } from '../../components/CategoryBtn';
 import { CategoryList } from '../../components/CategoryList';
@@ -79,7 +82,7 @@ export default function CompanyScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header onBackPress={onPressBack} screenName={screen} />
+      <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
 
 
       {/* <View style={styles.imageContainer}>

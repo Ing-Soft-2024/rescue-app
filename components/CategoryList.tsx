@@ -1,12 +1,11 @@
 import React from "react";
 import {
-  SafeAreaView,
   FlatList,
+  SafeAreaView,
   StyleSheet,
-  StatusBar,
-  View,
+  View
 } from "react-native";
-import { ProductTemp, ProductTempProps } from "./ProductTemp";
+import { ProductTemp, ProductTempProps } from "../src/components/product/ProductTemp";
 
 interface CategoryListProps {
   arr: ProductTempProps[];

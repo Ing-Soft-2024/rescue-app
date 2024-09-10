@@ -1,12 +1,12 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import React from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface HeaderProps {
   imageUrl: string;
-  onBackPress: () => void;
-  onSharePress: () => void;
-  onFavoritePress: () => void;
+  onBackPress?: () => void;
+  onSharePress?: () => void;
+  onFavoritePress?: () => void;
 }
 
 export function Header({
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   backButton: {
     position: "absolute",
