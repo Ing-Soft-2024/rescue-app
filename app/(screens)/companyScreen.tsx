@@ -1,6 +1,6 @@
 // import HeaderComp from '@/components/Header';
-import { ProductTempProps } from '@/components/product/ProductTemp';
 import { Header } from '@/src/components/product/ProductHeader';
+import { ProductType } from '@/src/types/product.type';
 import { useRouter } from 'expo-router';
 import { default as React, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -38,31 +38,41 @@ export default function CompanyScreen() {
   // Datos de la empresa (ejemplo)
   // Ver como implementar el listado de los productos de cada empresa
 
-  const arr1: ProductTempProps[] = [
+  const arr1: ProductType[] = [
     {
       id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-      title: "First Item",
-      color: "red",
+      name: "First Item",
+      description: "Description of the first item",
+      price: 100,
+      image: "https://picsum.photos/200",
     },
     {
       id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-      title: "Second Item",
-      color: "green",
+      name: "Second Item",
+      description: "Description of the second item",
+      price: 200,
+      image: "https://picsum.photos/200",
     },
     {
       id: "58694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Third Item",
-      color: "white",
+      name: "Third Item",
+      description: "Description of the third item",
+      price: 300,
+      image: "https://picsum.photos/200",
     },
     {
       id: "158694a0f-3da1-471f-bd96-145571e29d72",
-      title: "Fourth Item",
-      color: "#0ff",
+      name: "Fourth Item",
+      description: "Description of the fourth item",
+      price: 400,
+      image: "https://picsum.photos/200",
     },
     {
       id: "586943a0f-3da1-471f-bd96-145571e29d72",
-      title: "Fifth Item",
-      color: "white",
+      name: "Fifth Item",
+      description: "Description of the fifth item",
+      price: 500,
+      image: "https://picsum.photos/200",
     },
   ];
 
@@ -71,7 +81,7 @@ export default function CompanyScreen() {
     ubication: 'San Martin 202',
     rating: 4,
     products: [
-      <CategoryList arr={arr1} />
+      <CategoryList products={arr1} />
     ]
   };
 
@@ -102,19 +112,19 @@ export default function CompanyScreen() {
         <CategoryBtn title={'tab4'} tab={sectionRefs.section4} scrollView={scrollViewRef}></CategoryBtn>
         <CategoryBtn title={'tab5'} tab={sectionRefs.section5} scrollView={scrollViewRef}></CategoryBtn>
         <View ref={sectionRefs.section1}>
-          <CategoryList arr={arr1} />
+          <CategoryList products={arr1} />
         </View >
         <View ref={sectionRefs.section2}>
-          <CategoryList arr={arr1} />
+          <CategoryList products={arr1} />
         </View>
         <View ref={sectionRefs.section3}>
-          <CategoryList arr={arr1} />
+          <CategoryList products={arr1} />
         </View>
         <View ref={sectionRefs.section4}>
-          <CategoryList arr={arr1} />
+          <CategoryList products={arr1} />
         </View>
         <View ref={sectionRefs.section5}>
-          <CategoryList arr={arr1} />
+          <CategoryList products={arr1} />
         </View>
 
 
@@ -156,7 +166,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     paddingBottom: 20, // Añadir espacio al final del scroll
   },
 });

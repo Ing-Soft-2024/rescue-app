@@ -1,27 +1,32 @@
+import { ProductCard } from "@/src/components/product/ProductCard";
+import { ProductType } from "@/src/types/product.type";
 import React from "react";
 import {
   FlatList,
   SafeAreaView,
   StyleSheet,
+  Text,
   View
 } from "react-native";
-import { ProductTemp, ProductTempProps } from "../src/components/product/ProductTemp";
 
 interface CategoryListProps {
-  arr: ProductTempProps[];
+  categoryTitle?: string;
+  products: ProductType[];
 }
 
-export function CategoryList({ arr }: CategoryListProps) {
+export function CategoryList({ categoryTitle, products: arr }: CategoryListProps) {
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>{categoryTitle}</Text>
       <FlatList
         data={arr}
         horizontal={true}
         contentContainerStyle={styles.listContainer}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <ProductTemp title={item.title} id={item.id} color={item.color} />
+          <ProductCard product={item} />
         )}
+        showsHorizontalScrollIndicator={false}
       />
     </SafeAreaView>
   );
@@ -29,9 +34,9 @@ export function CategoryList({ arr }: CategoryListProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 300,
-    height: 200,
-    backgroundColor: "grey",
+    // width: 300,
+    // height: 200,
+    // backgroundColor: "grey",
     // marginBottom: 10,
     padding: 10,
     borderRadius: 10,
@@ -45,6 +50,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   separator: {
-    width: 20, // Adjust the width of the separator if needed
+    width: 10, // Adjust the width of the separator if needed
   },
 });
