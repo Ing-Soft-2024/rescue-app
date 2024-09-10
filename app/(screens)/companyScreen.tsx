@@ -1,11 +1,9 @@
-import React, { useRef } from 'react';
-import { View, Text, Button, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import Header from '../../components/Header'; 
-import { ProductTemp, ProductTempProps } from "../../components/ProductTemp";
+import { default as React, default as React, useRef } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { CategoryBtn } from '../../components/CategoryBtn';
 import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
-import { CategoryBtn } from '../../components/CategoryBtn';
 
 interface Product {
   id: string;
@@ -17,9 +15,9 @@ export default function CompanyScreen() {
   const router = useRouter();
 
   const screen = "Company";
-  
+
   const onPressBack = () => {
-    router.push('./(screens)/index.tsx');  
+    router.back();
   };
 
   const scrollViewRef = useRef<ScrollView>(null);
@@ -30,7 +28,7 @@ export default function CompanyScreen() {
     section4: useRef<View>(null),
     section5: useRef<View>(null),
   };
-  
+
   // const navigateToIndex = () => {
   //     router.push('./(screens)/index.tsx');  
   // };
@@ -70,7 +68,7 @@ export default function CompanyScreen() {
     ubication: 'San Martin 202',
     rating: 4,
     products: [
-      <CategoryList arr={arr1} /> 
+      <CategoryList arr={arr1} />
     ]
   };
 
@@ -88,36 +86,36 @@ export default function CompanyScreen() {
         <Image source={{ uri: -company.image- }} style={styles.image} />
       </View> */}
 
-      <CompanyDataTab 
-        companyName={company.name} 
-        location={company.ubication} 
+      <CompanyDataTab
+        companyName={company.name}
+        location={company.ubication}
         rating={company.rating}
       />
-    <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
-      
-      <CategoryBtn title={'tab1'} tab={sectionRefs.section1} scrollView={scrollViewRef}></CategoryBtn>
-      <CategoryBtn title={'tab2'} tab={sectionRefs.section2} scrollView={scrollViewRef}></CategoryBtn>
-      <CategoryBtn title={'tab3'} tab={sectionRefs.section3} scrollView={scrollViewRef}></CategoryBtn>
-      <CategoryBtn title={'tab4'} tab={sectionRefs.section4} scrollView={scrollViewRef}></CategoryBtn>
-      <CategoryBtn title={'tab5'} tab={sectionRefs.section5} scrollView={scrollViewRef}></CategoryBtn>
-      <View ref={sectionRefs.section1}>
-      <CategoryList arr={arr1} />
-      </View >
-      <View ref={sectionRefs.section2}>
-      <CategoryList arr={arr1} />
-      </View>
-      <View  ref={sectionRefs.section3}>
-      <CategoryList arr={arr1} />
-      </View>
-      <View  ref={sectionRefs.section4}>
-      <CategoryList arr={arr1} />
-      </View>
-      <View  ref={sectionRefs.section5}>
-      <CategoryList arr={arr1} />
-      </View>
-    
-    
-    </ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
+
+        <CategoryBtn title={'tab1'} tab={sectionRefs.section1} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab2'} tab={sectionRefs.section2} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab3'} tab={sectionRefs.section3} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab4'} tab={sectionRefs.section4} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab5'} tab={sectionRefs.section5} scrollView={scrollViewRef}></CategoryBtn>
+        <View ref={sectionRefs.section1}>
+          <CategoryList arr={arr1} />
+        </View >
+        <View ref={sectionRefs.section2}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section3}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section4}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section5}>
+          <CategoryList arr={arr1} />
+        </View>
+
+
+      </ScrollView>
 
 
       {/* <FlatList

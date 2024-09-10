@@ -7,7 +7,7 @@ export default function AppLayout() {
     if (!session) return <Redirect href={"/login-screen"} />;
 
     return (
-        <Stack screenOptions={{ headerTitle: "Login", headerShown: false }}>
+        <Stack screenOptions={{ headerTitle: "", headerShown: true, headerBackVisible: false }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="companyScreen" />
             <Stack.Screen name="productScreen" />
