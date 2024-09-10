@@ -1,10 +1,12 @@
+// import HeaderComp from '@/components/Header';
+import { ProductTempProps } from '@/components/product/ProductTemp';
+import { Header } from '@/src/components/product/ProductHeader';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import { default as React, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { CategoryBtn } from '../../components/CategoryBtn';
 import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
-import Header from '../../components/Header';
-import { ProductTempProps } from "../../components/ProductTemp";
 
 interface Product {
   id: string;
@@ -19,6 +21,15 @@ export default function CompanyScreen() {
 
   const onPressBack = () => {
     router.back();
+  };
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const sectionRefs = {
+    section1: useRef<View>(null),
+    section2: useRef<View>(null),
+    section3: useRef<View>(null),
+    section4: useRef<View>(null),
+    section5: useRef<View>(null),
   };
 
   // const navigateToIndex = () => {
@@ -71,7 +82,7 @@ export default function CompanyScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header onBackPress={onPressBack} screenName={screen} />
+      <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
 
 
       {/* <View style={styles.imageContainer}>
@@ -83,11 +94,30 @@ export default function CompanyScreen() {
         location={company.ubication}
         rating={company.rating}
       />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <CategoryList arr={arr1} />
-        <CategoryList arr={arr1} />
-        <CategoryList arr={arr1} />
-        <CategoryList arr={arr1} />
+      <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
+
+        <CategoryBtn title={'tab1'} tab={sectionRefs.section1} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab2'} tab={sectionRefs.section2} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab3'} tab={sectionRefs.section3} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab4'} tab={sectionRefs.section4} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryBtn title={'tab5'} tab={sectionRefs.section5} scrollView={scrollViewRef}></CategoryBtn>
+        <View ref={sectionRefs.section1}>
+          <CategoryList arr={arr1} />
+        </View >
+        <View ref={sectionRefs.section2}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section3}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section4}>
+          <CategoryList arr={arr1} />
+        </View>
+        <View ref={sectionRefs.section5}>
+          <CategoryList arr={arr1} />
+        </View>
+
+
       </ScrollView>
 
 

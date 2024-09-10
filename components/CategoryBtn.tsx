@@ -1,12 +1,11 @@
+import React from "react";
 import {
-  Text,
-  View,
-  StyleSheet,
-  ColorValue,
   Pressable,
   ScrollView,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
-import React, { useRef } from "react";
 
 export interface CategoryBtnProps {
   title: string;
@@ -20,10 +19,10 @@ export function CategoryBtn({ title, tab, scrollView }: CategoryBtnProps) {
       tab.current.measureLayout(
         scrollView.current.getInnerViewNode(),
         (x, y) => {
-          scrollView.current.scrollTo({ y, animated: true });
+          scrollView.current?.scrollTo({ y, animated: true });
         },
-        (error: any) => {
-          console.error("Measurement error: ", error);
+        () => {
+          console.error("Measurement error");
         }
       );
     }
