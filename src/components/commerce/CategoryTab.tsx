@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  SafeAreaView,
   FlatList,
+  SafeAreaView,
   StyleSheet,
-  StatusBar,
-  View,
+  View
 } from "react-native";
 import { CategoryBtn, CategoryBtnProps } from "./CategoryBtn";
 
@@ -34,12 +33,13 @@ export function CategoryTab({ arr }: CategoryTabProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: 300,
-    height: 200,
-    backgroundColor: "grey",
+    // width: 300,
+    // height: 200,
+    // backgroundColor: "grey",
     // marginBottom: 10,
+    backgroundColor: '#f9f9f9',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     margin: 10,
   },
   listContainer: {
@@ -50,6 +50,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   separator: {
-    width: 20, // Adjust the width of the separator if needed
+    width: 5, // Adjust the width of the separator if needed
   },
 });

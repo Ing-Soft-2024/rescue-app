@@ -1,10 +1,10 @@
 // import HeaderComp from '@/components/Header';
+import { CategoryTab } from '@/components/commerce/CategoryTab';
 import { Header } from '@/src/components/product/ProductHeader';
 import { ProductType } from '@/src/types/product.type';
 import { useRouter } from 'expo-router';
 import { default as React, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { CategoryBtn } from '../../components/CategoryBtn';
 import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
 
@@ -105,12 +105,13 @@ export default function CompanyScreen() {
         rating={company.rating}
       />
       <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
-
-        <CategoryBtn title={'tab1'} tab={sectionRefs.section1} scrollView={scrollViewRef}></CategoryBtn>
-        <CategoryBtn title={'tab2'} tab={sectionRefs.section2} scrollView={scrollViewRef}></CategoryBtn>
-        <CategoryBtn title={'tab3'} tab={sectionRefs.section3} scrollView={scrollViewRef}></CategoryBtn>
-        <CategoryBtn title={'tab4'} tab={sectionRefs.section4} scrollView={scrollViewRef}></CategoryBtn>
-        <CategoryBtn title={'tab5'} tab={sectionRefs.section5} scrollView={scrollViewRef}></CategoryBtn>
+        <CategoryTab arr={[
+          { title: 'tab1', tab: sectionRefs.section1, scrollView: scrollViewRef },
+          { title: 'tab2', tab: sectionRefs.section2, scrollView: scrollViewRef },
+          { title: 'tab3', tab: sectionRefs.section3, scrollView: scrollViewRef },
+          { title: 'tab4', tab: sectionRefs.section4, scrollView: scrollViewRef },
+          { title: 'tab5', tab: sectionRefs.section5, scrollView: scrollViewRef },
+        ]} />
         <View ref={sectionRefs.section1}>
           <CategoryList products={arr1} />
         </View >
