@@ -35,7 +35,13 @@
       "expo-router",
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
