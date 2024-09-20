@@ -27,7 +27,7 @@ export default function AuthLayout() {
         >
             <View style={{
                 height: 100,
-                backgroundColor: 'red',
+                backgroundColor: '#ddd',
                 width: 200,
                 alignSelf: 'center',
             }} />

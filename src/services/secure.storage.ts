@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 export class SecureStorage {
@@ -10,7 +10,7 @@ export class SecureStorage {
      */
     static getItemAsync = (key: string) => {
         return new Promise<string | null>((resolve) => {
-            if (this.isDesktop) return AsyncStorage.getItem(key).then(resolve);
+            // if (this.isDesktop) return AsyncStorage.getItem(key).then(resolve);
             SecureStore.getItemAsync(key).then(resolve);
         });
     }
@@ -22,7 +22,7 @@ export class SecureStorage {
      */
     static setItemAsync = (key: string, value: string) => {
         return new Promise<void>((resolve) => {
-            if (this.isDesktop) return AsyncStorage.setItem(key, value).then(resolve);
+            // if (this.isDesktop) return AsyncStorage.setItem(key, value).then(resolve);
             SecureStore.setItemAsync(key, value).then(resolve);
         });
     }
@@ -33,7 +33,7 @@ export class SecureStorage {
      */
     static deleteItemAsync = (key: string) => {
         return new Promise<void>((resolve) => {
-            if (this.isDesktop) return AsyncStorage.removeItem(key).then(resolve);
+            // if (this.isDesktop) return AsyncStorage.removeItem(key).then(resolve);
             SecureStore.deleteItemAsync(key).then(resolve);
         });
     }
