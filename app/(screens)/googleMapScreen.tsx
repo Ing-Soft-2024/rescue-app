@@ -36,17 +36,9 @@ export default function GoogleMapScreen() {
     };
 
     return (
-        <View>
-            <View style={styles.buttonContainer}>
-                <Button title="Go back" onPress={onPressBack} />
-            </View>
-
             <userLocationContext.Provider value={{ location, setLocation }}>
-                <Text>{text}</Text>
+                <GoogleMap />
             </userLocationContext.Provider>
-
-            <GoogleMap />
-        </View>
     );
 }
 

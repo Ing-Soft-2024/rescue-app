@@ -59,8 +59,10 @@ export default function GoogleMap() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        marginTop: 15,
+        //flex: 1,
+        width: '100%',
+        height: '100%',
+        //marginTop: 15,
         borderRadius: 8,
     },
     map: {
