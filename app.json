@@ -23,8 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff",
-        "package": "com.kepleris.rescue"
-      
+        "package": "com.kepleris.rescue",
+        "androidMapsApiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kepleris.rescue"

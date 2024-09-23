@@ -10,6 +10,7 @@ type UserLocationContextType = {
 // Creo el contexto y le paso el tipo que definimos
 export const userLocationContext = createContext<UserLocationContextType | null>(null);
 
+
 // import { createContext } from 'react';
 
 // export const userLocationContext = createContext(null);

@@ -7,7 +7,7 @@ import { SearchBar } from '../../components/SearchBar';
 import { userLocationContext } from '../../src/context/userLocationContext';
 import * as Location from 'expo-location';
 import { useState, useEffect } from 'react';
-import GoogleMapScreen from './googleMapScreen';
+import  GoogleMapScreen from './googleMapScreen';
 
 export default function homeScreen() {
   const router = useRouter();
