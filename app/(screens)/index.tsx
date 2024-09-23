@@ -35,8 +35,8 @@ export default function homeScreen() {
         }
       />
       <View>
-        <Button title="Go to company profile" onPress={() => router.push('./companyScreen')} />
-        <Button title="Go to google map" onPress={() => router.push('./googleMapScreen')} />
+        {/* <Button title="Go to company profile" onPress={() => router.push('./companyScreen')} />
+        <Button title="Go to google map" onPress={() => router.push('./googleMapScreen')} /> */}
         <Button title="Cerrar sesión" onPress={signOut} />
       </View>
     </View >
