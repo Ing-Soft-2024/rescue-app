@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { userLocationContext } from '../../src/context/userLocationContext';
 
 export default function GoogleMap() {
@@ -22,8 +22,8 @@ export default function GoogleMap() {
 
     // Provide a default region if mapRegion is null
     const defaultRegion = {
-        latitude: 37.78825, // Default latitude
-        longitude: -122.4324, // Default longitude
+        latitude: 337.785834, // Default latitude
+        longitude: -122.406417, // Default longitude
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0421,
     };
@@ -35,19 +35,21 @@ export default function GoogleMap() {
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
-                    region={mapRegion}
+                    region={mapRegion || defaultRegion}
                 >
+                    {userLocation?.location && (
                     <Marker
                         coordinate={{
                             latitude: userLocation?.location ? userLocation.location.coords.latitude : 0.0,
                             longitude: userLocation?.location ? userLocation.location.coords.longitude : 0.0,
                         }}
                     />
+                    )}
                 </MapView>
             ) : (
                 // Optionally show a loading spinner or placeholder
                 <View style={styles.loadingContainer}>
-
+                    <Text>Loading map...</Text>
                 </View>
             )}
         </View>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import MapView from 'react-native-maps';
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Button } from 'react-native';
 import { userLocationContext } from '../../src/context/userLocationContext';
 import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
@@ -32,12 +31,29 @@ export default function GoogleMapScreen() {
         text = JSON.stringify(location);
     }
 
+    const onPressBack = () => {
+        router.back();
+    };
+
     return (
         <View>
-            <GoogleMap />
+            <View style={styles.buttonContainer}>
+                <Button title="Go back" onPress={onPressBack} />
+            </View>
+
             <userLocationContext.Provider value={{ location, setLocation }}>
                 <Text>{text}</Text>
             </userLocationContext.Provider>
+
+            <GoogleMap />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    buttonContainer: {
+        alignSelf: 'flex-start',
+        marginLeft: 10, 
+        marginTop: 10, 
+    }
+});
