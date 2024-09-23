@@ -42,6 +42,8 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>GMSApiKey</key>
+    <string>AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -61,6 +63,7 @@
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSUserActivityTypes</key>
     <array>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
