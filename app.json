@@ -15,16 +15,41 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.kepleris.rescue",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
+      },
+      "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarte el mapa.",
+      "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación en segundo plano.",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "remote-notification"
+        ]
+      },
+      "bundleIdentifier": "com.kepleris.rescue"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.kepleris.rescue",
+        "android": {
+          "config": {
+            "googleMaps": {
+              "apiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
+            }
+          }
+        }
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.kepleris.rescue"
+      "package": "com.kepleris.rescue",
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -33,9 +58,18 @@
     },
     "plugins": [
       "expo-router",
+      ["./src/plugins/maps"],
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+      
     ],
     "experiments": {
       "typedRoutes": true

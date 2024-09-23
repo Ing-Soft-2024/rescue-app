@@ -9,6 +9,8 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXConstants (16.0.2):
     - ExpoModulesCore
+  - EXLocation (17.0.1):
+    - ExpoModulesCore
   - Expo (51.0.32):
     - ExpoModulesCore
   - ExpoAdapterFBSDKNext (13.0.0):
@@ -99,6 +101,30 @@ PODS:
     - FBSDKCoreKit (= 17.0.3)
   - fmt (9.1.0)
   - glog (0.3.5)
+  - Google-Maps-iOS-Utils (4.2.2):
+    - Google-Maps-iOS-Utils/Clustering (= 4.2.2)
+    - Google-Maps-iOS-Utils/Geometry (= 4.2.2)
+    - Google-Maps-iOS-Utils/GeometryUtils (= 4.2.2)
+    - Google-Maps-iOS-Utils/Heatmap (= 4.2.2)
+    - Google-Maps-iOS-Utils/QuadTree (= 4.2.2)
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Clustering (4.2.2):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Geometry (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/GeometryUtils (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/Heatmap (4.2.2):
+    - Google-Maps-iOS-Utils/QuadTree
+    - GoogleMaps (~> 7.3)
+  - Google-Maps-iOS-Utils/QuadTree (4.2.2):
+    - GoogleMaps (~> 7.3)
+  - GoogleMaps (7.4.0):
+    - GoogleMaps/Maps (= 7.4.0)
+  - GoogleMaps/Base (7.4.0)
+  - GoogleMaps/Maps (7.4.0):
+    - GoogleMaps/Base
   - GoogleSignIn (7.1.0):
     - AppAuth (< 2.0, >= 1.7.3)
     - GTMAppAuth (< 5.0, >= 4.1.1)
@@ -1053,6 +1079,12 @@ PODS:
     - FBSDKGamingServicesKit (~> 17.0.0)
     - FBSDKShareKit (~> 17.0.0)
     - React-Core
+  - react-native-google-maps (1.14.0):
+    - Google-Maps-iOS-Utils (= 4.2.2)
+    - GoogleMaps (= 7.4.0)
+    - React-Core
+  - react-native-maps (1.14.0):
+    - React-Core
   - react-native-safe-area-context (4.10.5):
     - React-Core
   - React-nativeconfig (0.74.5)
@@ -1360,6 +1392,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXLocation (from `../node_modules/expo-location/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAdapterFBSDKNext (from `../node_modules/react-native-fbsdk-next/ios`)
   - "ExpoAdapterGoogleSignIn (from `../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
@@ -1405,6 +1438,8 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
+  - react-native-google-maps (from `/Users/nicolaskim/Documents/reskue/rescue-app/node_modules/react-native-maps`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1445,6 +1480,8 @@ SPEC REPOS:
     - FBSDKGamingServicesKit
     - FBSDKLoginKit
     - FBSDKShareKit
+    - Google-Maps-iOS-Utils
+    - GoogleMaps
     - GoogleSignIn
     - GTMAppAuth
     - GTMSessionFetcher
@@ -1457,6 +1494,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXLocation:
+    :path: "../node_modules/expo-location/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoAdapterFBSDKNext:
@@ -1544,6 +1583,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
+  react-native-google-maps:
+    :path: "/Users/nicolaskim/Documents/reskue/rescue-app/node_modules/react-native-maps"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -1610,6 +1653,7 @@ SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   EXConstants: 409690fbfd5afea964e5e9d6c4eb2c2b59222c59
+  EXLocation: 43e9b582ca63a23c6f0a18d8cbe2145b3a388b55
   Expo: 33132a667698a3259a4e6c0af1b4936388e5fa33
   ExpoAdapterFBSDKNext: 54e3eb74773147fa2d21de5d824ae6ed6d3907b1
   ExpoAdapterGoogleSignIn: 20e6be8bff6e951607ace66e6d3d11b30f2e9e3a
@@ -1633,6 +1677,8 @@ SPEC CHECKSUMS:
   FBSDKShareKit: eb1169eafe3c06f881dc6deed2d7979585b16959
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
+  Google-Maps-iOS-Utils: f77eab4c4326d7e6a277f8e23a0232402731913a
+  GoogleMaps: 032f676450ba0779bd8ce16840690915f84e57ac
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
@@ -1662,6 +1708,8 @@ SPEC CHECKSUMS:
   React-logger: 257858bd55f3a4e1bc0cf07ddc8fb9faba6f8c7c
   React-Mapbuffer: 6c1cacdbf40b531f549eba249e531a7d0bfd8e7f
   react-native-fbsdk-next: 84746ea062dc3b1a422154d7674ba4c5836b6d82
+  react-native-google-maps: 94df984b1647973baffe17c0b7b52828d6b69d94
+  react-native-maps: cbf2f03bfeebfd7ec45966b066db13a075fd2af3
   react-native-safe-area-context: a240ad4b683349e48b1d51fed1611138d1bdad97
   React-nativeconfig: ba9a2e54e2f0882cf7882698825052793ed4c851
   React-NativeModulesApple: 8d11ff8955181540585c944cf48e9e7236952697
@@ -1694,6 +1742,6 @@ SPEC CHECKSUMS:
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 950bbfd7e6f04790fdb51149ed51df41f329fcc8
 
-PODFILE CHECKSUM: c46b6bc042816d5b1b81f51391c224b4e09faa65
+PODFILE CHECKSUM: 2a78d1be044b77375f05fb956d55ae37623a4ca4
 
 COCOAPODS: 1.15.2

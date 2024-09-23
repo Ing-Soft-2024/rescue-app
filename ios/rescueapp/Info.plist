@@ -42,6 +42,8 @@
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>GMSApiKey</key>
+    <string>AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -53,9 +55,22 @@
     </dict>
     <key>NSFaceIDUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to use your location.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>location</string>
+      <string>fetch</string>
+      <string>remote-notification</string>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
