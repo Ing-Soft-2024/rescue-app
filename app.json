@@ -16,12 +16,15 @@
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.kepleris.rescue",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "iosMapsApiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.kepleris.rescue"
+      
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kepleris.rescue"
@@ -35,7 +38,13 @@
       "expo-router",
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
