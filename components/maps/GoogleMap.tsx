@@ -30,7 +30,7 @@ export default function GoogleMap() {
 
     return (
         <View style={styles.container}>
-            {/* {mapRegion ? (
+            {mapRegion ? (
                 <MapView
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
@@ -51,12 +51,8 @@ export default function GoogleMap() {
                 <View style={styles.loadingContainer}>
                     <Text>Loading map...</Text>
                 </View>
-            )} */
-            <MapView style={{width:400, height:200}}
-            >
 
-            </MapView>
-            }
+            )}
         </View>
     );
 }
