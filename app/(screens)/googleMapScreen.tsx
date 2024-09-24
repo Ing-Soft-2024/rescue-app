@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Button } from 'react-native';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { userLocationContext } from '../../src/context/userLocationContext';
 import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
@@ -36,16 +36,16 @@ export default function GoogleMapScreen() {
     };
 
     return (
-            <userLocationContext.Provider value={{ location, setLocation }}>
-                <GoogleMap />
-            </userLocationContext.Provider>
+        <userLocationContext.Provider value={{ location, setLocation }}>
+            <GoogleMap />
+        </userLocationContext.Provider>
     );
 }
 
 const styles = StyleSheet.create({
     buttonContainer: {
         alignSelf: 'flex-start',
-        marginLeft: 10, 
-        marginTop: 10, 
+        marginLeft: 10,
+        marginTop: 10,
     }
 });
