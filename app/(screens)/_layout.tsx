@@ -87,6 +87,13 @@ export default function AppLayout() {
                     },
                 }}
             />
+            <Tabs.Screen
+                name="shoppingCartScreen"
+                options={{
+                    title: 'Cart',
+                    tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="shopping-cart" color={color} />,
+                }}
+            />
         </Tabs>
     );
 }
