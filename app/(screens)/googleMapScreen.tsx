@@ -5,11 +5,18 @@ import { useRouter } from 'expo-router';
 import * as Location from 'expo-location';
 import GoogleMap from "../../components/maps/GoogleMap"
 
+interface MarkerData {
+    coordinate: Location.LocationObjectCoords;
+    key: string;
+}
+
 export default function GoogleMapScreen() {
     const router = useRouter();
 
     const [location, setLocation] = useState<Location.LocationObject | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [markers, setMarkers] = useState<MarkerData[]>([]);
+
     useEffect(() => {
         (async () => {
 
@@ -24,6 +31,16 @@ export default function GoogleMapScreen() {
         })();
     }, []);
 
+    const handleMapPress = (event: any) => {
+        // Crea un nuevo pin basado en las coordenadas del evento
+        const newMarker: MarkerData = {
+            coordinate: event.nativeEvent.coordinate,
+            key: Math.random().toString(),
+        };
+        
+        setMarkers((currentMarkers) => [...currentMarkers, newMarker]);
+    };
+
     let text = 'Waiting..';
     if (errorMsg) {
         text = errorMsg;
@@ -37,7 +54,7 @@ export default function GoogleMapScreen() {
 
     return (
         <userLocationContext.Provider value={{ location, setLocation }}>
-            <GoogleMap />
+            <GoogleMap markersData={markers} onMapPress={handleMapPress}/>
         </userLocationContext.Provider>
     );
 }
