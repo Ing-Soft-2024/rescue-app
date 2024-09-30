@@ -1,9 +1,22 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker, Region } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, LatLng } from 'react-native-maps';
 import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import { userLocationContext } from '../../src/context/userLocationContext';
 
-export default function GoogleMap() {
+interface MarkerData {
+    coordinate: {
+        latitude: number;
+        longitude: number;
+    };
+    key: string;
+}
+
+interface GoogleMapProps {
+    markersData: MarkerData[]; // Recibe los marcadores como props
+    onMapPress: (event: MapPressEvent) => void; // Recibe la función para manejar el evento de agregar pines
+}
+
+export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
     const scrollViewRef = useRef<ScrollView>(null);
     const [mapRegion, setMapRegion] = useState<Region | null>(null);
 
@@ -28,6 +41,18 @@ export default function GoogleMap() {
         longitudeDelta: 0.0421,
     };
 
+    const [markers, setMarkers] = useState<MarkerData[]>([]);
+
+
+    const handleMapPress = (event: MapPressEvent) => {
+        const newMarker: MarkerData = {
+            coordinate: event.nativeEvent.coordinate,
+            key: Math.random().toString(),
+        };
+        setMarkers((currentMarkers) => [...currentMarkers, newMarker]);
+    };
+
+
     return (
         <View style={styles.container}>
             {mapRegion ? (
@@ -36,15 +61,24 @@ export default function GoogleMap() {
                     provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
                     region={mapRegion || defaultRegion}
+                    onPress={onMapPress}
                 >
                     {userLocation?.location && (
-                    <Marker
-                        coordinate={{
-                            latitude: userLocation?.location ? userLocation.location.coords.latitude : 0.0,
-                            longitude: userLocation?.location ? userLocation.location.coords.longitude : 0.0,
-                        }}
-                    />
+                        <Marker
+                            coordinate={{
+                                latitude: userLocation?.location ? userLocation.location.coords.latitude : 0.0,
+                                longitude: userLocation?.location ? userLocation.location.coords.longitude : 0.0,
+                            }}
+                        />
                     )}
+                    {markersData.map((marker) => (
+                        <Marker
+                            key={marker.key}
+                            coordinate={marker.coordinate}
+                            title="Nuevo Pin"
+                        />
+                    ))}
+
                 </MapView>
             ) : (
                 // Optionally show a loading spinner or placeholder
