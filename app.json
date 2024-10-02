@@ -58,18 +58,18 @@
     },
     "plugins": [
       "expo-router",
-      ["./src/plugins/maps"],
+      [
+        "./src/plugins/maps"
+      ],
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
       "expo-secure-store",
-      "expo-localization",
       [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-      
     ],
     "experiments": {
       "typedRoutes": true
