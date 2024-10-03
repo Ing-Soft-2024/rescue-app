@@ -12,6 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "owner": "rescue",
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
