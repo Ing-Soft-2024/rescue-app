@@ -1438,7 +1438,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
-  - react-native-google-maps (from `/Users/nicolaskim/Documents/reskue/rescue-app/node_modules/react-native-maps`)
+  - react-native-google-maps (from `/Users/tobiasjuhasz/Projects/ITBA/Software/rescueapp/node_modules/react-native-maps`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
@@ -1584,7 +1584,7 @@ EXTERNAL SOURCES:
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
   react-native-google-maps:
-    :path: "/Users/nicolaskim/Documents/reskue/rescue-app/node_modules/react-native-maps"
+    :path: "/Users/tobiasjuhasz/Projects/ITBA/Software/rescueapp/node_modules/react-native-maps"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
