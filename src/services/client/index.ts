@@ -16,4 +16,12 @@ const sampleDetailsConsumer = apiConsumerFactory({
     validEndpoints: ['GET']
 });
 
+
+
 sampleDetailsConsumer.consume('GET')
+
+export const mercadoPagoConsumer = apiConsumerFactory({
+    endpoint: '/checkout/mercadopago',
+    validEndpoints: ['POST']
+});
+
