@@ -24,7 +24,7 @@ export function CompanyDataTab({ companyName, location, rating }: CompanyDataTab
         {/* Rating con estrellas */}
         <View style={styles.starsContainer}>
           {stars.map((filled, index) => (
-            <Text key={index} style={[styles.star, filled && styles.filledStar, { color: '#FFD700' }]}>
+            <Text key={index} style={[styles.star, filled && styles.filledStar && { color: '#FFD700' }]}>
               ★
             </Text>
           ))}
