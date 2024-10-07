@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     paddingVertical: 5,
+    color: "#D4685E",
   },
   separator: {
     width: 10, // Adjust the width of the separator if needed

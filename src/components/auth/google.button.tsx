@@ -4,12 +4,13 @@ import { Pressable, Text } from "react-native";
 
 export const GoogleComponent = () => {
     const { signInWith } = useSession();
+
     return (
         <Pressable
             style={({ pressed }) => ({
                 display: 'flex',
                 padding: 10,
-                backgroundColor: pressed ? '#F04A41' : '#F04A41',
+                backgroundColor: pressed ? '#F04A41' : '#A9A9A9',
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',

@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { Header } from '@/src/components/product/ProductHeader';
 import { ProductDescription } from '@/src/components/product/ProductDescription';
 import { AddToCart } from '@/src/components/product/ProductAddToCart';
@@ -27,25 +27,36 @@ export default function ProductLayout() {
 
   return (
     <View style={styles.container}>
-      {/* Header con imagen y botones */}
-      <Header
-        imageUrl={product.imageUrl}
-        onBackPress={() => router.back()}
-        onSharePress={() => console.log("Share pressed")}
-        onFavoritePress={() => console.log("Favorite pressed")}
-      />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header con imagen y botones */}
+        <Header
+          imageUrl={product.imageUrl}
+          onBackPress={() => router.back()}
+          onSharePress={() => console.log("Share pressed")}
+          onFavoritePress={() => console.log("Favorite pressed")}
+        />
 
-      {/* Detalles del producto */}
-      <ProductDescription
-        category={product.category}
-        description={product.description}
-        title={product.title}
-        price={product.price}
+        <View>
+          <Text
+            style={styles.link}
+            onPress={() => router.push('./companyScreen')}
+          >
+            View Company
+          </Text>
+        </View>
 
-      />
+        {/* Detalles del producto */}
+        <ProductDescription
+          category={product.category}
+          description={product.description}
+          title={product.title}
+          price={product.price}
 
-      {/* Banner inferior para agregar al carrito */}
-      <AddToCart onAddToCartPress={() => console.log("Añadido al carrito")} />
+        />
+
+        {/* Banner inferior para agregar al carrito */}
+        <AddToCart onAddToCartPress={() => console.log("Añadido al carrito")} />
+      </ScrollView>
     </View>
   );
 }
@@ -57,9 +68,21 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start", // Alinear todo al principio (arriba)
     backgroundColor: "#fff",
   },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start', // Alinear todo al principio (arriba)
+    paddingBottom: 80, // Espacio inferior para el botón
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
     margin: 20,
+  },
+  link: {
+    color: '#D4685E',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

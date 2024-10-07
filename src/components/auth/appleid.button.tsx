@@ -1,6 +1,8 @@
 import { useSession } from "@/src/context/session.context";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { Platform } from "react-native";
+import { Pressable, Text } from "react-native";
+
 export const AppleIDButton = () => {
     const {
         signInWith,
@@ -14,7 +16,7 @@ export const AppleIDButton = () => {
             style={({
                 display: 'flex',
                 padding: 20,
-                // backgroundColor: 'white',
+                backgroundColor: '#333333',
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',

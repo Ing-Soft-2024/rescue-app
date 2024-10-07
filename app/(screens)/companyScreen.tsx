@@ -92,19 +92,20 @@ export default function CompanyScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
+      <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
+
+        <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
 
 
-      {/* <View style={styles.imageContainer}>
+        {/* <View style={styles.imageContainer}>
         <Image source={{ uri: -company.image- }} style={styles.image} />
       </View> */}
 
-      <CompanyDataTab
-        companyName={company.name}
-        location={company.ubication}
-        rating={company.rating}
-      />
-      <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
+        <CompanyDataTab
+          companyName={company.name}
+          location={company.ubication}
+          rating={company.rating}
+        />
         <CategoryTab arr={[
           { title: 'tab1', tab: sectionRefs.section1, scrollView: scrollViewRef },
           { title: 'tab2', tab: sectionRefs.section2, scrollView: scrollViewRef },
