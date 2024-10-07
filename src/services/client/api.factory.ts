@@ -30,12 +30,13 @@ class ApiConsumerFactory<ValidMethods extends string> {
     _axios: Axios;
     _endpoint: string;
     _validEndpoints?: ValidMethods[];
-    static baseURL = process.env['REACT_PUBLIC_API_URL'];
+    static baseURL = process.env['EXPO_PUBLIC_REACT_PUBLIC_API_URL'];
 
     constructor({ endpoint, validEndpoints }: {
         endpoint: string,
         validEndpoints?: ValidMethods[]
     }) {
+        console.log("React public api", process.env['EXPO_PUBLIC_REACT_PUBLIC_API_URL']);
         this._axios = axios.create({ baseURL: ApiConsumerFactory.baseURL, headers: { 'Content-Type': 'application/json' } });
         this._endpoint = `${ApiConsumerFactory.baseURL}${endpoint}`;
         this._validEndpoints = validEndpoints?.map(method => method.toUpperCase() as ValidMethods);
