@@ -66,7 +66,7 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
                 }</Text>
                 <Text style={[globalStyles.text.sm, globalStyles.text.medium,
                 {
-                    color: colors.neutral[300],
+                    color: "#D4685E",
                     textDecorationLine: "line-through"
                 }]}>
                     {

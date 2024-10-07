@@ -4,35 +4,35 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface HeaderProps {
   onBackPress: () => void;
-  screenName: string;       
+  screenName: string;
 }
 
-export default function HeaderComp ({ onBackPress, screenName }: HeaderProps) {
+export default function HeaderComp({ onBackPress, screenName }: HeaderProps) {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="white" />
       </TouchableOpacity>
-      <Text style={styles.headerText}> { screenName } </Text>
+      <Text style={styles.headerText}> {screenName} </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   headerContainer: {
-    // backgroundColor: '#6200EE',
+    backgroundColor: '#FBF0EF',
     padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
   headerText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,  // El texto toma todo el espacio disponible
-    textAlign: 'center', 
-    marginRight: 50, 
+    textAlign: 'center',
+    marginRight: 50,
   },
   backButton: {
     position: "absolute",
