@@ -10,7 +10,7 @@ interface SearchBarProps {
 export function SearchBar({ val, onChange }: SearchBarProps) {
   return (
     <View style={styles.input}>
-      <AntDesign name="search1" size={16} color="black" />
+      <AntDesign name="search1" size={16} color="#D4685E" />
       <TextInput
         value={val}
         style={{

@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   container: {
     height: 200, // Altura fija para el header
     position: "relative", // Para posicionar los botones sobre la imagen
+    backgroundColor: "#FBF0EF"
   },
   image: {
     width: "100%",

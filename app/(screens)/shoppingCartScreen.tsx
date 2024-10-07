@@ -19,18 +19,18 @@ export default function ShoppingCartScreen() {
         <View style={styles.container}>
             <ScrollView>
                 <View>
-                    <Text style={{ fontSize: 40, paddingTop: 20 }} >Shopping Cart</Text>
-                    <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30 }}>
+                    <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text>
+                    <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30, color: "#D4685E" }}>
                         This is your shopping cart.
                     </Text>
-                    <Button title="Add item" onPress={() => addToCart({ 
-                        product: { 
-                            id: 1, 
-                            name: "Product 1", 
-                            description: "Description 1", 
-                            price: 10, 
-                            image: "https://via.placeholder.com/150" 
-                        }, 
+                    <Button title="Add item" onPress={() => addToCart({
+                        product: {
+                            id: 1,
+                            name: "Product 1",
+                            description: "Description 1",
+                            price: 10,
+                            image: "https://via.placeholder.com/150"
+                        },
                         quantity: 1,
                         subtotal: 10
                     })}>
@@ -56,23 +56,23 @@ export default function ShoppingCartScreen() {
 
 const styles = StyleSheet.create({
     container: {
-      // width: 300,
-      // height: 200,
-      // backgroundColor: "grey",
-      // marginBottom: 10,
-      padding: 10,
-      borderRadius: 10,
-      margin: 10,
+        // width: 300,
+        // height: 200,
+        // backgroundColor: "grey",
+        // marginBottom: 10,
+        padding: 10,
+        borderRadius: 10,
+        margin: 10,
     },
     listContainer: {
-      alignItems: "center", // Center items horizontally within the FlatList
+        alignItems: "center", // Center items horizontally within the FlatList
     },
-  
+
     title: {
-      fontSize: 20,
-      paddingVertical: 5,
+        fontSize: 20,
+        paddingVertical: 5,
     },
     separator: {
-      width: 10, // Adjust the width of the separator if needed
+        width: 10, // Adjust the width of the separator if needed
     },
-  });
+});

@@ -1,7 +1,7 @@
 import { useSession } from "@/src/context/session.context";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Redirect, Stack, Tabs } from "expo-router";
-import { Button, Pressable, View } from "react-native";
+import { Button, Pressable, View, Text } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { OrdersProvider } from "@/src/context/ordersContext";
@@ -39,14 +39,19 @@ export default function AppLayout() {
         //     }} />
         // </Stack>
         <OrdersProvider>
-            <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+            <Tabs screenOptions={{ tabBarActiveTintColor: '#D4685E', tabBarInactiveTintColor: '#D4685E', tabBarStyle: { backgroundColor: 'white' }, }}>
+
                 <Tabs.Screen
                     name="index"
                     options={{
                         title: 'Home',
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+                        tabBarLabel: ({ color }) => (
+                            <Text style={{ color: '#D4685E' }}>Home</Text>
+                        ),
                     }}
                 />
+
                 <Tabs.Screen
                     name="companyScreen"
                     options={{
@@ -68,6 +73,7 @@ export default function AppLayout() {
                     options={{
                         title: 'Map',
                         tabBarIcon: ({ color }) => <FontAwesome size={28} name="map" color={color} />,
+                        tabBarStyle: { display: 'none' },
                         // headerBackVisible: true,
                         header: ({ navigation }) => {
                             return (
