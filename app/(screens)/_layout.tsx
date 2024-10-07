@@ -51,7 +51,6 @@ export default function AppLayout() {
                         ),
                     }}
                 />
-
                 <Tabs.Screen
                     name="companyScreen"
                     options={{
