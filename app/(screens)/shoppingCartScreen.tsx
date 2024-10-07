@@ -98,7 +98,7 @@ async function createPreference() {
     var response = await mercadoPagoConsumer.consume('POST',{
         data:
         {  
-            orderId: 2,
+            orderId: 5,
             quantity: 1,
             productId: 1,
             price: 10,
