@@ -44,6 +44,14 @@
           }
         }
       },
+      "intentFilters": [
+        {
+        "action": "VIEW", "data": [
+        {
+        "scheme": "myapp", "host": "checkout", "pathPrefix": "/congrats"
+        } ],
+        "category": ["BROWSABLE", "DEFAULT"]
+        } ],
       "googleServicesFile": "./google-services.json",
       "package": "com.kepleris.rescue",
       "permissions": [
