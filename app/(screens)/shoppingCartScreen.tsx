@@ -36,9 +36,16 @@ export default function ShoppingCartScreen() {
             <ScrollView>
                 <View>
                     <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text>
+                   
+                    {cart.length === 0 &&
                     <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30, color: "#D4685E" }}>
-                        This is your shopping cart.
-                    </Text>
+                        Your shopping cart is empty :(
+                    </Text> }
+                    {cart.length >= 1 && <View style={{paddingTop: 30, paddingBottom: 30}} ></View>}
+                    {cart.length >= 1 &&
+                    <Button title='Pagar con Mercado Pago' onPress={payWithMercadoPago}></Button> }
+                    <View style={styles.Botones}>
+
                     <Button title="Add item" onPress={() => addToCart({
                         product: {
                             id: 1,
@@ -51,7 +58,9 @@ export default function ShoppingCartScreen() {
                         subtotal: 10
                     })}>
                     </Button>
-                    {/* <Button title="Remove item" onPress={() => removeFromCart}></Button> */}
+                    <Button title="Remove item" onPress={() => removeFromCart(0)}></Button>
+                    </View>
+                    
                     {/* <Button title="Update cart" onPress={() => updateCart}></Button> */}
                 </View>
                 <FlatList
@@ -65,9 +74,10 @@ export default function ShoppingCartScreen() {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(_, index) => index.toString()}
                 />
+                
             </ScrollView>
-
-            <Button title='Pagar con Mercado Pago' onPress={payWithMercadoPago}></Button>
+           
+            
             {/* {checkoutURL && <MercadoPagoWebBrowser url={checkoutURL} />} */}
             {/* <Button title='Deep link' onPress={() => Linking.openURL("https://docs.expo.io")}></Button> */}
             {/* {checkoutURL && <Button title="Pagar" onPress={() => openBrowserAsync(checkoutURL)}></Button>} */}
@@ -87,6 +97,13 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         alignItems: "center", // Center items horizontally within the FlatList
+    },
+    Botones:{
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    MP:{
+       
     },
 
     title: {
