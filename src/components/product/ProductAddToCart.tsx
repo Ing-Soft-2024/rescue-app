@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "#007AFF", // Color azul para el botón
+    backgroundColor: "#D4685E",
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
