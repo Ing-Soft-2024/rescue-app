@@ -9,10 +9,12 @@ export default function CheckoutLayout() {
         >
             {/* Make default screen to be the (screens)/ screen */}
             {/* This is to avoid the need to specify the default screen in the Stack.Screen options */}
+            <Stack.Screen name="index" />
             <Stack.Screen
                 name="mercadoPago"
                 options={{
                     title: 'Mercado Pago',
+                    presentation: 'modal',
                 }}
             />
             <Stack.Screen name="success" />

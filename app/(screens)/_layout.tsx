@@ -22,6 +22,8 @@ export default function AppLayout() {
                     ),
                 }}
             />
+
+
             <Tabs.Screen
                 name="companyScreen"
                 options={{
@@ -39,11 +41,7 @@ export default function AppLayout() {
                 }}
             />
 
-            <Tabs.Screen name="(checkout)" options={{
-                href: null,
-                headerShown: false,
-            }} />
-
+            <Tabs.Screen name="(checkout)" options={{ href: null, headerShown: false, }} />
             <Tabs.Screen
                 name="googleMapScreen"
                 options={{

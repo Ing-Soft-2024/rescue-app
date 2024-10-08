@@ -45,11 +45,12 @@ export default function MercadoPagoScreen() {
             });
             console.log("API Response:", response);
             console.log("return " + response.checkoutURL);
+
+            console.log("return " + response.checkoutURL);
             return response.checkoutURL;
         }
 
         createPreference().then(setCheckoutURL).then(() => setIsLoading(false));
-
     }, []);
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
@@ -84,12 +85,15 @@ export default function MercadoPagoScreen() {
         // Ocurre un error.
     }
 
+    // if (!checkoutURL) return null;
     return (
         <WebView
-            source={{ uri: 'https://www.mercadopago.com.ar' }}
+            source={{ uri: checkoutURL ?? 'blank' }}
             onNavigationStateChange={handleWebViewNavigation}
 
-            style={styles.webView}
+            // style={styles.webView}
+            onLoad={() => setIsLoading(false)}
+            onError={() => setIsLoading(false)}
         />
     )
 }
