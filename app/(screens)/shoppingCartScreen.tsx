@@ -28,7 +28,7 @@ export default function ShoppingCartScreen() {
     };
 
     const payWithMercadoPago = () => {
-        router.push("/(checkout)/mercadoPago");
+        router.push("./(checkout)/mercadoPago");
     }
 
     return (
