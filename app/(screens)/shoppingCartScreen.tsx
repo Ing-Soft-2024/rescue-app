@@ -1,13 +1,8 @@
+import { ProductCard } from "@/src/components/product/ProductCard";
 import { useOrders } from '@/src/context/ordersContext';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, View, Text, Button, FlatList, Linking } from 'react-native';
-import { ProductCard } from "@/src/components/product/ProductCard";
-import {initMercadoPago, Wallet} from '@mercadopago/sdk-react';
 import { useState } from 'react';
-import { mercadoPagoConsumer } from '@/src/services/client';
-import MercadoPagoWebBrowser from '@/src/components/checkout/MercadoPagoWebBrowser';
-import { openBrowserAsync } from 'expo-web-browser';
-import { parse } from '@babel/core';
+import { Button, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 
 
@@ -15,13 +10,13 @@ export default function ShoppingCartScreen() {
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
 
-    if(!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']){
+    if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
         console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
         throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
     }
 
-    initMercadoPago(process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY'], {locale: 'es-AR',});
-   // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
+
+    // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
     const { addToCart, cart, removeFromCart, updateCart } = useOrders();
@@ -31,6 +26,10 @@ export default function ShoppingCartScreen() {
     const onPressBack = () => {
         router.back();
     };
+
+    const payWithMercadoPago = () => {
+        router.push("/(screens)/(checkout)/mercadoPago");
+    }
 
     return (
         <View style={styles.container}>
@@ -67,52 +66,14 @@ export default function ShoppingCartScreen() {
                     keyExtractor={(_, index) => index.toString()}
                 />
             </ScrollView>
-            <Button title='continuar' onPress={Payment}></Button>
+
+            <Button title='Pagar con Mercado Pago' onPress={payWithMercadoPago}></Button>
             {/* {checkoutURL && <MercadoPagoWebBrowser url={checkoutURL} />} */}
             {/* <Button title='Deep link' onPress={() => Linking.openURL("https://docs.expo.io")}></Button> */}
-            {checkoutURL && <Button title="Pagar" onPress={() => openBrowserAsync(checkoutURL)}></Button>} 
-            
+            {/* {checkoutURL && <Button title="Pagar" onPress={() => openBrowserAsync(checkoutURL)}></Button>} */}
         </View>
     );
-
-   
-
-    async function Payment() {
-        const checkoutURL = await createPreference();
-        if(Boolean(checkoutURL)){
-            console.log("setting preference id");
-              setcheckoutURL(checkoutURL);
-        }
-        else{
-            console.log("URL is null");
-        }
-    };
-
 }
-
-
-
-async function createPreference() {
-    //const consumer = mercadoPagoConsumer;
-    //const response = await consumer.createPreference({
-    var response = await mercadoPagoConsumer.consume('POST',{
-        data:
-        {  
-            orderId: 5,
-            quantity: 1,
-            productId: 1,
-            price: 10,
-        }
-    }).catch((error) => {
-        console.log(error);
-        return null;
-    });
-    console.log("API Response:", response);
-    console.log("return "+ response.checkoutURL);
-    return response.checkoutURL;
-}
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -136,7 +97,7 @@ const styles = StyleSheet.create({
         width: 10, // Adjust the width of the separator if needed
     },
 
-  });
+});
 
 
 
