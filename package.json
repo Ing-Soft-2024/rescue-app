@@ -12,7 +12,18 @@
     "lint": "expo lint"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
+    },
+    "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/$1",
+    "^@/src/(.*)$": "<rootDir>/src/$1",
+    "^@/components/(.*)$":"<rootDir>/src/components/$1",
+    "^@/context/(.*)$": "<rootDir>/src/context/$1",
+    "^@/auth/(.*)$": "<rootDir>/src/services/auth/$1"
+    }
   },
   "dependencies": {
     "@expo-google-fonts/bungee": "^0.2.3",
@@ -22,6 +33,7 @@
     "@react-native-google-signin/google-signin": "^12.2.1",
     "@react-navigation/native": "^6.0.2",
     "axios": "^1.7.7",
+    "babel-plugin-module-resolver": "^5.0.2",
     "expo": "~51.0.28",
     "expo-apple-authentication": "~6.4.2",
     "expo-constants": "~16.0.2",
