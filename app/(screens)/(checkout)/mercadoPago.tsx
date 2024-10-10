@@ -3,6 +3,7 @@ import { useOrders } from "@/src/context/ordersContext";
 import { mercadoPagoConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
@@ -56,6 +57,15 @@ export default function MercadoPagoScreen() {
 
         createPreference()
             .then(setCheckoutURL)
+
+            //  .then((url) => {
+                   
+            //     if (url) {
+            //         console.log("la url seteada es:" + url);
+            //         setCheckoutURL(url); 
+            //        // setIsLoading(false);
+            //     }
+            // }); 
     }, [isLoading]);
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
@@ -95,12 +105,13 @@ export default function MercadoPagoScreen() {
         <View>
             <ActivityIndicator />
             <WebView
-                source={{ uri: checkoutURL ?? 'blank' }}
+                //source={{ uri: checkoutURL ?? 'blank' }}
+                source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
                 onNavigationStateChange={handleWebViewNavigation}
 
-                // style={styles.webView}
-                onLoad={() => setIsLoading(false)}
-                onError={() => setIsLoading(false)}
+                 style={styles.webView}
+                onLoad={() => {setIsLoading(false)}}
+                onError={() => {setIsLoading(false)}}
             />
         </View>
 
