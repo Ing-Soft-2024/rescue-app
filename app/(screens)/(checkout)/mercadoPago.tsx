@@ -1,5 +1,6 @@
 
 import { useOrders } from "@/src/context/ordersContext";
+import { mercadoPagoConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -29,25 +30,28 @@ export default function MercadoPagoScreen() {
     React.useEffect(() => {
         if (!isLoading) return;
         const createPreference = async () => {
-            var response = null;
-            // await mercadoPagoConsumer.consume('POST', {
-            //     data:
-            //     {
-            //         orderId: 5,
-            //         quantity: 1,
-            //         productId: 1,
-            //         price: 10,
-            //     }
-            // }).catch((error) => {
-            //     console.log(error);
-            //     return null;
-            // });
+            // var response = null;
+            var response = await mercadoPagoConsumer.consume('POST', {
+                data:
+                {
+                    orderId: 5,
+                    quantity: 1,
+                    productId: 1,
+                    price: 10,
+                }
+            }).catch((error) => {
+                console.log("el error es:" + error);
+                return null;
+            });
 
             setIsLoading(false);
 
-            setCheckoutURL("https://www.mercadopago.com.ar");
-            if (!response) return "https://www.mercadopago.com.ar";
-            return "blank";
+            //setCheckoutURL("https://www.mercadopago.com.ar");
+            //if (!response) return "https://www.mercadopago.com.ar";
+            if(!response) return null;
+
+            console.log("la respuesta es:" + response.checkoutURL);
+            return response.checkoutURL;
         }
 
         createPreference()

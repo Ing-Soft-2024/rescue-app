@@ -46,7 +46,7 @@ export const storageConsumer = apiConsumerFactory({
 });
 
 export const mercadoPagoConsumer = apiConsumerFactory({
-    endpoint: '/checkout/mercadopago',
+    endpoint: 'checkout/mercadopago',
     validEndpoints: ['POST']
 });
 
