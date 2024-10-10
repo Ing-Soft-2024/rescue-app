@@ -11,7 +11,7 @@ type ProductType = {
 interface ProductDescriptionProps {
   title: string;
   description: string;
-  price: string;
+  price: number;
   category: string;
 }
 
@@ -21,12 +21,14 @@ export function ProductDescription({ title, description, price, category }: Prod
 
       <Text style={styles.category}>{category}</Text>
 
-    <View style={styles.titlePriceContainer}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>{price}</Text>
-    </View>
+      <View style={styles.titlePriceContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.price}>{
+          new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(price)
+        }</Text>
+      </View>
 
-    <Text style={styles.description}>{description}</Text>
+      <Text style={styles.description}>{description}</Text>
     </View>
   );
 }

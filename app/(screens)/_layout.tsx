@@ -58,10 +58,10 @@ export default function AppLayout() {
                     // headerBackVisible: true,
                     header: ({ navigation }) => {
                         return (
-                            <View style={{ padding: 10, position: "absolute", paddingTop: 27 }}>
+                            <View style={{ paddingTop: 40, padding: 10, position: "absolute" }}>
                                 {navigation.canGoBack() && <Pressable onPress={navigation.goBack} style={{
                                     position: "absolute",
-                                    top: 20,
+                                    top: 60,
                                     left: 10,
                                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                                     padding: 8,

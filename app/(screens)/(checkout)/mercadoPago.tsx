@@ -1,10 +1,9 @@
 
 import { useOrders } from "@/src/context/ordersContext";
-import { mercadoPagoConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
 
 export default function MercadoPagoScreen() {
@@ -16,8 +15,6 @@ export default function MercadoPagoScreen() {
     const [checkoutURL, setCheckoutURL] = React.useState<string | null>(null);
 
     const router = useRouter();
-
-
     const {
         cart,
         clearCart,
@@ -30,28 +27,32 @@ export default function MercadoPagoScreen() {
     } = useOrders();
 
     React.useEffect(() => {
+        if (!isLoading) return;
         const createPreference = async () => {
-            var response = await mercadoPagoConsumer.consume('POST', {
-                data:
-                {
-                    orderId: 5,
-                    quantity: 1,
-                    productId: 1,
-                    price: 10,
-                }
-            }).catch((error) => {
-                console.log(error);
-                return null;
-            });
-            console.log("API Response:", response);
-            console.log("return " + response.checkoutURL);
+            var response = null;
+            // await mercadoPagoConsumer.consume('POST', {
+            //     data:
+            //     {
+            //         orderId: 5,
+            //         quantity: 1,
+            //         productId: 1,
+            //         price: 10,
+            //     }
+            // }).catch((error) => {
+            //     console.log(error);
+            //     return null;
+            // });
 
-            console.log("return " + response.checkoutURL);
-            return response.checkoutURL;
+            setIsLoading(false);
+
+            setCheckoutURL("https://www.mercadopago.com.ar");
+            if (!response) return "https://www.mercadopago.com.ar";
+            return "blank";
         }
 
-        createPreference().then(setCheckoutURL).then(() => setIsLoading(false));
-    }, []);
+        createPreference()
+            .then(setCheckoutURL)
+    }, [isLoading]);
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
         // Cambio de url empieza con rescue://
@@ -85,16 +86,24 @@ export default function MercadoPagoScreen() {
         // Ocurre un error.
     }
 
-    // if (!checkoutURL) return null;
+    if (isLoading) return null;
     return (
-        <WebView
-            source={{ uri: checkoutURL ?? 'blank' }}
-            onNavigationStateChange={handleWebViewNavigation}
+        <View>
+            <ActivityIndicator />
+            <WebView
+                source={{ uri: checkoutURL ?? 'blank' }}
+                onNavigationStateChange={handleWebViewNavigation}
 
-            // style={styles.webView}
-            onLoad={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)}
-        />
+                // style={styles.webView}
+                onLoad={() => setIsLoading(false)}
+                onError={() => setIsLoading(false)}
+            />
+        </View>
+
+        // <View>
+        //     <Button title="Open Browser" onPress={() => openBrowserAsync(checkoutURL)}></Button>
+        //     <StatusBar style="auto" />
+        // </View>
     )
 }
 

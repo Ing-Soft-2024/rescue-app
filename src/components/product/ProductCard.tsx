@@ -1,8 +1,10 @@
 //@ts-ignore
 import { colors, globalStyles } from "@/src/global-style";
+import StorageController from "@/src/services/storage/controller/storage.controller";
 import { ProductType } from "@/src/types/product.type";
 import { useRouter } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 // import { colors, globalStyles } from "@src/global-style";
 // import { useCommerceImage } from "@hooks/useCommerceImage";
@@ -13,11 +15,18 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 export const ProductCard = ({ product }: { product: ProductType }) => {
     let router = useRouter();
 
+    const [image, setImage] = React.useState<string>("https://picsum.photos/200");
+    const [imageLoading, setImageLoading] = React.useState<boolean>(true);
+    React.useEffect(() => {
+        if (!product.image) return;
+        StorageController.download(product.image)
+            .then(setImage)
+            .then(() => setImageLoading(false));
+    }, []);
+
     return (
         <Pressable
-            onPress={() => {
-                router.push('/(screens)/productScreen');
-            }}
+            onPress={() => router.push('/(screens)/productScreen')}
             style={{
                 flexDirection: "column",
                 gap: 12,
@@ -32,7 +41,10 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
                 borderRadius: 6,
                 overflow: "hidden",
             }}>
-                <Image src={""} style={{ ...StyleSheet.absoluteFillObject }} />
+                <View style={StyleSheet.absoluteFillObject} >
+                    <ActivityIndicator size="small" color="#D4685E" />
+                </View>
+                <Image source={{ uri: image }} style={{ ...StyleSheet.absoluteFillObject }} />
             </View>
 
             <View style={{

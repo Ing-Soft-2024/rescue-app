@@ -1,16 +1,19 @@
 import { useSession } from '@/src/context/session.context';
+import { productConsumer } from '@/src/services/client';
 import { ProductType } from '@/src/types/product.type';
-import { useRouter } from 'expo-router';
-import { Button, FlatList, View, Text } from 'react-native';
+import React from 'react';
+import { Button, FlatList, View } from 'react-native';
 import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
-import { userLocationContext } from '../../src/context/userLocationContext';
-import { useState, useEffect } from 'react';
 
 export default function homeScreen() {
-  const router = useRouter();
   const { signOut } = useSession();
 
+  const [category, setCategory] = React.useState<ProductType[]>([]);
+  React.useEffect(() => {
+    productConsumer.consume('GET')
+      .then(setCategory);
+  }, [])
 
   const sampleProduct: ProductType = {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -26,17 +29,15 @@ export default function homeScreen() {
         <SearchBar />
       </View>
       <FlatList
-        data={[1, 2, 3, 4, 5]}
+        data={[1]}
         renderItem={({ item }) =>
           <CategoryList
-            categoryTitle={`Category ${item}`}
-            products={Array.from({ length: 5 }, () => sampleProduct)}
+            categoryTitle={`Comidas`}
+            products={category}
           />
         }
       />
       <View>
-        {/* <Button title="Go to company profile" onPress={() => router.push('./companyScreen')} />
-        <Button title="Go to google map" onPress={() => router.push('./googleMapScreen')} /> */}
         <Button title="Cerrar sesión" onPress={signOut} color="#D4685E" />
       </View>
     </View >

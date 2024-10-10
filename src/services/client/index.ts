@@ -1,24 +1,49 @@
 import { apiConsumerFactory } from "./api.factory";
 
-const productConsumer = apiConsumerFactory({
-    endpoint: '/product',
-    validEndpoints: ['GET', 'POST']
-});
-
-productConsumer.consume('POST', {
-    data: {
-
-    }
-});
-
-const sampleDetailsConsumer = apiConsumerFactory({
-    endpoint: '/sample/{id}',
+export const categoryConsumer = apiConsumerFactory({
+    endpoint: 'category',
     validEndpoints: ['GET']
 });
 
+export const commerceConsumer = apiConsumerFactory({
+    endpoint: 'commerce',
+    validEndpoints: ['GET', 'POST']
+});
 
+export const orderConsumer = apiConsumerFactory({
+    endpoint: 'order',
+    validEndpoints: ['GET']
+});
 
-sampleDetailsConsumer.consume('GET')
+export const productConsumer = apiConsumerFactory({
+    endpoint: 'product',
+    validEndpoints: ['GET', 'POST', 'DELETE']
+});
+
+export const commerceDetailsConsumer = apiConsumerFactory({
+    endpoint: 'commerce/{id}',
+    validEndpoints: ['GET']
+});
+
+export const categoryDetailsConsumer = apiConsumerFactory({
+    endpoint: 'category/{id}',
+    validEndpoints: ['GET']
+});
+
+export const orderDetailsConsumer = apiConsumerFactory({
+    endpoint: 'order/{id}',
+    validEndpoints: ['GET']
+});
+
+export const productDetailsConsumer = apiConsumerFactory({
+    endpoint: 'product/{id}',
+    validEndpoints: ['GET', 'POST', 'DELETE']
+});
+
+export const storageConsumer = apiConsumerFactory({
+    endpoint: 'storage',
+    validEndpoints: ['GET', 'POST']
+});
 
 export const mercadoPagoConsumer = apiConsumerFactory({
     endpoint: '/checkout/mercadopago',

@@ -1,11 +1,11 @@
-import React, { useState, createContext } from "react";
+import React, { createContext, useState } from "react";
 
 import useCart from "../hooks/useCart";
 
 type OrdersContextType = {
     cart: any;
     clearCart: () => void;
-    addToCart: (product: any) => void;
+    addToCart: ({ product, quantity }: { product: any, quantity: number }) => void;
     removeFromCart: (index: number) => void;
     updateCart: (index: number, quantity: number) => void;
     total: number;
@@ -37,9 +37,9 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
     const [orders, setOrders] = useState<OrdersDataType[]>([]);
 
     let { cart, clearCart, addToCart, removeFromCart, updateCart, total } = useCart();
-    
 
-    return(
+
+    return (
         <OrdersContext.Provider value={{
             cart,
             clearCart,
@@ -51,7 +51,7 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
 
             orders,
             // cancelOrder: (index) => setOrders((prev) => prev.filter((_, i) => i !== index)),
-            confirmOrder: (payment: number) => { 
+            confirmOrder: (payment: number) => {
                 // addDocument({ bill: { item: cart, total }, status: "pending", payment: payment });
                 clearCart();
             },

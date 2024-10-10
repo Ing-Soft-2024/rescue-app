@@ -1,8 +1,8 @@
-import { ProductCard } from "@/src/components/product/ProductCard";
+import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Button, FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 
 
@@ -19,13 +19,7 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart } = useOrders();
-
-    const screen = "Shopping Cart";
-
-    const onPressBack = () => {
-        router.back();
-    };
+    const { addToCart, cart, removeFromCart, updateCart, total } = useOrders();
 
     const payWithMercadoPago = () => {
         router.push("./(checkout)/mercadoPago");
@@ -33,34 +27,30 @@ export default function ShoppingCartScreen() {
 
     return (
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView style={{ flex: 1, minHeight: "auto" }}>
                 <View>
-                    <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text>
-                   
+                    {/* <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text> */}
                     {cart.length === 0 &&
-                    <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30, color: "#D4685E" }}>
-                        Your shopping cart is empty :(
-                    </Text> }
-                    {cart.length >= 1 && <View style={{paddingTop: 30, paddingBottom: 30}} ></View>}
-                    {cart.length >= 1 &&
-                    <Button title='Pagar con Mercado Pago' onPress={payWithMercadoPago}></Button> }
-                    <View style={styles.Botones}>
+                        <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30, color: "#D4685E" }}>
+                            Your shopping cart is empty :(
+                        </Text>}
+                    {/* <View style={styles.Botones}>
 
-                    <Button title="Add item" onPress={() => addToCart({
-                        product: {
-                            id: 1,
-                            name: "Product 1",
-                            description: "Description 1",
-                            price: 10,
-                            image: "https://via.placeholder.com/150"
-                        },
-                        quantity: 1,
-                        subtotal: 10
-                    })}>
-                    </Button>
-                    <Button title="Remove item" onPress={() => removeFromCart(0)}></Button>
-                    </View>
-                    
+                        <Button title="Add item" onPress={() => addToCart({
+                            product: {
+                                id: 1,
+                                name: "Product 1",
+                                description: "Description 1",
+                                price: 10,
+                                image: "https://via.placeholder.com/150"
+                            },
+                            quantity: 1,
+                            subtotal: 10
+                        })}>
+                        </Button>
+                        <Button title="Remove item" onPress={() => removeFromCart(0)}></Button>
+                    </View> */}
+
                     {/* <Button title="Update cart" onPress={() => updateCart}></Button> */}
                 </View>
                 <FlatList
@@ -69,43 +59,68 @@ export default function ShoppingCartScreen() {
                     contentContainerStyle={styles.listContainer}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                     renderItem={({ item }) => (
-                        <ProductCard product={item.product} />
+                        <ProductItem product={item.product} />
                     )}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(_, index) => index.toString()}
                 />
-                
+
             </ScrollView>
-           
-            
-            {/* {checkoutURL && <MercadoPagoWebBrowser url={checkoutURL} />} */}
-            {/* <Button title='Deep link' onPress={() => Linking.openURL("https://docs.expo.io")}></Button> */}
-            {/* {checkoutURL && <Button title="Pagar" onPress={() => openBrowserAsync(checkoutURL)}></Button>} */}
+
+            {cart.length >= 1 &&
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        backgroundColor: "#fff",
+                        padding: 10,
+                    }}
+                >
+                    <Text
+                        style={{
+                            padding: 10,
+                            fontSize: 16,
+                            fontWeight: "semibold",
+                        }}
+                    >
+                        Total: {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(total)}
+                    </Text>
+                    <Pressable
+                        onPress={payWithMercadoPago}
+                        style={styles.mercadoPago}
+                    >
+                        <Text style={{ fontSize: 16, color: "white", fontWeight: "semibold" }}>
+                            Pagar
+                        </Text>
+                    </Pressable>
+                </View>
+            }
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        // width: 300,
-        // height: 200,
-        // backgroundColor: "grey",
-        // marginBottom: 10,
-        padding: 10,
-        borderRadius: 10,
-        margin: 10,
+        flex: 1,
+        // padding: 5,
     },
     listContainer: {
-        alignItems: "center", // Center items horizontally within the FlatList
+        padding: 5,
+        gap: 10,
     },
-    Botones:{
+    Botones: {
         flexDirection: "row",
         justifyContent: "center",
     },
-    MP:{
-       
-    },
 
+    mercadoPago: {
+        flex: 1,
+        backgroundColor: "#D4685E",
+        borderRadius: 10,
+        padding: 10,
+        alignItems: "center",
+
+    },
     title: {
         fontSize: 20,
         paddingVertical: 5,

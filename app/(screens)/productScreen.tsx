@@ -1,14 +1,15 @@
-import React from "react";
-import { useRouter } from "expo-router";
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Header } from '@/src/components/product/ProductHeader';
-import { ProductDescription } from '@/src/components/product/ProductDescription';
 import { AddToCart } from '@/src/components/product/ProductAddToCart';
+import { ProductDescription } from '@/src/components/product/ProductDescription';
+import { Header } from '@/src/components/product/ProductHeader';
+import { useOrders } from "@/src/context/ordersContext";
+import { useRouter } from "expo-router";
+import React from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 type ProductType = {
   title: string;
   description: string;
-  price: string;
+  price: number;
   category: string;
   imageUrl: string;
 };
@@ -16,11 +17,14 @@ type ProductType = {
 export default function ProductLayout() {
 
   const router = useRouter();
+  const {
+    addToCart
+  } = useOrders();
 
   const product: ProductType = {
     title: "Hamburguesa de carne",
     description: "Hamburguesa de carne 100% vacuna.\nIncluye queso, pepinillos, tomate y lechuga.",
-    price: "$9.99",
+    price: 9.99,
     category: "Fast Food",
     imageUrl: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
   };
@@ -51,11 +55,10 @@ export default function ProductLayout() {
           description={product.description}
           title={product.title}
           price={product.price}
-
         />
 
         {/* Banner inferior para agregar al carrito */}
-        <AddToCart onAddToCartPress={() => console.log("Añadido al carrito")} />
+        <AddToCart onAddToCartPress={() => addToCart({ product, quantity: 1 })} />
       </ScrollView>
     </View>
   );
