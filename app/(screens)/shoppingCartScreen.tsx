@@ -22,7 +22,8 @@ export default function ShoppingCartScreen() {
     const { addToCart, cart, removeFromCart, updateCart, total } = useOrders();
 
     const payWithMercadoPago = () => {
-        router.push("./(checkout)/mercadoPago");
+       // router.push("./(checkout)/mercadoPago");
+       router.push("./QRScreen");
     }
 
     return (
