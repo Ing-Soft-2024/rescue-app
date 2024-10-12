@@ -13,7 +13,7 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "rea
 // import { Chip } from "@interface/chip";
 
 
-export const ProductItem = ({ product }: { product: ProductType }) => {
+export const ProductItem = ({ product, onRemove }: { product: ProductType, onRemove: () => void  }) => {
     let router = useRouter();
 
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
@@ -102,7 +102,7 @@ export const ProductItem = ({ product }: { product: ProductType }) => {
 
                     <Pressable
                         style={styles.actionButtons}
-                        onPress={() => console.log("Remove from cart")}
+                        onPress={onRemove}
                     >
                         <MaterialIcons name="remove" size={24} color="#D4685E" />
                     </Pressable>

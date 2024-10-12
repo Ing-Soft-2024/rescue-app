@@ -1,7 +1,9 @@
 
 import { useOrders } from "@/src/context/ordersContext";
+import { mercadoPagoConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
@@ -29,29 +31,41 @@ export default function MercadoPagoScreen() {
     React.useEffect(() => {
         if (!isLoading) return;
         const createPreference = async () => {
-            var response = null;
-            // await mercadoPagoConsumer.consume('POST', {
-            //     data:
-            //     {
-            //         orderId: 5,
-            //         quantity: 1,
-            //         productId: 1,
-            //         price: 10,
-            //     }
-            // }).catch((error) => {
-            //     console.log(error);
-            //     return null;
-            // });
+            // var response = null;
+            var response = await mercadoPagoConsumer.consume('POST', {
+                data:
+                {
+                    orderId: 5,
+                    quantity: 1,
+                    productId: 1,
+                    price: 10,
+                }
+            }).catch((error) => {
+                console.log("el error es:" + error);
+                return null;
+            });
 
             setIsLoading(false);
 
-            setCheckoutURL("https://www.mercadopago.com.ar");
-            if (!response) return "https://www.mercadopago.com.ar";
-            return "blank";
+            //setCheckoutURL("https://www.mercadopago.com.ar");
+            //if (!response) return "https://www.mercadopago.com.ar";
+            if(!response) return null;
+
+            console.log("la respuesta es:" + response.checkoutURL);
+            return response.checkoutURL;
         }
 
         createPreference()
             .then(setCheckoutURL)
+
+            //  .then((url) => {
+                   
+            //     if (url) {
+            //         console.log("la url seteada es:" + url);
+            //         setCheckoutURL(url); 
+            //        // setIsLoading(false);
+            //     }
+            // }); 
     }, [isLoading]);
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
@@ -86,17 +100,18 @@ export default function MercadoPagoScreen() {
         // Ocurre un error.
     }
 
-    if (isLoading) return null;
+    //if (isLoading) return null;
     return (
         <View>
             <ActivityIndicator />
             <WebView
-                source={{ uri: checkoutURL ?? 'blank' }}
+                //source={{ uri: checkoutURL ?? 'blank' }}
+                source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
                 onNavigationStateChange={handleWebViewNavigation}
 
-                // style={styles.webView}
-                onLoad={() => setIsLoading(false)}
-                onError={() => setIsLoading(false)}
+                 style={styles.webView}
+                onLoad={() => {setIsLoading(false)}}
+                onError={() => {setIsLoading(false)}}
             />
         </View>
 

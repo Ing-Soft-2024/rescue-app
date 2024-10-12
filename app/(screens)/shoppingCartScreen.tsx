@@ -27,7 +27,7 @@ export default function ShoppingCartScreen() {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={{ flex: 1, minHeight: "auto" }}>
+            {/* <ScrollView style={{ flex: 1, minHeight: "auto" }}> */}
                 <View>
                     {/* <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text> */}
                     {cart.length === 0 &&
@@ -58,14 +58,14 @@ export default function ShoppingCartScreen() {
                     // horizontal={true}
                     contentContainerStyle={styles.listContainer}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    renderItem={({ item }) => (
-                        <ProductItem product={item.product} />
+                    renderItem={({ item, index }) => (
+                        <ProductItem product={item.product} onRemove={() => removeFromCart(index)} />
                     )}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(_, index) => index.toString()}
                 />
 
-            </ScrollView>
+            {/* </ScrollView> */}
 
             {cart.length >= 1 &&
                 <View
