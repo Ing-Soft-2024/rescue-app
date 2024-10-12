@@ -1,6 +1,10 @@
-import { AppleAuth } from "@/auth/AppleAuth";
-import { CredentialsAuth } from "@/auth/CredentialsAuth";
-import { GoogleAuth } from "@/auth/GoogleAuth";
+// import { AppleAuth } from "@/auth/AppleAuth";
+// import { CredentialsAuth } from "@/auth/CredentialsAuth";
+// import { GoogleAuth } from "@/auth/GoogleAuth";
+// import { GuestAuth } from "./GuestAuth";
+import { AppleAuth } from "./AppleAuth";
+import { CredentialsAuth } from "./CredentialsAuth";
+import { GoogleAuth } from "./GoogleAuth";
 import { GuestAuth } from "./GuestAuth";
 
 export const authMethods = {
