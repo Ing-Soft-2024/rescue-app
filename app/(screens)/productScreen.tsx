@@ -3,7 +3,7 @@ import { ProductDescription } from '@/src/components/product/ProductDescription'
 import { Header } from '@/src/components/product/ProductHeader';
 import { useOrders } from "@/src/context/ordersContext";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 type ProductType = {
@@ -20,6 +20,7 @@ export default function ProductLayout() {
   const {
     addToCart
   } = useOrders();
+  const [showSuccessCard, setShowSuccessCard] = useState(false);
 
   const product: ProductType = {
     title: "Hamburguesa de carne",
@@ -58,8 +59,17 @@ export default function ProductLayout() {
         />
 
         {/* Banner inferior para agregar al carrito */}
-        <AddToCart onAddToCartPress={() => addToCart({ product, quantity: 1 })} />
+        <AddToCart onAddToCartPress={() => {
+          addToCart({ product, quantity: 1 });
+          setShowSuccessCard(true);
+          setTimeout(() => setShowSuccessCard(false), 3000);
+          }} />
       </ScrollView>
+      {showSuccessCard && (
+        <View style={styles.successCard}>
+          <Text style={styles.successText}>Added to cart successfully!</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -87,5 +97,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
+  },
+  successCard: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    zIndex: 5,
+    right: 0,
+    backgroundColor: '#2bc253',
+    padding: 10,
+    alignItems: 'center',
+  },
+  successText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });

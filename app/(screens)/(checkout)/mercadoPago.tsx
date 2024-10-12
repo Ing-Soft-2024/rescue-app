@@ -100,7 +100,7 @@ export default function MercadoPagoScreen() {
         // Ocurre un error.
     }
 
-    if (isLoading) return null;
+    //if (isLoading) return null;
     return (
         <View>
             <ActivityIndicator />
