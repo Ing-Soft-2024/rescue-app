@@ -59,11 +59,13 @@ export default function ProductLayout() {
         />
 
         {/* Banner inferior para agregar al carrito */}
+        {!showSuccessCard && (
         <AddToCart onAddToCartPress={() => {
           addToCart({ product, quantity: 1 });
           setShowSuccessCard(true);
           setTimeout(() => setShowSuccessCard(false), 3000);
           }} />
+        )}
       </ScrollView>
       {showSuccessCard && (
         <View style={styles.successCard}>
