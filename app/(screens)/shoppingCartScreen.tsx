@@ -58,8 +58,8 @@ export default function ShoppingCartScreen() {
                     // horizontal={true}
                     contentContainerStyle={styles.listContainer}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    renderItem={({ item }) => (
-                        <ProductItem product={item.product} />
+                    renderItem={({ item, index }) => (
+                        <ProductItem product={item.product} onRemove={() => removeFromCart(index)} />
                     )}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(_, index) => index.toString()}
