@@ -33,6 +33,14 @@ export default function AppLayout() {
                 }}
             />
             <Tabs.Screen
+                name="QRScreen"
+                options={{
+                    title: 'QRScreemn',
+                    tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
+                    href: null
+                }}
+            />
+            <Tabs.Screen
                 name="productScreen"
                 options={{
                     title: 'Product',
