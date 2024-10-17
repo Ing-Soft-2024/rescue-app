@@ -25,11 +25,11 @@ export default function ShoppingCartScreen() {
     const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR } = useOrders();
 
     const payWithMercadoPago = () => {
-       // router.push("./(checkout)/mercadoPago");
-       
-       const QR: string = generateUUID() as string;
-       setOrderQR(QR);
-       router.push("./QRScreen");
+       //router.push("./(checkout)/mercadoPago");
+       router.push("./success");
+    //    const QR: string = generateUUID() as string;
+    //    setOrderQR(QR);
+    //    router.push("./QRScreen");
     }
 
     return (

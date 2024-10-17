@@ -13,9 +13,7 @@ export default function QRScreen() {
       router.back();
     };
 
-    const generateUUID = () => {
-        return uuid.v4();
-    }
+   
 
     
     console.log(orderQR);

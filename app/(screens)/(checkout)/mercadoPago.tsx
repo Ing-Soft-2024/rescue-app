@@ -124,6 +124,8 @@ export default function MercadoPagoScreen() {
 
 const styles = StyleSheet.create({
     webView: {
-
+        
+        height: '100%',
+        width: '100%',
     }
 });
