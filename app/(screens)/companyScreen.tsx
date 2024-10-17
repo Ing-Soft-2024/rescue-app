@@ -1,5 +1,5 @@
 // import HeaderComp from '@/components/Header';
-import { CategoryTab } from '@/components/commerce/CategoryTab';
+import { CategoryTab } from '@/src/components/commerce/CategoryTab';
 import { Header } from '@/src/components/product/ProductHeader';
 import { ProductType } from '@/src/types/product.type';
 import { useRouter } from 'expo-router';

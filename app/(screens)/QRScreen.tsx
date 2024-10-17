@@ -1,3 +1,4 @@
+import { useOrders } from "@/src/context/ordersContext";
 import { useRouter } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
@@ -6,7 +7,7 @@ import uuid from 'react-native-uuid';
 export default function QRScreen() {
     const router = useRouter();
   
-    const screen = "QR";
+    const { orderQR} = useOrders();
   
     const onPressBack = () => {
       router.back();
@@ -16,12 +17,12 @@ export default function QRScreen() {
         return uuid.v4();
     }
 
-    const id: string = generateUUID() as string;
-    console.log(id);
+    
+    console.log(orderQR);
     return (
         <View style={styles.QR}>
             <QRCode
-                value={id}
+                value={orderQR}
                 size={200}/>
             <Text style={styles.text}>Muestra este QR al comercio para retirar tu pedido</Text>
         </View>

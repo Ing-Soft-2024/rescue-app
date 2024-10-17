@@ -19,7 +19,7 @@ export default function homeScreen() {
       .then(setCategory);
   }, [])
 
-  const { cart, total } = useOrders();
+  const { cart, total,orderQR } = useOrders();
 
   const sampleProduct: ProductType = {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -39,7 +39,8 @@ export default function homeScreen() {
         <SearchBar />
       </View>
 
-      {cart.length > 0 && 
+    
+      {orderQR != "" && 
       <Pressable style={{padding: 10, backgroundColor: "#D4685E", borderRadius: 10}} onPress={viewOrder}>
       <Text style={{fontSize: 20, color: 'white'}}>Presiona aqui para ver el QR de tu orden</Text>
       </Pressable>}

@@ -3,6 +3,7 @@ import { useOrders } from '@/src/context/ordersContext';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import uuid from 'react-native-uuid';
 
 
 
@@ -14,15 +15,20 @@ export default function ShoppingCartScreen() {
         console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
         throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
     }
-
+    const generateUUID = () => {
+        return uuid.v4();
+    }
 
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart, total } = useOrders();
+    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR } = useOrders();
 
     const payWithMercadoPago = () => {
        // router.push("./(checkout)/mercadoPago");
+       
+       const QR: string = generateUUID() as string;
+       setOrderQR(QR);
        router.push("./QRScreen");
     }
 
