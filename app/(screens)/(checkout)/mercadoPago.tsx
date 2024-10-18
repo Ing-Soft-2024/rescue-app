@@ -35,10 +35,14 @@ export default function MercadoPagoScreen() {
             var response = await mercadoPagoConsumer.consume('POST', {
                 data:
                 {
+                    // orderId: 1,
+                    // quantity: cart.length,
+                    // productId: cart[0].product.id,
+                    // price: cart[0].product.price,
                     orderId: 1,
-                    quantity: cart.length,
-                    productId: cart[0].product.id,
-                    price: cart[0].product.price,
+                    productId: 1,
+                    quantity: 1,
+                    price: 1
                 }
             }).catch((error) => {
                 console.log("el error es:" + error);
