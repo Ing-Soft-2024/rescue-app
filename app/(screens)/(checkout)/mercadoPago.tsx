@@ -5,7 +5,7 @@ import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
 
 export default function MercadoPagoScreen() {
@@ -106,23 +106,27 @@ export default function MercadoPagoScreen() {
 
     //if (isLoading) return null;
     return (
-        <View>
-            <ActivityIndicator />
-            <WebView
-                //source={{ uri: checkoutURL ?? 'blank' }}
-                source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
-                onNavigationStateChange={handleWebViewNavigation}
-
-                 style={styles.webView}
-                onLoad={() => {setIsLoading(false)}}
-                onError={() => {setIsLoading(false)}}
-            />
-        </View>
+        //webView version
 
         // <View>
-        //     <Button title="Open Browser" onPress={() => openBrowserAsync(checkoutURL)}></Button>
-        //     <StatusBar style="auto" />
+        //     <ActivityIndicator />
+        //     <WebView
+        //         //source={{ uri: checkoutURL ?? 'blank' }}
+        //         source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
+        //         onNavigationStateChange={handleWebViewNavigation}
+
+        //          style={styles.webView}
+        //         onLoad={() => {setIsLoading(false)}}
+        //         onError={() => {setIsLoading(false)}}
+        //     />
         // </View>
+
+
+        //openWebAsync version
+        <View>
+            {checkoutURL &&<Button title="Open Browser" onPress={() =>{console.log(checkoutURL); openBrowserAsync(checkoutURL)}}></Button>}
+       
+        </View>
     )
 }
 
