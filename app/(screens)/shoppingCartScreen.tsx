@@ -53,12 +53,6 @@ export default function ShoppingCartScreen() {
             //y el quantity. es de tipo any. el element.product seria de tipo productType
             const product = element.product;
 
-            console.log("orderId: ", orderId);
-            console.log("productId: ", product.productId);
-            console.log("element quantity: ", element.quantity);
-            console.log("product price: ", product.price);
-          
-
             let responseDetail = await orderDetailsConsumer.consume('POST', {
                 params:{id: orderId},
                 data:
@@ -72,7 +66,6 @@ export default function ShoppingCartScreen() {
                 console.log("el error es:" + error);
                 return null;
             });
-             console.log("responseDetail: ",responseDetail);
         });
         const QR = "rescueapp://scannedOrder?id=" + response.orderId;
         setOrderQR(QR);
