@@ -6,7 +6,7 @@ import { Button, FlatList, View, Text, Pressable } from 'react-native';
 import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
 import { useOrders } from '@/src/context/ordersContext';
-import { router } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import { colors } from '@/src/global-style';
 
 export default function homeScreen() {
@@ -19,6 +19,7 @@ export default function homeScreen() {
       .then(setCategory);
   }, [])
 
+    const router = useRouter();
   const { cart, total,orderQR } = useOrders();
 
   const sampleProduct: ProductType = {

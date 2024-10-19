@@ -8,7 +8,7 @@ import { Pressable, Text, View } from "react-native";
 export default function AppLayout() {
     const { session } = useSession();
 
-    if (!session) return <Redirect href={"/login-screen"} />;
+   // if (!session) return <Redirect href={"/login-screen"} />;
 
     return (
         <Tabs screenOptions={{ tabBarActiveTintColor: '#D4685E', tabBarInactiveTintColor: '#D4685E', tabBarStyle: { backgroundColor: 'white' }, }}>
