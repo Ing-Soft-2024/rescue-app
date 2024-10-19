@@ -1,5 +1,5 @@
 import { useOrders } from "@/src/context/ordersContext";
-import { orderConsumer } from "@/src/services/client";
+import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { router, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Text } from "react-native";
@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid';
 
 export default function SuccessScreen() {
 
-    const { setOrderQR } = useOrders();
+    const { setOrderQR,orderQR,clearCart } = useOrders();
     const router = useRouter();
 
     const generateUUID = () => {
@@ -15,30 +15,19 @@ export default function SuccessScreen() {
     }
 
     useEffect(() => {
-        const fetchData = async () => {
-            var response = await orderConsumer.consume('POST', {
+        const updateState = async () => {
+            let response = await orderDetailsConsumer.consume('PATCH', {
+                params: { id: Number(orderQR.split('=')[1])},
                 data:
                 {
-                    userId: 1,
-                    businessId:1,
-                    status: "pending",	
+                  status: "completed"  
                 }
-            }).catch((error) => {
-                console.log("el error es:" + error);
-                return null;
             });
-            const QR = "rescueapp://scannedOrder?id=" + response.orderId;
-            setOrderQR(QR);
-            console.log("sucess id:",QR);
-
-            const timer = setTimeout(() => {
-                router.push("../QRScreen");
-            }, 5000); // 5 seconds timer
-
-            return () => clearTimeout(timer); // Clear the timer if the component unmounts
+            console.log("update state to complete: ",response.status);
+            setOrderQR("");
+            clearCart();
         };
-
-        fetchData();
+        updateState();
     }, []);
 
     

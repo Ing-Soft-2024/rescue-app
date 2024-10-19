@@ -26,13 +26,18 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR } = useOrders();
+    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR,orderQR } = useOrders();
 
     async function payWithMercadoPago() {
          //router.push("./(checkout)/mercadoPago");
       // router.push("./success");
         //const QR: string = generateUUID() as string;
 
+        
+            if(orderQR != ""){
+                router.push("./QRScreen");
+            }
+        
 
         let response = await orderConsumer.consume('POST', {
             data:

@@ -25,7 +25,7 @@ export default function QRScreen() {
                 //     fetchOrderStatus(response.status);
                 // }
                 if(response.status === "scanned"){
-                    console.log("Order status: ", response.status);
+                    router.push("./(checkout)/mercadoPago");    //por ahora hacerlo desde swagger el updateState
                 }
                 
             } catch (error) {

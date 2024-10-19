@@ -60,7 +60,12 @@ export default function MercadoPagoScreen() {
         }
 
         createPreference()
-            .then(setCheckoutURL)
+            .then((url) => {
+                setCheckoutURL(url);
+                if (url) {
+                    openBrowserAsync(url);
+                }
+            })
 
             //  .then((url) => {
                    

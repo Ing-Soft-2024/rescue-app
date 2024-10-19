@@ -32,7 +32,7 @@ export const categoryDetailsConsumer = apiConsumerFactory({
 
 export const orderDetailsConsumer = apiConsumerFactory({
     endpoint: 'order/{id}',
-    validEndpoints: ['GET', 'POST']
+    validEndpoints: ['GET', 'POST', 'PATCH']
 });
 
 export const productDetailsConsumer = apiConsumerFactory({
