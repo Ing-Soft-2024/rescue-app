@@ -50,10 +50,11 @@ export default function QRScreen() {
     console.log(orderQR);
     return (
         <View style={styles.QR}>
+            {orderQR &&
             <QRCode
                 value={orderQR}
-                size={200}/>
-            <Text style={styles.text}>Muestra este QR al comercio para retirar tu pedido</Text>
+                size={200}/>  }
+            <Text style={styles.text}>Muestra este QR al comercio para retirar tu pedido. Por ahora updatear estado con swagger</Text>
         </View>
     );
 

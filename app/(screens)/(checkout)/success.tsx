@@ -26,6 +26,7 @@ export default function SuccessScreen() {
             console.log("update state to complete: ",response.status);
             setOrderQR("");
             clearCart();
+            router.dismissAll();
         };
         updateState();
     }, []);

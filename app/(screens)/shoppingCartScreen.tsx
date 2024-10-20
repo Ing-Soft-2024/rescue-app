@@ -4,7 +4,7 @@ import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { ProductType } from "@/src/types/product.type";
 
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import uuid from 'react-native-uuid';
 
@@ -12,6 +12,10 @@ import uuid from 'react-native-uuid';
 
 
 export default function ShoppingCartScreen() {
+
+    
+        
+   
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
 
@@ -27,6 +31,8 @@ export default function ShoppingCartScreen() {
     const router = useRouter();
 
     const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR,orderQR } = useOrders();
+
+    
 
     async function payWithMercadoPago() {
          //router.push("./(checkout)/mercadoPago");
@@ -111,7 +117,11 @@ export default function ShoppingCartScreen() {
                     contentContainerStyle={styles.listContainer}
                     ItemSeparatorComponent={() => <View style={styles.separator} />}
                     renderItem={({ item, index }) => (
-                        <ProductItem product={item.product} onRemove={() => removeFromCart(index)} />
+                        <ProductItem product={item.product} onRemove={() => {
+                            if(!orderQR){
+                                removeFromCart(index)
+                            }
+                        }} />
                     )}
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(_, index) => index.toString()}
@@ -137,14 +147,14 @@ export default function ShoppingCartScreen() {
                     >
                         Total: {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(total)}
                     </Text>
-                    <Pressable
+                    {!orderQR && <Pressable
                         onPress={payWithMercadoPago}
                         style={styles.mercadoPago}
                     >
                         <Text style={{ fontSize: 16, color: "white", fontWeight: "semibold" }}>
-                            Pagar
+                            Confirmar pedido
                         </Text>
-                    </Pressable>
+                    </Pressable>}
                 </View>
             }
         </View>
