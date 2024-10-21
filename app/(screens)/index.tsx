@@ -19,6 +19,7 @@ export default function homeScreen() {
       .then(setCategory);
   }, [])
 
+  
     const router = useRouter();
   const { cart, total,orderQR } = useOrders();
 

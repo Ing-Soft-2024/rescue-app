@@ -1,12 +1,13 @@
 
 import { useOrders } from "@/src/context/ordersContext";
-import { mercadoPagoConsumer } from "@/src/services/client";
+import { mercadoPagoConsumer, orderConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default function MercadoPagoScreen() {
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY'])
@@ -26,12 +27,23 @@ export default function MercadoPagoScreen() {
         total,
         confirmOrder,
         getOrder,
+        orderQR
     } = useOrders();
 
     React.useEffect(() => {
         if (!isLoading) return;
         const createPreference = async () => {
             // var response = null;
+            const id = Number(orderQR.split('=')[1]);
+            var getOrderResponse = await orderDetailsConsumer.consume('GET', {
+                params: { id: id }
+            }).catch((error) => {
+                console.log("el error es:" + error);
+                return null;
+            });
+            
+          
+
             var response = await mercadoPagoConsumer.consume('POST', {
                 data:
                 {
@@ -39,10 +51,10 @@ export default function MercadoPagoScreen() {
                     // quantity: cart.length,
                     // productId: cart[0].product.id,
                     // price: cart[0].product.price,
-                    orderId: 1,
+                    orderId: id,
                     productId: 1,
                     quantity: 1,
-                    price: 1
+                    price: getOrderResponse.total,
                 }
             }).catch((error) => {
                 console.log("el error es:" + error);
