@@ -17,16 +17,16 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
 
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
-    React.useEffect(() => {
-        if (!product.image) return;
-        StorageController.download(product.image)
-            .then(setImage)
-            .then(() => setImageLoading(false));
-    }, []);
+    // React.useEffect(() => {
+    //     if (!product.image) return;
+    //     StorageController.download(product.image)
+    //         .then(setImage)
+    //         .then(() => setImageLoading(false));
+    // }, []);
 
     return (
         <Pressable
-            onPress={() => router.push('/(screens)/productScreen')}
+            onPress={() => router.push('/screens/productScreen')}
             style={{
                 flexDirection: "column",
                 gap: 12,

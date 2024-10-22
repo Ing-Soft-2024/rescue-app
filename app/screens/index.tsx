@@ -32,7 +32,7 @@ export default function homeScreen() {
   };
   const viewOrder = () => {
     // router.push("./(checkout)/mercadoPago");
-    router.push("./QRScreen");
+    router.push("/screens/QRScreen");
  }
 
   return (

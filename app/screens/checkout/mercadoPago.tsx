@@ -2,7 +2,7 @@
 import { useOrders } from "@/src/context/ordersContext";
 import { mercadoPagoConsumer, orderConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
@@ -30,7 +30,9 @@ export default function MercadoPagoScreen() {
         orderQR
     } = useOrders();
 
-    React.useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+    
         if (!isLoading) return;
         const createPreference = async () => {
             // var response = null;
@@ -87,7 +89,7 @@ export default function MercadoPagoScreen() {
             //        // setIsLoading(false);
             //     }
             // }); 
-    }, [isLoading]);
+    }, []));
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
         // Cambio de url empieza con rescue://
@@ -140,10 +142,10 @@ export default function MercadoPagoScreen() {
 
 
         //openWebAsync version
-        <View>
-            {checkoutURL &&<Button title="Open Browser" onPress={() =>{console.log(checkoutURL); openBrowserAsync(checkoutURL)}}></Button>}
+         <View>
+             {/* {checkoutURL &&<Button title="Open Browser" onPress={() =>{console.log(checkoutURL); openBrowserAsync(checkoutURL)}}></Button>} */}
        
-        </View>
+         </View>
     )
 }
 

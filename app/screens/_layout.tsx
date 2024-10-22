@@ -51,7 +51,7 @@ export default function AppLayout() {
            
 
             <Tabs.Screen
-                name="(checkout)"
+                name="checkout"
                 options={{
                     href: null,
                     headerShown: false,

@@ -78,7 +78,7 @@ export default function ShoppingCartScreen() {
                 return null;
             });
         });
-        const QR = "rescueapp://scannedOrder?id=" + response.orderId;
+        const QR = "rescueapp-business://scan/scannedOrder?id=" + response.orderId;
         setOrderQR(QR);
         router.push("./QRScreen");
     }

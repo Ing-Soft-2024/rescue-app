@@ -14,8 +14,8 @@ export default function AuthLayout() {
     const router = useRouter();
 
     const navigateToIndex = () => {
-        //router.push('./(screens)/index.tsx');  // lleva al usuario a la pantalla de home (index)
-        router.push("/");  // lleva al usuario a la pantalla de home (index)
+        router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
+        //router.push("/index");  
     };
 
     const [fontsLoaded] = useFonts({
