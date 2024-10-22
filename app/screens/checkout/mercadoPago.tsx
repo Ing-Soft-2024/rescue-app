@@ -1,13 +1,12 @@
 
 import { useOrders } from "@/src/context/ordersContext";
-import { mercadoPagoConsumer, orderConsumer, orderDetailsConsumer } from "@/src/services/client";
+import { mercadoPagoConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
 import { useFocusEffect, useRouter } from "expo-router";
-import { openBrowserAsync } from "expo-web-browser";
+import { openAuthSessionAsync } from "expo-web-browser";
 import React from "react";
-import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
-import WebView, { WebViewNavigation } from "react-native-webview";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { StyleSheet, View } from "react-native";
+import { WebViewNavigation } from "react-native-webview";
 
 export default function MercadoPagoScreen() {
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY'])
@@ -77,7 +76,14 @@ export default function MercadoPagoScreen() {
             .then((url) => {
                 setCheckoutURL(url);
                 if (url) {
-                    openBrowserAsync(url);
+                    openAuthSessionAsync(url, "myapp://screens/checkout/success")
+                        .then((res) => {
+                            if(res.type !== 'success') return;
+
+                            console.log("Redirecting to success");
+                            if(res.url.includes("success")) router.navigate("/screens/checkout/success");
+                            if(res.url.includes("failure")) router.navigate("/screens/checkout/failure");
+                        });
                 }
             })
 

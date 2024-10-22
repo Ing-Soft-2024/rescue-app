@@ -1,8 +1,7 @@
 import { useOrders } from "@/src/context/ordersContext";
-import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
-import { router, useFocusEffect, useRouter } from "expo-router";
+import { orderDetailsConsumer } from "@/src/services/client";
+import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
-import { useEffect } from "react";
 import { Text } from "react-native";
 import uuid from 'react-native-uuid';
 
@@ -10,10 +9,12 @@ export default function SuccessScreen() {
 
     const { setOrderQR,orderQR,clearCart } = useOrders();
     const router = useRouter();
-
+    const seconds = 5;
     const generateUUID = () => {
         return uuid.v4();
     }
+
+    const waitSeconds = () => new Promise(resolve => setTimeout(resolve, seconds * 1000));
     useFocusEffect(
         React.useCallback(() => {
             const updateState = async () => {
@@ -24,9 +25,11 @@ export default function SuccessScreen() {
                       status: "completed"  
                     }
                 });
+
                 console.log("update state to complete: ",response.status);
                 setOrderQR("");
                 clearCart();
+                router.canGoBack() && router.back();
                 router.navigate("/screens/");
             };
             updateState();
