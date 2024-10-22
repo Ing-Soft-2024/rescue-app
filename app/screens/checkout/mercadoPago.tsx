@@ -86,15 +86,6 @@ export default function MercadoPagoScreen() {
                         });
                 }
             })
-
-            //  .then((url) => {
-                   
-            //     if (url) {
-            //         console.log("la url seteada es:" + url);
-            //         setCheckoutURL(url); 
-            //        // setIsLoading(false);
-            //     }
-            // }); 
     }, []));
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
