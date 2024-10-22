@@ -1,19 +1,26 @@
+import { useOrders } from '@/src/context/ordersContext';
 import { useSession } from '@/src/context/session.context';
 import { productConsumer } from '@/src/services/client';
 import { ProductType } from '@/src/types/product.type';
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { Button, FlatList, View, Text, Pressable } from 'react-native';
+import { Button, FlatList, Pressable, RefreshControl, Text, View } from 'react-native';
 import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
-import { useOrders } from '@/src/context/ordersContext';
-import { router, useRouter } from 'expo-router';
-import { colors } from '@/src/global-style';
 
 export default function homeScreen() {
   const { signOut } = useSession();
 
   const [category, setCategory] = React.useState<ProductType[]>([]);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
+  const onRefresh = () => {
+    setIsRefreshing(true);
+    productConsumer.consume('GET')
+      .then(setCategory)
+      .finally(() => setIsRefreshing(false));
+  }
+  
   React.useEffect(() => {
     productConsumer.consume('GET')
       .then(setCategory);
@@ -55,6 +62,8 @@ export default function homeScreen() {
             products={category}
           />
         }
+
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
       />
       <View>
         <Button title="Cerrar sesión" onPress={signOut} color="#D4685E" />

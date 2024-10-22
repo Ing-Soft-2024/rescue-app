@@ -1,7 +1,7 @@
 import { useSession } from "@/src/context/session.context";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Redirect, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 
@@ -41,7 +41,7 @@ export default function AppLayout() {
                 }}
             />
             <Tabs.Screen
-                name="productScreen"
+                name="productScreen/[id]"
                 options={{
                     title: 'Product',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="barcode" color={color} />,

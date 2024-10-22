@@ -1,6 +1,6 @@
 import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
-import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
+import { orderConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -49,7 +49,8 @@ export default function ShoppingCartScreen() {
             {
                 userId: 1,
                 businessId:1,
-                status: "pending",	
+                status: "pending",
+                cart
             }
         }).catch((error) => {
             console.log("el error es:" + error);
@@ -57,26 +58,26 @@ export default function ShoppingCartScreen() {
         });
         const orderId = response.orderId;
 
-        cart.forEach(async (element: any) => {
+        // cart.forEach(async (element: any) => {
 
-            //product screen tiene un add to cart. y le pasa un elemento que adentro tiene el producto entero
-            //y el quantity. es de tipo any. el element.product seria de tipo productType
-            const product = element.product;
+        //     //product screen tiene un add to cart. y le pasa un elemento que adentro tiene el producto entero
+        //     //y el quantity. es de tipo any. el element.product seria de tipo productType
+        //     const product = element.product;
 
-            let responseDetail = await orderDetailsConsumer.consume('POST', {
-                params:{id: orderId},
-                data:
-                {
-                    orderId: orderId,
-                    productId: product.productId,
-                    quantity: element.quantity,
-                    price: product.price
-                }
-            }).catch((error) => {
-                console.log("el error es:" + error);
-                return null;
-            });
-        });
+        //     let responseDetail = await orderDetailsConsumer.consume('POST', {
+        //         params:{id: orderId},
+        //         data:
+        //         {
+        //             orderId: orderId,
+        //             productId: product.productId,
+        //             quantity: element.quantity,
+        //             price: product.price
+        //         }
+        //     }).catch((error) => {
+        //         console.log("el error es:" + error);
+        //         return null;
+        //     });
+        // });
         const QR = "rescueappbussiness://scan/scannedOrder?id=" + response.orderId; 
         setOrderQR(QR);
         router.push("./QRScreen");
