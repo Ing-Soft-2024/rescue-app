@@ -1,12 +1,13 @@
 
 import { useOrders } from "@/src/context/ordersContext";
-import { mercadoPagoConsumer } from "@/src/services/client";
+import { mercadoPagoConsumer, orderConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import WebView, { WebViewNavigation } from "react-native-webview";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default function MercadoPagoScreen() {
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY'])
@@ -26,19 +27,36 @@ export default function MercadoPagoScreen() {
         total,
         confirmOrder,
         getOrder,
+        orderQR
     } = useOrders();
 
-    React.useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+    
         if (!isLoading) return;
         const createPreference = async () => {
             // var response = null;
+            const id = Number(orderQR.split('=')[1]);
+            var getOrderResponse = await orderDetailsConsumer.consume('GET', {
+                params: { id: id }
+            }).catch((error) => {
+                console.log("el error es:" + error);
+                return null;
+            });
+            
+          
+
             var response = await mercadoPagoConsumer.consume('POST', {
                 data:
                 {
-                    orderId: 5,
-                    quantity: 1,
+                    // orderId: 1,
+                    // quantity: cart.length,
+                    // productId: cart[0].product.id,
+                    // price: cart[0].product.price,
+                    orderId: id,
                     productId: 1,
-                    price: 10,
+                    quantity: 1,
+                    price: getOrderResponse.total,
                 }
             }).catch((error) => {
                 console.log("el error es:" + error);
@@ -56,7 +74,12 @@ export default function MercadoPagoScreen() {
         }
 
         createPreference()
-            .then(setCheckoutURL)
+            .then((url) => {
+                setCheckoutURL(url);
+                if (url) {
+                    openBrowserAsync(url);
+                }
+            })
 
             //  .then((url) => {
                    
@@ -66,7 +89,7 @@ export default function MercadoPagoScreen() {
             //        // setIsLoading(false);
             //     }
             // }); 
-    }, [isLoading]);
+    }, []));
 
     const handleWebViewNavigation = (event: WebViewNavigation) => {
         // Cambio de url empieza con rescue://
@@ -102,28 +125,34 @@ export default function MercadoPagoScreen() {
 
     //if (isLoading) return null;
     return (
-        <View>
-            <ActivityIndicator />
-            <WebView
-                //source={{ uri: checkoutURL ?? 'blank' }}
-                source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
-                onNavigationStateChange={handleWebViewNavigation}
-
-                 style={styles.webView}
-                onLoad={() => {setIsLoading(false)}}
-                onError={() => {setIsLoading(false)}}
-            />
-        </View>
+        //webView version
 
         // <View>
-        //     <Button title="Open Browser" onPress={() => openBrowserAsync(checkoutURL)}></Button>
-        //     <StatusBar style="auto" />
+        //     <ActivityIndicator />
+        //     <WebView
+        //         //source={{ uri: checkoutURL ?? 'blank' }}
+        //         source={{ uri: checkoutURL ?? 'https://www.mercadopago.com.ar' }}
+        //         onNavigationStateChange={handleWebViewNavigation}
+
+        //          style={styles.webView}
+        //         onLoad={() => {setIsLoading(false)}}
+        //         onError={() => {setIsLoading(false)}}
+        //     />
         // </View>
+
+
+        //openWebAsync version
+         <View>
+             {/* {checkoutURL &&<Button title="Open Browser" onPress={() =>{console.log(checkoutURL); openBrowserAsync(checkoutURL)}}></Button>} */}
+       
+         </View>
     )
 }
 
 const styles = StyleSheet.create({
     webView: {
-
+        
+        height: '100%',
+        width: '100%',
     }
 });

@@ -9,6 +9,8 @@ type OrdersContextType = {
     removeFromCart: (index: number) => void;
     updateCart: (index: number, quantity: number) => void;
     total: number;
+    orderQR: string; 
+    setOrderQR: (note: string) => void;
 
     orders: OrdersDataType[];
     // cancelOrder: (index: number) => void;
@@ -35,6 +37,7 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
     // let { data: ordersData, collectionObserver, addDocument } = useFirestoreCollection(collection(commerceRef, "orders"));
     // TODO: Add a filter to get only the orders of the current session.
     const [orders, setOrders] = useState<OrdersDataType[]>([]);
+    const [orderQR, setOrderQR] = useState<string>("");
 
     let { cart, clearCart, addToCart, removeFromCart, updateCart, total } = useCart();
 
@@ -47,8 +50,8 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
             removeFromCart,
             updateCart,
             total,
-
-
+            orderQR,
+            setOrderQR,
             orders,
             // cancelOrder: (index) => setOrders((prev) => prev.filter((_, i) => i !== index)),
             confirmOrder: (payment: number) => {

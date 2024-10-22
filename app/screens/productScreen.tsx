@@ -2,17 +2,19 @@ import { AddToCart } from '@/src/components/product/ProductAddToCart';
 import { ProductDescription } from '@/src/components/product/ProductDescription';
 import { Header } from '@/src/components/product/ProductHeader';
 import { useOrders } from "@/src/context/ordersContext";
+import { ProductType } from '@/src/types/product.type';
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
-type ProductType = {
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  imageUrl: string;
-};
+// export type ProductType = {
+//   title: string;
+//   description: string;
+//   price: number;
+//   category: string;
+//   imageUrl: string;
+//   productId: number;
+// };
 
 export default function ProductLayout() {
 
@@ -23,11 +25,12 @@ export default function ProductLayout() {
   const [showSuccessCard, setShowSuccessCard] = useState(false);
 
   const product: ProductType = {
-    title: "Hamburguesa de carne",
+    name: "Hamburguesa de carne",
     description: "Hamburguesa de carne 100% vacuna.\nIncluye queso, pepinillos, tomate y lechuga.",
     price: 9.99,
     category: "Fast Food",
-    imageUrl: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
+    image: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
+    productId: 1,
   };
 
   return (
@@ -35,7 +38,7 @@ export default function ProductLayout() {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header con imagen y botones */}
         <Header
-          imageUrl={product.imageUrl}
+          imageUrl={product.image}
           onBackPress={() => router.back()}
           onSharePress={() => console.log("Share pressed")}
           onFavoritePress={() => console.log("Favorite pressed")}
@@ -54,7 +57,7 @@ export default function ProductLayout() {
         <ProductDescription
           category={product.category}
           description={product.description}
-          title={product.title}
+          title={product.name}
           price={product.price}
         />
 

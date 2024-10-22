@@ -8,7 +8,7 @@ import { Pressable, Text, View } from "react-native";
 export default function AppLayout() {
     const { session } = useSession();
 
-    if (!session) return <Redirect href={"/login-screen"} />;
+   // if (!session) return <Redirect href={"/login-screen"} />;
 
     return (
         <Tabs screenOptions={{ tabBarActiveTintColor: '#D4685E', tabBarInactiveTintColor: '#D4685E', tabBarStyle: { backgroundColor: 'white' }, }}>
@@ -33,6 +33,14 @@ export default function AppLayout() {
                 }}
             />
             <Tabs.Screen
+                name="QRScreen"
+                options={{
+                    title: 'QRScreen',
+                    tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
+                    href: null
+                }}
+            />
+            <Tabs.Screen
                 name="productScreen"
                 options={{
                     title: 'Product',
@@ -40,9 +48,10 @@ export default function AppLayout() {
                     href: null
                 }}
             />
+           
 
             <Tabs.Screen
-                name="(checkout)"
+                name="checkout"
                 options={{
                     href: null,
                     headerShown: false,

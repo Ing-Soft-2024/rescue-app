@@ -14,7 +14,8 @@ export default function AuthLayout() {
     const router = useRouter();
 
     const navigateToIndex = () => {
-        router.push('./(screens)/index.tsx');  // lleva al usuario a la pantalla de home (index)
+        router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
+        //router.push("/index");  
     };
 
     const [fontsLoaded] = useFonts({
@@ -126,7 +127,8 @@ export default function AuthLayout() {
                     borderRadius: 5,
                     backgroundColor: pressed ? "#ddd" : "#fafafa",
                 })}
-                onPress={() => signInWith("Guest")}
+               // onPress={() => signInWith("Guest")}
+               onPress={navigateToIndex}
             >
                 <Text style={{
                     color: "#D4685E",
