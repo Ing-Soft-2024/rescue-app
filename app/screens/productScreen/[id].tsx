@@ -7,7 +7,7 @@ import StorageController from '@/src/services/storage/controller/storage.control
 import { ProductType } from '@/src/types/product.type';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
 // export type ProductType = {
 //   title: string;
@@ -30,15 +30,6 @@ export default function ProductLayout() {
   } = useOrders();
   const [showSuccessCard, setShowSuccessCard] = useState(false);
 
-  // const product: ProductType = {
-  //   name: "Hamburguesa de carne",
-  //   description: "Hamburguesa de carne 100% vacuna.\nIncluye queso, pepinillos, tomate y lechuga.",
-  //   price: 9.99,
-  //   category: "Fast Food",
-  //   image: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
-  //   productId: 1,
-  // };
-
   useFocusEffect(
     React.useCallback(() => {
         console.log(params);
@@ -59,11 +50,29 @@ export default function ProductLayout() {
 
         });
   
-    }, [])
+    }, [params.id])
 );
 
   return (
     <View style={styles.container}>
+        { isLoading &&
+            <View style={{
+                flex: 1,
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#3339",
+                zIndex: 1200,
+            }}>
+                <ActivityIndicator size="small" color="white" />
+            </View>
+        }
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header con imagen y botones */}
         <Header
