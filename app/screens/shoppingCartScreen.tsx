@@ -1,11 +1,10 @@
 import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
 import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
-import { ProductType } from "@/src/types/product.type";
 
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import uuid from 'react-native-uuid';
 
 
@@ -35,8 +34,8 @@ export default function ShoppingCartScreen() {
     
 
     async function payWithMercadoPago() {
-         //router.push("./(checkout)/mercadoPago");
-      // router.push("./success");
+        //router.push("./(checkout)/mercadoPago");
+        // router.push("./success");
         //const QR: string = generateUUID() as string;
 
         
@@ -78,7 +77,7 @@ export default function ShoppingCartScreen() {
                 return null;
             });
         });
-        const QR = "rescueapp-business://scan/scannedOrder?id=" + response.orderId;
+        const QR = "rescueappbussiness://scan/scannedOrder?id=" + response.orderId; 
         setOrderQR(QR);
         router.push("./QRScreen");
     }
