@@ -19,10 +19,10 @@ export default function ShoppingCartScreen() {
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
 
-    if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
-        console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
-        throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
-    }
+    // if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
+    //     console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
+    //     throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
+    // }
     const generateUUID = () => {
         return uuid.v4();
     }

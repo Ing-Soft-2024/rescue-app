@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#fafafa",
+      "borderRadius": 30,
+      "flexDirection": "row",
+      "fontSize": 20,
+      "gap": 10,
+      "height": 40,
+      "margin": 12,
+      "overflow": "hidden",
+      "padding": 10,
+      "shadowColor": "#000",
+      "shadowOffset": {
+        "height": 5,
+        "width": 0,
+      },
+      "shadowOpacity": 0.25,
+      "width": "100%",
+    }
+  }
+>
+  <Text />
+  <TextInput
+    onChangeText={[Function]}
+    placeholder="Type Here"
+    style={
+      {
+        "flex": 1,
+        "fontSize": 16,
+      }
+    }
+  />
+</View>
+`;
