@@ -18,10 +18,8 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "usesAppleSignIn": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
+        "googleMapsApiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94",
       },
-      "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarte el mapa.",
-      "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación en segundo plano.",
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
@@ -32,33 +30,30 @@
       "bundleIdentifier": "com.kepleris.rescue"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "package": "com.kepleris.rescue",
-        "android": {
-          "config": {
-            "googleMaps": {
-              "apiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
-            }
+      "config": {
+          "googleMaps": {
+            "apiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
           }
-        }
-      },
-      "intentFilters": [
-        {
-        "action": "VIEW", "data": [
-        {
-        "scheme": "myapp", "host": "checkout", "pathPrefix": "/congrats"
-        } ],
-        "category": ["BROWSABLE", "DEFAULT"]
-        } ],
-      "googleServicesFile": "./google-services.json",
+        },
       "package": "com.kepleris.rescue",
+      "intentFilters": [
+            {
+          "action": "VIEW", "data": [
+          {
+          "scheme": "myapp", "host": "checkout", "pathPrefix": "/congrats"
+          } ],
+          "category": ["BROWSABLE", "DEFAULT"]
+          } ],
+      "googleServicesFile": "./google-services.json",
       "permissions": [
-        "android.permission.SCHEDULE_EXACT_ALARM",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
-      ]
+          "android.permission.SCHEDULE_EXACT_ALARM",
+          "android.permission.ACCESS_COARSE_LOCATION",
+          "android.permission.ACCESS_FINE_LOCATION"
+        ],
+      "adaptiveIcon": {
+          "foregroundImage": "./assets/images/adaptive-icon.png",
+          "backgroundColor": "#ffffff"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -76,7 +71,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+          "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación en segundo plano.",
+          "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarte el mapa."
         }
       ],
       "expo-font"
