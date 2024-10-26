@@ -29,9 +29,8 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR,orderQR } = useOrders();
+    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR, orderQR } = useOrders();
 
-    
 
     async function payWithMercadoPago() {
         //router.push("./(checkout)/mercadoPago");
@@ -43,7 +42,6 @@ export default function ShoppingCartScreen() {
                 router.push("./QRScreen");
             }
         
-
         let response = await orderConsumer.consume('POST', {
             data:
             {
@@ -57,28 +55,7 @@ export default function ShoppingCartScreen() {
             return null;
         });
         const orderId = response.orderId;
-
-        // cart.forEach(async (element: any) => {
-
-        //     //product screen tiene un add to cart. y le pasa un elemento que adentro tiene el producto entero
-        //     //y el quantity. es de tipo any. el element.product seria de tipo productType
-        //     const product = element.product;
-
-        //     let responseDetail = await orderDetailsConsumer.consume('POST', {
-        //         params:{id: orderId},
-        //         data:
-        //         {
-        //             orderId: orderId,
-        //             productId: product.productId,
-        //             quantity: element.quantity,
-        //             price: product.price
-        //         }
-        //     }).catch((error) => {
-        //         console.log("el error es:" + error);
-        //         return null;
-        //     });
-        // });
-        const QR = "rescueappbussiness://scan/scannedOrder?id=" + response.orderId; 
+        const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId; 
         setOrderQR(QR);
         router.push("./QRScreen");
     }

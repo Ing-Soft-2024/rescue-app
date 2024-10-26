@@ -1,11 +1,9 @@
 import { useOrders } from "@/src/context/ordersContext";
-import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
+import { orderDetailsConsumer } from "@/src/services/client";
 import { useRouter } from "expo-router";
-import React from "react";
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import uuid from 'react-native-uuid';
 
 export default function QRScreen() {
     const router = useRouter();
@@ -59,7 +57,7 @@ export default function QRScreen() {
                 <QRCode
                     value={orderQR}
                     size={200} />}
-            {!paymentBtns && <Text style={styles.text}>Muestra este QR al comercio para retirar tu pedido. Por ahora updatear estado con swagger</Text>}
+            {!paymentBtns && <Text style={styles.text}>Muestra este QR al comercio para retirar tu pedido.</Text>}
             {paymentBtns && <Button title="Mercado Pago" onPress={() => router.push("./checkout/mercadoPago")} />}
             {paymentBtns && <Button title="Pagar en efectivo" onPress={handleCashPayment} />}
         </View>
@@ -73,7 +71,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        fontSize: 25,
+        fontSize: 16,
+        paddingVertical: 10,
         textAlign: 'center',
     },
 });

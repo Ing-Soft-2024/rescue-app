@@ -35,7 +35,7 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="QRScreen"
                 options={{
-                    title: 'QRScreen',
+                    title: 'Escanear QR',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
                     href: null
                 }}
