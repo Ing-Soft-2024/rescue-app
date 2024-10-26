@@ -19,6 +19,8 @@ export default function ShoppingCartScreen() {
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
 
+
+    //para tests esto tiene que estar desactivado porque no andan las variables de entorno en el test.
     // if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
     //     console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
     //     throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
