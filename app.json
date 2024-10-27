@@ -72,8 +72,8 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
-          "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación en segundo plano.",
-          "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarte el mapa."
+          // "NSLocationAlwaysUsageDescription": "Esta aplicación necesita acceder a tu ubicación en segundo plano.",
+          // "NSLocationWhenInUseUsageDescription": "Esta aplicación necesita acceder a tu ubicación para mostrarte el mapa."
         }
       ],
       "expo-font"

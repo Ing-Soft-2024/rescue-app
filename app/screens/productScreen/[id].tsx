@@ -38,17 +38,17 @@ export default function ProductLayout() {
         setIsLoading(true);
         productDetailsConsumer.consume('GET', {
             params: { id: Number(params.id) }
-        }).then((product) => {
-          if (!product.image) return;
-          StorageController.download(product.image)
-            .then(image => setProduct({
+        }).then(async (product) => {
+          if (!product.image) return product;
+          return await StorageController.download(product.image)
+            .then(image => ({
                 ...product,
                 image
             }))
-            .catch(() => router.dismissAll())
-            .then(() => setIsLoading(false));
-
-        });
+            .catch(() => product);
+        })
+        .then(setProduct)
+        .finally(() => setIsLoading(false));
   
     }, [params.id])
 );

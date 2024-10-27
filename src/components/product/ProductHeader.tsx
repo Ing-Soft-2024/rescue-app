@@ -3,7 +3,7 @@ import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
 interface HeaderProps {
-  imageUrl: string;
+  imageUrl?: string;
   onBackPress?: () => void;
   onSharePress?: () => void;
   onFavoritePress?: () => void;
@@ -18,7 +18,7 @@ export function Header({
   return (
     <View style={styles.container}>
       {/* Imagen de fondo */}
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      {imageUrl && <Image source={{ uri: imageUrl }} style={styles.image} />}
 
       {/* Botón de volver atrás */}
       <TouchableOpacity onPress={onBackPress} style={styles.backButton}>

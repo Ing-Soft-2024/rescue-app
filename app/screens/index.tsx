@@ -17,7 +17,10 @@ export default function homeScreen() {
   const onRefresh = () => {
     setIsRefreshing(true);
     productConsumer.consume('GET')
-      .then(setCategory)
+      .then((res) => {
+        console.log(res);
+        setCategory(res)
+      })
       .finally(() => setIsRefreshing(false));
   }
   

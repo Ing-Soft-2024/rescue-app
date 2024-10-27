@@ -59,3 +59,4 @@ expo-env.d.ts
 # Ignore all generated files
 android/
 ios/
+*.apk
