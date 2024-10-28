@@ -15,6 +15,11 @@ describe('QRScreen', () => {
     });
   });
 
+  it('renders correctly', () => {
+    const screen =render(<QRScreen />);
+    expect(screen).toMatchSnapshot();
+  });
+
   it('renders QR code when orderQR is present', () => {
     render(<QRScreen />);
     expect(screen.getByText('Muestra este QR al comercio para retirar tu pedido. Por ahora updatear estado con swagger')).toBeTruthy();

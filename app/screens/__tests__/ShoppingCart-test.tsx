@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import { OrdersProvider, useOrders } from '@/src/context/ordersContext';
 import ShoppingCartScreen from '../shoppingCartScreen';
+import { press } from '@testing-library/react-native/build/user-event/press';
 
 jest.mock('@/src/context/ordersContext', () => ({
   ...jest.requireActual('@/src/context/ordersContext'),
@@ -48,9 +49,6 @@ describe('shopping cart test', () => {
     );
     
     expect(screen.getByText('Product 1')).toBeTruthy();
-
-
-    //este va a fallar
-    expect(screen.getByText('Product 2')).toBeFalsy();
+    expect(screen.getByText('Product 2')).toBeTruthy();
   });
 });
