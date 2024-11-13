@@ -2,10 +2,12 @@ import { AddToCart } from '@/src/components/product/ProductAddToCart';
 import { ProductDescription } from '@/src/components/product/ProductDescription';
 import { Header } from '@/src/components/product/ProductHeader';
 import { useOrders } from "@/src/context/ordersContext";
+import { productDetailsConsumer } from '@/src/services/client';
+import StorageController from '@/src/services/storage/controller/storage.controller';
 import { ProductType } from '@/src/types/product.type';
-import { useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
 
 // export type ProductType = {
 //   title: string;
@@ -19,22 +21,58 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 export default function ProductLayout() {
 
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const [product, setProduct] = React.useState<ProductType>({} as ProductType);
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const {
     addToCart
   } = useOrders();
   const [showSuccessCard, setShowSuccessCard] = useState(false);
 
-  const product: ProductType = {
-    name: "Hamburguesa de carne",
-    description: "Hamburguesa de carne 100% vacuna.\nIncluye queso, pepinillos, tomate y lechuga.",
-    price: 9.99,
-    category: "Fast Food",
-    image: "https://arc-anglerfish-arc2-prod-abccolor.s3.amazonaws.com/public/FJQXM5JUU5FFHDDCNZLOSDZGSY.jpg",
-    productId: 1,
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+        console.log(params);
+        if(!params.id) return;
+
+        setIsLoading(true);
+        productDetailsConsumer.consume('GET', {
+            params: { id: Number(params.id) }
+        }).then(async (product) => {
+          if (!product.image) return product;
+          return await StorageController.download(product.image)
+            .then(image => ({
+                ...product,
+                image
+            }))
+            .catch(() => product);
+        })
+        .then(setProduct)
+        .finally(() => setIsLoading(false));
+  
+    }, [params.id])
+);
 
   return (
     <View style={styles.container}>
+        { isLoading &&
+            <View style={{
+                flex: 1,
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "100%",
+                backgroundColor: "#3339",
+                zIndex: 1200,
+            }}>
+                <ActivityIndicator size="small" color="white" />
+            </View>
+        }
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header con imagen y botones */}
         <Header

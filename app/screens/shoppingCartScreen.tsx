@@ -1,11 +1,10 @@
 import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
-import { orderConsumer, orderDetailsConsumer } from "@/src/services/client";
-import { ProductType } from "@/src/types/product.type";
+import { orderConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useState } from 'react';
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import uuid from 'react-native-uuid';
 
 
@@ -30,13 +29,12 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR,orderQR } = useOrders();
+    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR, orderQR } = useOrders();
 
-    
 
     async function payWithMercadoPago() {
-         //router.push("./(checkout)/mercadoPago");
-      // router.push("./success");
+        //router.push("./(checkout)/mercadoPago");
+        // router.push("./success");
         //const QR: string = generateUUID() as string;
 
         
@@ -44,41 +42,20 @@ export default function ShoppingCartScreen() {
                 router.push("./QRScreen");
             }
         
-
         let response = await orderConsumer.consume('POST', {
             data:
             {
                 userId: 1,
                 businessId:1,
-                status: "pending",	
+                status: "pending",
+                cart
             }
         }).catch((error) => {
             console.log("el error es:" + error);
             return null;
         });
         const orderId = response.orderId;
-
-        cart.forEach(async (element: any) => {
-
-            //product screen tiene un add to cart. y le pasa un elemento que adentro tiene el producto entero
-            //y el quantity. es de tipo any. el element.product seria de tipo productType
-            const product = element.product;
-
-            let responseDetail = await orderDetailsConsumer.consume('POST', {
-                params:{id: orderId},
-                data:
-                {
-                    orderId: orderId,
-                    productId: product.productId,
-                    quantity: element.quantity,
-                    price: product.price
-                }
-            }).catch((error) => {
-                console.log("el error es:" + error);
-                return null;
-            });
-        });
-        const QR = "rescueapp-business://scan/scannedOrder?id=" + response.orderId;
+        const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId; 
         setOrderQR(QR);
         router.push("./QRScreen");
     }

@@ -2,7 +2,7 @@
 import { colors, globalStyles } from "@/src/global-style";
 import StorageController from "@/src/services/storage/controller/storage.controller";
 import { ProductType } from "@/src/types/product.type";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -14,19 +14,23 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "rea
 
 export const ProductCard = ({ product }: { product: ProductType }) => {
     let router = useRouter();
-
+    console.log(product);
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
-    // React.useEffect(() => {
-    //     if (!product.image) return;
-    //     StorageController.download(product.image)
-    //         .then(setImage)
-    //         .then(() => setImageLoading(false));
-    // }, []);
-
+    useFocusEffect(
+        React.useCallback(() => {
+            if (!product.image) return;
+            StorageController.download(product.image)
+                .then(setImage)
+                .catch(() => setImage("https://picsum.photos/200"))
+                .then(() => setImageLoading(false));
+        }, [])
+    );
     return (
         <Pressable
-            onPress={() => router.push('/screens/productScreen')}
+            onPress={() => {
+                router.push(`/screens/productScreen/${product.id}`);
+            }}
             style={{
                 flexDirection: "column",
                 gap: 12,

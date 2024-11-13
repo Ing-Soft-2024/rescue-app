@@ -1,9 +1,9 @@
 // import { authMethods, isValidAuthMethod } from "@/auth/index";
-import { AuthMethods, isValidAuthMethod } from "../services/auth";
 import { Session, SessionContextType } from "@/src/types/session.type";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
+import { authMethods, isValidAuthMethod } from "../services/auth";
 import { SecureStorage } from "../services/secure.storage";
 
 const SessionContext = React.createContext<SessionContextType | undefined>(undefined);

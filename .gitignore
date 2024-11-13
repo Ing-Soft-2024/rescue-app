@@ -53,4 +53,10 @@ yarn-error.*
 *.tsbuildinfo
 
 expo-env.d.ts
+
 # @end expo-cli
+
+# Ignore all generated files
+android/
+ios/
+*.apk
