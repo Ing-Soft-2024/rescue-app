@@ -91,6 +91,13 @@ export default function AppLayout() {
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="shopping-cart" color={color} />,
                 }}
             />
+            <Tabs.Screen
+                name="historyScreen"
+                options={{
+                    title: 'History',
+                    tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="search" color={color} />,
+                }}
+            />
         </Tabs>
     );
 }

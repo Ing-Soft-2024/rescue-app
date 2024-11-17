@@ -42,6 +42,7 @@ export default function ShoppingCartScreen() {
                 router.push("./QRScreen");
             }
         
+        console.log("cart", cart);
         let response = await orderConsumer.consume('POST', {
             data:
             {
