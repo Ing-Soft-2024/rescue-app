@@ -22,7 +22,7 @@ export const productConsumer = apiConsumerFactory({
 
 export const commerceDetailsConsumer = apiConsumerFactory({
     endpoint: 'commerce/{id}',
-    validEndpoints: ['GET']
+    validEndpoints: ['GET', 'PATCH']
 });
 
 export const categoryDetailsConsumer = apiConsumerFactory({

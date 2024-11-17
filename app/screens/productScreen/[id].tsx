@@ -33,6 +33,7 @@ export default function ProductLayout() {
   useFocusEffect(
     React.useCallback(() => {
         console.log(params);
+        console.log("PRODUCT SCREEN");
         if(!params.id) return;
 
         setIsLoading(true);
@@ -85,7 +86,7 @@ export default function ProductLayout() {
         <View>
           <Text
             style={styles.link}
-            onPress={() => router.push('./companyScreen')}
+            onPress={() => router.push('/screens/companyScreen')}
           >
             View Company
           </Text>

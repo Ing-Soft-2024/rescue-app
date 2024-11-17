@@ -38,7 +38,7 @@
     "@mercadopago/sdk-react": "^0.0.19",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-google-signin/google-signin": "^12.2.1",
-    "@react-navigation/native": "^6.0.2",
+    "@react-navigation/native": "^6.1.18",
     "axios": "^1.7.7",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "~51.0.38",
