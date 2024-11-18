@@ -39,12 +39,9 @@ export function CategoryBtn({ title, tab, scrollView }: CategoryBtnProps) {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 14,
+    fontSize: 15,
   },
   box: {
-    // height: 20,
-    // width: 30,
-    // backgroundColor: "#0f0",
     padding: 10,
     borderBottomColor: "#000",
     borderBottomWidth: 1,

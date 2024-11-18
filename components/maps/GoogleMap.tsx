@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, LatLng } from 'react-native-maps';
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent } from 'react-native-maps';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { userLocationContext } from '../../src/context/userLocationContext';
+import { commerceDetailsConsumer } from '@/src/services/client';
+import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
+
 
 interface MarkerData {
     coordinate: {
@@ -9,77 +13,182 @@ interface MarkerData {
         longitude: number;
     };
     key: string;
+    title: string; // nombre del comercio
 }
+
+// interface GoogleMapProps {
+//     markersData: MarkerData[]; // Recibe los marcadores como props
+//     onMapPress: (event: MapPressEvent) => void; // Recibe la función para manejar el evento de agregar pines
+// }
 
 interface GoogleMapProps {
-    markersData: MarkerData[]; // Recibe los marcadores como props
-    onMapPress: (event: MapPressEvent) => void; // Recibe la función para manejar el evento de agregar pines
+    onMapPress: (event: MapPressEvent) => void;
 }
 
-export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
+
+export default function GoogleMap({ onMapPress }: GoogleMapProps) {
     const scrollViewRef = useRef<ScrollView>(null);
     const [mapRegion, setMapRegion] = useState<Region | null>(null);
+    const [isUserInteracting, setIsUserInteracting] = useState(false);
+
+    const [markers, setMarkers] = useState<MarkerData[]>([]);
 
     const userLocation = useContext(userLocationContext);
 
+    const [company, setCompany] = React.useState({
+        name: '',
+        latitude: 0,
+        longitude: 0,
+    });
+
+    // const fetchCompanyData = async () => {
+    //     try {
+    //         const companyData = await commerceDetailsConsumer.consume('GET', {
+    //             params: { id: 1 }
+    //         });
+    //         setCompany(companyData);
+    //     } catch (error) {
+    //         console.error("Error fetching company data:", error);
+    //     }
+    // };
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         fetchCompanyData();
+    //     }, []) // Empty dependency array to run only when screen comes into focus
+    // );
+
+    const fetchCommerces = async () => {
+        try {
+            const commerces = await commerceDetailsConsumer.consume('GET', {
+                params: { id: 1 } // le paso el id de 1 comercio. 
+            });
+            const mappedCommerces = commerces.map((commerce: any) => ({
+                coordinate: {
+                    latitude: commerce.latitude,
+                    longitude: commerce.longitude,
+                },
+                key: commerce.id.toString(),
+                title: commerce.name,
+            }));
+            setMarkers(mappedCommerces); // Actualizo el estado con los marcadores
+        } catch (error) {
+            console.error('Error fetching commerces:', error);
+        }
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchCommerces();
+        }, [])
+    );
+
     useEffect(() => {
-        if (userLocation?.location) {
-            setMapRegion({
-                latitude: userLocation.location.coords.latitude,
-                longitude: userLocation.location.coords.longitude,
-                latitudeDelta: 0.0522,
-                longitudeDelta: 0.0421,
+        if (!isUserInteracting && userLocation?.location) {
+            setMapRegion((prevRegion) => {
+                // Solo actualiza si prevRegion no está definido
+                if (!prevRegion) {
+                    return {
+                        latitude: userLocation.location!.coords.latitude,
+                        longitude: userLocation.location!.coords.longitude,
+                        latitudeDelta: 0.0522,
+                        longitudeDelta: 0.0421,
+                    };
+                }
+                return prevRegion;
             });
         }
-    }, [userLocation?.location]);
+    }, [userLocation?.location, isUserInteracting]);
+
+    const handleRegionChange = () => {
+        setIsUserInteracting(true);
+    };
+
+    // const handleRegionChangeComplete = (region: Region) => {
+    //     setMapRegion(region);
+    //     setIsUserInteracting(false);
+    // };
+
 
     // Provide a default region if mapRegion is null
     const defaultRegion = {
-        latitude: 337.785834, // Default latitude
-        longitude: -122.406417, // Default longitude
+        latitude: -34.6055045, // Default latitude
+        longitude: -58.3736717, // Default longitude
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0421,
     };
 
-    const [markers, setMarkers] = useState<MarkerData[]>([]);
-
-
-    const handleMapPress = (event: MapPressEvent) => {
-        const newMarker: MarkerData = {
-            coordinate: event.nativeEvent.coordinate,
-            key: Math.random().toString(),
-        };
-        setMarkers((currentMarkers) => [...currentMarkers, newMarker]);
+    const handleZoomIn = () => {
+        setMapRegion((prevRegion) => {
+            if (prevRegion) {
+                return {
+                    ...prevRegion,
+                    latitudeDelta: prevRegion.latitudeDelta / 2,
+                    longitudeDelta: prevRegion.longitudeDelta / 2,
+                };
+            }
+            return prevRegion; // Si prevRegion es null, lo dejamos como está
+        });
     };
+
+    const handleZoomOut = () => {
+        setMapRegion((prevRegion) => {
+            if (prevRegion) {
+                return {
+                    ...prevRegion,
+                    latitudeDelta: prevRegion.latitudeDelta * 2,
+                    longitudeDelta: prevRegion.longitudeDelta * 2,
+                };
+            }
+            return prevRegion; // Si prevRegion es null, lo dejamos como está
+        });
+    };
+
 
 
     return (
         <View style={styles.container}>
             {mapRegion ? (
-                <MapView
-                    style={styles.map}
-                    provider={PROVIDER_GOOGLE}
-                    showsUserLocation={true}
-                    region={mapRegion || defaultRegion}
-                    onPress={onMapPress}
-                >
-                    {userLocation?.location && (
-                        <Marker
-                            coordinate={{
-                                latitude: userLocation?.location ? userLocation.location.coords.latitude : 0.0,
-                                longitude: userLocation?.location ? userLocation.location.coords.longitude : 0.0,
-                            }}
-                        />
-                    )}
-                    {markersData.map((marker) => (
-                        <Marker
-                            key={marker.key}
-                            coordinate={marker.coordinate}
-                            title="Nuevo Pin"
-                        />
-                    ))}
+                <>
+                    <MapView
+                        style={styles.map}
+                        provider={PROVIDER_GOOGLE}
+                        showsUserLocation={true}
+                        initialRegion={mapRegion}
+                        region={mapRegion}
+                        onPress={onMapPress}
+                    //    onRegionChange={handleRegionChange}
+                    // onRegionChangeComplete={handleRegionChangeComplete}
+                    // onRegionChangeComplete={(region) => setMapRegion(region)}
+                    >
+                        {userLocation?.location && (
+                            <Marker
+                                coordinate={{
+                                    latitude: userLocation.location.coords.latitude,
+                                    longitude: userLocation.location.coords.longitude,
+                                }}
+                            />
+                        )}
+                        {markers.map((marker) => (
+                            <Marker
+                                key={marker.key}
+                                coordinate={marker.coordinate}
+                                title={marker.title}
+                            />
+                        ))}
 
-                </MapView>
+                    </MapView>
+
+                    <View style={styles.zoomControls}>
+                        <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
+                            <Text style={styles.zoomText}>+</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
+                            <Text style={styles.zoomText}>-</Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+
             ) : (
                 // Optionally show a loading spinner or placeholder
                 <View style={styles.loadingContainer}>
@@ -107,5 +216,29 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    zoomControls: {
+        position: 'absolute',
+        bottom: 30,
+        right: 10,
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 8,
+        padding: 5,
+    },
+    zoomButton: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 5,
+        backgroundColor: "#5d6d7e",
+        borderRadius: 20,
+    },
+    zoomText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#fff',
     },
 });
