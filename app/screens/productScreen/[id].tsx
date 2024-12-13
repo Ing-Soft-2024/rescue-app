@@ -26,33 +26,45 @@ export default function ProductLayout() {
   const [isLoading, setIsLoading] = React.useState(true);
 
   const {
-    addToCart
+    addToCart,
+    getProductQuantityInCart,
+    orderQR
   } = useOrders();
   const [showSuccessCard, setShowSuccessCard] = useState(false);
+  const [quantityInCart, setQuantityInCart] = useState(0);
 
   useFocusEffect(
     React.useCallback(() => {
-        console.log(params);
-        console.log("PRODUCT SCREEN");
-        if(!params.id) return;
-
-        setIsLoading(true);
-        productDetailsConsumer.consume('GET', {
-            params: { id: Number(params.id) }
-        }).then(async (product) => {
-          if (!product.image) return product;
-          return await StorageController.download(product.image)
-            .then(image => ({
-                ...product,
-                image
-            }))
-            .catch(() => product);
-        })
-        .then(setProduct)
-        .finally(() => setIsLoading(false));
+      console.log(params);
+      console.log("PRODUCT SCREEN");
+      if (!params.id) return;
   
-    }, [params.id])
-);
+      setIsLoading(true);
+      productDetailsConsumer.consume('GET', {
+        params: { id: Number(params.id) }
+      }).then(async (product) => {
+        if (!product.image) return product;
+        return await StorageController.download(product.image)
+          .then(image => ({
+            ...product,
+            image
+          }))
+          .catch(() => product);
+      })
+      .then(setProduct)
+      .finally(() => setIsLoading(false));
+  
+      // Update the quantity in cart when the screen is focused
+      const currentQuantity = getProductQuantityInCart(Number(params.id));
+      setQuantityInCart(currentQuantity);
+  
+    }, [params.id, getProductQuantityInCart]) // Add getProductQuantityInCart as a dependency
+  );
+  
+
+  const canAddToCart = () => {
+    return product.stock > quantityInCart && !orderQR;
+  };
 
   return (
     <View style={styles.container}>
@@ -101,14 +113,25 @@ export default function ProductLayout() {
         />
 
         {/* Banner inferior para agregar al carrito */}
-        {!showSuccessCard && (
-        <AddToCart onAddToCartPress={() => {
-          addToCart({ product, quantity: 1 });
-          setShowSuccessCard(true);
-          setTimeout(() => setShowSuccessCard(false), 3000);
-          }} />
+        {!showSuccessCard && canAddToCart() && (
+        <AddToCart 
+          onAddToCartPress={() => {
+            if (canAddToCart()) {
+              addToCart({ product, quantity: 1 });
+              setQuantityInCart(prev => prev + 1);
+              setShowSuccessCard(true);
+              setTimeout(() => setShowSuccessCard(false), 3000);
+            }
+          }}
+          
+        />
         )}
       </ScrollView>
+      {product.stock <= quantityInCart && !showSuccessCard && (
+        <View style={styles.outOfStockCard}>
+          <Text style={styles.outOfStockText}>No more items available in stock</Text>
+        </View>
+      )}
       {showSuccessCard && (
         <View style={styles.successCard}>
           <Text style={styles.successText}>Added to cart successfully!</Text>
@@ -153,6 +176,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   successText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  outOfStockCard: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ff4444',
+    padding: 10,
+    alignItems: 'center',
+    zIndex: 4,
+  },
+  outOfStockText: {
     color: '#fff',
     fontSize: 16,
   },

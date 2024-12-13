@@ -16,6 +16,7 @@ type OrdersContextType = {
     // cancelOrder: (index: number) => void;
     confirmOrder: (payment: number) => void;
     getOrder: (index: number) => OrdersDataType | false;
+    getProductQuantityInCart: (productId: number) => number;
 };
 
 export const OrdersContext = createContext<OrdersContextType>({} as OrdersContextType);
@@ -41,6 +42,15 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
 
     let { cart, clearCart, addToCart, removeFromCart, updateCart, total } = useCart();
 
+    const getProductQuantityInCart = (productId: number): number => {
+        return cart.reduce((total: number, item: any) => {
+            if (item.product.id === productId) {
+                return total + item.quantity;
+            }
+            console.log("GET PRODUCT QUANTITY IN CART", total);
+            return total;
+        }, 0);
+    };
 
     return (
         <OrdersContext.Provider value={{
@@ -53,7 +63,7 @@ export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
             orderQR,
             setOrderQR,
             orders,
-            // cancelOrder: (index) => setOrders((prev) => prev.filter((_, i) => i !== index)),
+            getProductQuantityInCart,
             confirmOrder: (payment: number) => {
                 // addDocument({ bill: { item: cart, total }, status: "pending", payment: payment });
                 clearCart();
