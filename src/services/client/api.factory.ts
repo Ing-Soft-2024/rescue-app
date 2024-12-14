@@ -47,6 +47,7 @@ export class ApiConsumerFactory<ValidMethods extends string> {
                     const session = JSON.parse(sessionStr);
                     if (session.idToken) {
                         config.headers.Authorization = `Bearer ${session.idToken}`;
+                        config.headers['X-Auth-Method'] = session.method; 
                     }
                 }
             } catch (error) {
