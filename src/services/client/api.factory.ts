@@ -4,6 +4,7 @@
  */
 import axios, { Axios, AxiosRequestConfig } from "axios";
 import { ApiException } from "./api.exception";
+import { SecureStorage } from "../secure.storage";
 
 
 /**
@@ -37,6 +38,24 @@ export class ApiConsumerFactory<ValidMethods extends string> {
         validEndpoints?: ValidMethods[]
     }) {
         this._axios = axios.create({ baseURL: ApiConsumerFactory.baseURL, headers: { 'Content-Type': 'application/json' } });
+
+
+        this._axios.interceptors.request.use(async (config) => {
+            try {
+                const sessionStr = await SecureStorage.getItemAsync("session");
+                if (sessionStr) {
+                    const session = JSON.parse(sessionStr);
+                    if (session.idToken) {
+                        config.headers.Authorization = `Bearer ${session.idToken}`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error getting token:", error);
+            }
+            return config;
+        });
+
+
         this._endpoint = `${ApiConsumerFactory.baseURL}/api/${endpoint}`;
         this._validEndpoints = validEndpoints?.map(method => method.toUpperCase() as ValidMethods);
     }
