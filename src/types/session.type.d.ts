@@ -11,6 +11,8 @@ export type Session = {
      */
     expiresAt: number;
     method: AuthMethods;
+    accessToken?: string;
+    idToken?: string;  // JWT token
 }
 
 type SignInWithCredentials = (method: "Credentials", opts: { email: string, password: string }) => Promise<void>;

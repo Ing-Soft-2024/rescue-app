@@ -75,7 +75,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
                     .then((session) => {
                         if (!session) return;
                         setSession(session);
-
+                        console.log("SESSION: ",session);
                         // Save session to secure store, persisting the session
                         SecureStorage
                             .setItemAsync("session", JSON.stringify(session));
@@ -85,6 +85,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
                     });
             },
             signOut: () => {
+                console.log("SESSION: ",session);
                 if (!session) return;
                 // if (!isValidAuthMethod(session.method)) throw Error("Invalid sign out method");
                 authMethods["Google"].signOut()
