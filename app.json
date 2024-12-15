@@ -25,14 +25,17 @@
           "location",
           "fetch",
           "remote-notification"
-        ]
+        ],
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location in the background.",
+        "NSLocationAlwaysUsageDescription": "Allow $(PRODUCT_NAME) to access your location even when the app is in the background.",
+        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location while you are using the app."
       },
       "bundleIdentifier": "com.kepleris.rescue"
     },
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
+          "apiKey": "<removed for security>"
         }
       },
       "package": "com.kepleris.rescue",
@@ -41,7 +44,7 @@
           "action": "VIEW",
           "data": [
             {
-              "scheme": "myapp",
+              "scheme": "rescueapp",
               "host": "checkout",
               "pathPrefix": "/congrats"
             }
@@ -57,7 +60,8 @@
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.FOREGROUND_SERVICE"
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.ACCESS_BACKGROUND_LOCATION"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -71,9 +75,7 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "./src/plugins/maps"
-      ],
+      "./src/plugins/maps",
       "@react-native-google-signin/google-signin",
       "expo-apple-authentication",
       "expo-secure-store",
