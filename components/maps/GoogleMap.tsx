@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, Callout } from 'react-native-maps';
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { userLocationContext } from '../../src/context/userLocationContext';
 import { commerceConsumer } from '@/src/services/client'; // Traemos toda la lista de comercios
+import { useRouter } from 'expo-router';
 
 interface MarkerData {
     coordinate: {
@@ -22,15 +23,18 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
 
     const [mapRegion, setMapRegion] = useState<Region | null>(null);
     const [isUserInteracting, setIsUserInteracting] = useState(false);
-
     const [markers, setMarkers] = useState<MarkerData[]>([]);
-
     const userLocation = useContext(userLocationContext);
+    const router = useRouter();
+
+    const goToCommerce = (commerceId: string) => {
+        //router.push(`/screens/companyScreen?commerceId=${commerceId}`);
+        router.push("/screens/companyScreen");
+    };
 
     const fetchCommerces = async () => {
         try {
             const commerces = await commerceConsumer.consume('GET');
-
             const mappedCommerces = commerces.map((commerce: any) => ({
                 coordinate: {
                     latitude: parseFloat(commerce.latitude),
@@ -43,9 +47,6 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
             console.log("Commerces:", mappedCommerces);
 
             setMarkers(mappedCommerces);
-            // } catch (error) {
-            //     console.error("Error fetching commerces:", error);
-            // }
         } catch (error: any) {
             if (error.response) {
                 switch (error.response.status) {
@@ -141,21 +142,24 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                         region={mapRegion || defaultRegion}
                         onPress={onMapPress}
                     >
-                        {/* {userLocation?.location && (
-                            <Marker
-                                coordinate={{
-                                    latitude: userLocation.location.coords.latitude,
-                                    longitude: userLocation.location.coords.longitude,
-                                }}
-                            />
-                        )} */}
-
-                        {markers.map((marker) => ( // Pines de los comercios
+                        {markers.map((marker) => (  // Pines de los comercios
                             <Marker
                                 key={marker.key}
                                 coordinate={marker.coordinate}
                                 title={marker.title}
-                            />
+                            >
+                                <Callout>
+                                    <View style={styles.calloutContainer}>
+                                        <Text style={styles.calloutTitle}>{marker.title}</Text>
+                                        <TouchableOpacity
+                                            onPress={() => goToCommerce(marker.key)}
+                                            style={styles.calloutButton}
+                                        >
+                                            <Text style={styles.calloutButtonText}>Ver detalles</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Callout>
+                            </Marker>
                         ))}
                     </MapView>
 
@@ -176,6 +180,7 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -216,4 +221,24 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#fff",
     },
+    calloutContainer: {
+        padding: 10,
+        width: 200,
+    },
+    calloutTitle: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    calloutButton: {
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    calloutButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+
 });
