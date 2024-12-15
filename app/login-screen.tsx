@@ -7,11 +7,15 @@ import logo from '../assets/images/reskue-logo.png';
 // import { useFonts } from 'expo-font';
 // import AppLoading from 'expo-app-loading';
 import { useFonts, Bungee_400Regular } from '@expo-google-fonts/bungee';
+import { useState } from 'react';
 
 
 export default function AuthLayout() {
     const { signInWith } = useSession();
     const router = useRouter();
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const navigateToIndex = () => {
         router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
@@ -21,6 +25,16 @@ export default function AuthLayout() {
     const [fontsLoaded] = useFonts({
         Bungee: Bungee_400Regular,
     });
+
+    const handleLogin = async (email: string, password: string) => {
+        try {
+            await signInWith("Credentials", { email, password });
+            // On success, user will be redirected automatically due to session context
+        } catch (error) {
+            console.error("Login failed:", error);
+            // Handle login error
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -102,7 +116,7 @@ export default function AuthLayout() {
                 />
 
                 <View style={styles.containerButton}>
-                    <Pressable style={styles.button} onPress={() => { }}>
+                    <Pressable style={styles.button} onPress={() => { handleLogin(email, password) }}>
                         <Text style={styles.buttonText}>Iniciar sesión</Text>
                     </Pressable>
                 </View>
