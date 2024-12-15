@@ -2,6 +2,7 @@ import { Session } from "@/src/types/session.type";
 import zod from "zod";
 import { apiConsumerFactory } from "../client/api.factory";
 import { SecureStorage } from "../secure.storage";
+import { loginConsumer } from "../client";
 
 const authConsumer = apiConsumerFactory({
     endpoint: 'auth',
@@ -15,10 +16,11 @@ const CredentialsAuthSchema = zod.object({
 
 export class CredentialsAuth {
     static async signIn(props: any): Promise<Session> {
+        console.log("CREDENTIALS", props);
         const { data, error } = CredentialsAuthSchema.safeParse(props);
         if (error) throw Error("Invalid credentials");
 
-        const response = await authConsumer.consume('POST', {
+        const response = await loginConsumer.consume('POST', {
             data: {
                 email: props.email,
                 password: props.password

@@ -88,8 +88,10 @@ export default function AuthLayout() {
                 gap: 5,
                 marginTop: 20,
             }}>
-                <TextInput
+                                <TextInput
                     placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
                     style={{
                         backgroundColor: 'white',
                         padding: 10,
@@ -101,8 +103,11 @@ export default function AuthLayout() {
                     }}
                 />
 
+
                 <TextInput
                     placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
                     style={{
                         backgroundColor: 'white',
                         padding: 10,
@@ -113,6 +118,7 @@ export default function AuthLayout() {
                         shadowOffset: { width: 0, height: 1 },
                     }}
                     textContentType="password"
+                    secureTextEntry={true}
                 />
 
                 <View style={styles.containerButton}>
