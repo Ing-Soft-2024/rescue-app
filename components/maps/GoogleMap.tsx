@@ -122,6 +122,7 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
     );
 }
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
