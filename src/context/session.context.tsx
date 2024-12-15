@@ -5,6 +5,7 @@ import React from "react";
 import { Platform } from "react-native";
 import { authMethods, isValidAuthMethod } from "../services/auth";
 import { SecureStorage } from "../services/secure.storage";
+import { loginConsumer } from "../services/client";
 
 const SessionContext = React.createContext<SessionContextType | undefined>(undefined);
 export const useSession = () => {
@@ -71,18 +72,45 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
             signInWith: async (method, opt?) => {
                 if (!isValidAuthMethod(method)) throw Error("Invalid sign in method");
 
-                authMethods[method].signIn(opt)
-                    .then((session) => {
-                        if (!session) return;
-                        setSession(session);
-                        console.log("SESSION: ",session);
-                        // Save session to secure store, persisting the session
-                        SecureStorage
-                            .setItemAsync("session", JSON.stringify(session));
+                try {
+                    // First, get the provider token
+                    const providerSession = await authMethods[method].signIn(opt);
+                     // Then, exchange it with your backend
+
+                    const response = await loginConsumer.consume('POST', {
+                        data:
+                        {
+                            credentials: {
+                                token: providerSession.idToken,
+                                email: providerSession.user.email,
+                                firstName: providerSession.user.name,
+                                lastName: "doe"
+                            },
+                            method: method,
+                        }
                     })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                    console.log("LOGINRESPONSE",response)
+
+                const { token, user } = await response.json();
+
+                // Create final session with your app's token
+                const finalSession = {
+                    ...providerSession,
+                    idToken: token, // Replace provider token with your app's token
+                    user: {
+                        ...user,     // Use user data from your backend
+                        ...providerSession.user, // Keep any additional provider data
+                    }
+                };
+
+                setSession(finalSession);
+                SecureStorage.setItemAsync("session", JSON.stringify(finalSession));
+            } catch (error) {
+                console.error(error);
+                throw new Error("Authentication failed");
+            }
+
+                
             },
             signOut: () => {
                 console.log("SESSION: ",session);

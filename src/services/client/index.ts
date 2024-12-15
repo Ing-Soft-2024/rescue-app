@@ -50,3 +50,8 @@ export const mercadoPagoConsumer = apiConsumerFactory({
     validEndpoints: ['POST']
 });
 
+export const loginConsumer = apiConsumerFactory({
+    endpoint: 'auth/login',
+    validEndpoints: ['POST']
+})
+

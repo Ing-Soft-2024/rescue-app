@@ -15,9 +15,10 @@ export class AppleAuth {
             user: {
                 email: credential.email,
                 name: credential.fullName?.givenName,
-                surname: credential.fullName?.familyName,
+                id: credential.user,
             },
             method: "Apple",
+            idToken: credential.identityToken,
         } as Session;
     }
 

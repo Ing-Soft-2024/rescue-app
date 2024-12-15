@@ -3,7 +3,7 @@ import { User } from "./user.type";
 
 export type Session = {
     user: User;
-    token: string;
+    token: string;  //creo que no se usa
     isGuest?: boolean;
 
     /**

@@ -9,12 +9,17 @@ const CredentialsAuthSchema = zod.object({
 export class CredentialsAuth {
     constructor() { }
 
-    static async signIn(props: any): Promise<Session> {
-        const { data, error } = CredentialsAuthSchema.safeParse(props);
-        if (error) throw Error("Invalid credentials");
-
-        console.log("Sign in with credentials");
-        return {} as Session;
+    static async signIn(credentials: { email: string, password: string }): Promise<Session> {
+        // Here you might want to do some local validation
+        return {
+            user: {
+                email: credentials.email,
+                name: '', // Will be filled by backend
+                id: '',  // Will be filled by backend
+            },
+            method: "Credentials",
+            idToken: '', // Will be filled by backend
+        } as Session;
     }
 
     static async signOut(): Promise<void> {
