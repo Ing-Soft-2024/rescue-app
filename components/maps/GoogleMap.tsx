@@ -10,7 +10,7 @@ interface MarkerData {
         latitude: number;
         longitude: number;
     };
-    key: string;
+    key: string;  // ID del comercio
     title: string; // Nombre del comercio
 }
 
@@ -33,15 +33,40 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
 
             const mappedCommerces = commerces.map((commerce: any) => ({
                 coordinate: {
-                    latitude: commerce.latitude,
-                    longitude: commerce.longitude,
+                    latitude: parseFloat(commerce.latitude),
+                    longitude: parseFloat(commerce.longitude),
                 },
                 key: commerce.id.toString(),
                 title: commerce.name,
             }));
+
+            console.log("Commerces:", mappedCommerces);
+
             setMarkers(mappedCommerces);
-        } catch (error) {
-            console.error("Error fetching commerces:", error);
+            // } catch (error) {
+            //     console.error("Error fetching commerces:", error);
+            // }
+        } catch (error: any) {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        console.error("Bad Request: Verificar los parámetros enviados.");
+                        break;
+                    case 401:
+                        console.error("Unauthorized: No autorizado.");
+                        break;
+                    case 404:
+                        console.error("Not Found: No se encontraron comercios.");
+                        break;
+                    case 500:
+                        console.error("Server Error: Ocurrió un problema en el servidor.");
+                        break;
+                    default:
+                        console.error("Error desconocido:", error.response.status);
+                }
+            } else {
+                console.error("Error fetching commerces (maps):", error.message);
+            }
         }
     };
 
