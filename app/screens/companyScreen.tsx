@@ -76,7 +76,7 @@ export default function CompanyScreen({ route }: { route: any }) {
         console.log("Company data fetched:", companyData);
       }
     } catch (error) {
-      console.error("Error fetching company data:", error);
+      console.error("Error fetching company data (pop up):", error);
     }
   };
 

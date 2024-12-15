@@ -20,6 +20,8 @@ interface GoogleMapProps {
 
 export default function GoogleMap({ onMapPress }: GoogleMapProps) {
 
+    const [isUserInteracting, setIsUserInteracting] = useState(false);
+
     const [mapRegion, setMapRegion] = useState<Region>({
         latitude: -34.6055045,
         longitude: -58.3736717,
@@ -48,6 +50,7 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
             }));
 
             console.log("Commerces:", mappedCommerces);
+
             setMarkers(mappedCommerces);
         } catch (error: any) {
             if (error.response) {
@@ -90,6 +93,43 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
         }
     }, [userLocation?.location]);
 
+    const handleRegionChange = () => {
+        setIsUserInteracting(true);
+    };
+
+    const defaultRegion = {
+        latitude: -34.6055045,
+        longitude: -58.3736717,
+        latitudeDelta: 0.0522,
+        longitudeDelta: 0.0421,
+    };
+
+    const handleZoomIn = () => {
+        setMapRegion((prevRegion) => {
+            if (prevRegion) {
+                return {
+                    ...prevRegion,
+                    latitudeDelta: prevRegion.latitudeDelta / 2,
+                    longitudeDelta: prevRegion.longitudeDelta / 2,
+                };
+            }
+            return prevRegion;
+        });
+    };
+
+    const handleZoomOut = () => {
+        setMapRegion((prevRegion) => {
+            if (prevRegion) {
+                return {
+                    ...prevRegion,
+                    latitudeDelta: prevRegion.latitudeDelta * 2,
+                    longitudeDelta: prevRegion.longitudeDelta * 2,
+                };
+            }
+            return prevRegion;
+        });
+    };
+
     return (
         <View style={styles.container}>
             <MapView
@@ -118,6 +158,16 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                     </Marker>
                 ))}
             </MapView>
+
+            <View style={styles.zoomControls}>
+                <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
+                    <Text style={styles.zoomText}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
+                    <Text style={styles.zoomText}>-</Text>
+                </TouchableOpacity>
+            </View>
+
         </View>
     );
 }
@@ -149,5 +199,30 @@ const styles = StyleSheet.create({
     calloutButtonText: {
         color: '#fff',
         fontWeight: 'bold',
+    },
+
+    zoomControls: {
+        position: "absolute",
+        bottom: 30,
+        right: 10,
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        borderRadius: 8,
+        padding: 5,
+    },
+    zoomButton: {
+        width: 40,
+        height: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 5,
+        backgroundColor: "#5d6d7e",
+        borderRadius: 20,
+    },
+    zoomText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#fff",
     },
 });
