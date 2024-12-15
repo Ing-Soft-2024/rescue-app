@@ -25,6 +25,11 @@ export const commerceDetailsConsumer = apiConsumerFactory({
     validEndpoints: ['GET', 'PATCH']
 });
 
+export const nearUserConsumer = apiConsumerFactory({
+    endpoint: 'nearuser/product',
+    validEndpoints: ['GET']
+});
+
 export const categoryDetailsConsumer = apiConsumerFactory({
     endpoint: 'category/{id}',
     validEndpoints: ['GET']

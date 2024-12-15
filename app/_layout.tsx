@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { OrdersProvider } from '@/src/context/ordersContext';
 import { SessionProvider } from '@/src/context/session.context';
+import { LocationProvider } from '../src/providers/LocationProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,7 +33,9 @@ export default function RootLayout() {
     // <ThemeProvider value={DefaultTheme}>
     <SessionProvider>
       <OrdersProvider>
-        <Slot />
+        <LocationProvider>
+          <Slot />
+        </LocationProvider>
       </OrdersProvider>
     </SessionProvider>
     // </ThemeProvider>

@@ -55,7 +55,7 @@ export default function ProductLayout() {
       .finally(() => setIsLoading(false));
   
       // Update the quantity in cart when the screen is focused
-      const currentQuantity = getProductQuantityInCart(Number(params.id));
+      const currentQuantity = getProductQuantityInCart(String(params.id));
       setQuantityInCart(currentQuantity);
   
     }, [params.id, getProductQuantityInCart]) // Add getProductQuantityInCart as a dependency
@@ -117,7 +117,13 @@ export default function ProductLayout() {
         <AddToCart 
           onAddToCartPress={() => {
             if (canAddToCart()) {
-              addToCart({ product, quantity: 1 });
+              addToCart({ 
+                product: {
+                  ...product,
+                  commerceId: product.businessId
+                }, 
+                quantity: 1 
+              });
               setQuantityInCart(prev => prev + 1);
               setShowSuccessCard(true);
               setTimeout(() => setShowSuccessCard(false), 3000);

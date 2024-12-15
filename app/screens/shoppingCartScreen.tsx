@@ -10,7 +10,6 @@ import uuid from 'react-native-uuid';
 
 
 
-
 export default function ShoppingCartScreen() {
 
     const { session } = useSession();
