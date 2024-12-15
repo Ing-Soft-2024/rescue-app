@@ -1,106 +1,40 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
-import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent } from 'react-native-maps';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import { userLocationContext } from '../../src/context/userLocationContext';
-import { commerceConsumer } from '@/src/services/client'; // Traemos toda la lista de comercios
+import React, { useEffect, useState, useContext } from 'react';
+import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, Callout } from 'react-native-maps';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { userLocationContext } from '@/src/context/userLocationContext';
+import { router, useRouter } from 'expo-router';
+import { commerceConsumer } from '@/src/services/client';
 
 interface MarkerData {
     coordinate: {
         latitude: number;
         longitude: number;
     };
-    key: string;  // ID del comercio
-    title: string; // Nombre del comercio
+    key: string;
+    title: string;
 }
 
 interface GoogleMapProps {
+    markersData: MarkerData[];
     onMapPress: (event: MapPressEvent) => void;
 }
 
-export default function GoogleMap({ onMapPress }: GoogleMapProps) {
-
-    const [mapRegion, setMapRegion] = useState<Region | null>(null);
+export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
+    const { location } = useContext(userLocationContext);
+    const router = useRouter();
     const [isUserInteracting, setIsUserInteracting] = useState(false);
-
     const [markers, setMarkers] = useState<MarkerData[]>([]);
 
-    const userLocation = useContext(userLocationContext);
-
-    const fetchCommerces = async () => {
-        try {
-            const commerces = await commerceConsumer.consume('GET');
-
-            const mappedCommerces = commerces.map((commerce: any) => ({
-                coordinate: {
-                    latitude: parseFloat(commerce.latitude),
-                    longitude: parseFloat(commerce.longitude),
-                },
-                key: commerce.id.toString(),
-                title: commerce.name,
-            }));
-
-            console.log("Commerces:", mappedCommerces);
-
-            setMarkers(mappedCommerces);
-            // } catch (error) {
-            //     console.error("Error fetching commerces:", error);
-            // }
-        } catch (error: any) {
-            if (error.response) {
-                switch (error.response.status) {
-                    case 400:
-                        console.error("Bad Request: Verificar los parámetros enviados.");
-                        break;
-                    case 401:
-                        console.error("Unauthorized: No autorizado.");
-                        break;
-                    case 404:
-                        console.error("Not Found: No se encontraron comercios.");
-                        break;
-                    case 500:
-                        console.error("Server Error: Ocurrió un problema en el servidor.");
-                        break;
-                    default:
-                        console.error("Error desconocido:", error.response.status);
-                }
-            } else {
-                console.error("Error fetching commerces (maps):", error.message);
-            }
-        }
-    };
-
-    useFocusEffect(
-        React.useCallback(() => {
-            fetchCommerces();
-        }, [])
-    );
-
-    useEffect(() => {
-        if (!isUserInteracting && userLocation?.location) {
-            setMapRegion((prevRegion) => {
-                if (!prevRegion) {
-                    return {
-                        latitude: userLocation.location!.coords.latitude,
-                        longitude: userLocation.location!.coords.longitude,
-                        latitudeDelta: 0.0522,
-                        longitudeDelta: 0.0421,
-                    };
-                }
-                return prevRegion;
-            });
-        }
-    }, [userLocation?.location, isUserInteracting]);
-
-    const handleRegionChange = () => {
-        setIsUserInteracting(true);
-    };
-
-    const defaultRegion = {
-        latitude: -34.6055045,
-        longitude: -58.3736717,
+    const [mapRegion, setMapRegion] = useState<Region>({
+        latitude: location?.coords.latitude || -34.6055045,
+        longitude: location?.coords.longitude || -58.3736717,
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0421,
+    });
+
+
+    const goToCommerce = (commerceId: string) => {
+        router.push(`/screens/companyScreen?id=${commerceId}`);
     };
 
     const handleZoomIn = () => {
@@ -129,69 +63,101 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
         });
     };
 
+    const handleMarkerPress = (commerceId: string) => {
+        router.push(`/screens/companyScreen?id=${commerceId}`);
+    };
+
+    const fetchCommerces = async () => {
+        try {
+            const commerces = await commerceConsumer.consume('GET');
+            const mappedCommerces = commerces.map((commerce: any) => ({
+                coordinate: {
+                    latitude: parseFloat(commerce.latitude),
+                    longitude: parseFloat(commerce.longitude)
+                },
+                key: commerce.id.toString(),
+                title: commerce.name
+            }));
+            setMarkers(mappedCommerces);
+        } catch (error) {
+            console.error('Error fetching commerces:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCommerces();
+    }, []);
+
     return (
         <View style={styles.container}>
-            {mapRegion ? (
-                <>
-                    <MapView
-                        style={styles.map}
-                        provider={PROVIDER_GOOGLE}
-                        showsUserLocation={true}
-                        initialRegion={mapRegion}
-                        region={mapRegion || defaultRegion}
-                        onPress={onMapPress}
+            <MapView
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                region={mapRegion}
+                onPress={onMapPress}
+            >
+                {markers.map((marker) => (
+                    <Marker
+                        key={marker.key}
+                        coordinate={marker.coordinate}
+                        title={marker.title}
                     >
-                        {/* {userLocation?.location && (
-                            <Marker
-                                coordinate={{
-                                    latitude: userLocation.location.coords.latitude,
-                                    longitude: userLocation.location.coords.longitude,
-                                }}
-                            />
-                        )} */}
+                        <Callout onPress={() => goToCommerce(marker.key)}>
+                            <View style={styles.calloutContainer}>
+                                <Text style={styles.calloutTitle}>{marker.title}</Text>
+                                <TouchableOpacity
+                                    style={styles.calloutButton}
+                                >
+                                    <Text style={styles.calloutButtonText}>Ver detalles</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+            </MapView>
 
-                        {markers.map((marker) => ( // Pines de los comercios
-                            <Marker
-                                key={marker.key}
-                                coordinate={marker.coordinate}
-                                title={marker.title}
-                            />
-                        ))}
-                    </MapView>
+            <View style={styles.zoomControls}>
+                <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
+                    <Text style={styles.zoomText}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
+                    <Text style={styles.zoomText}>-</Text>
+                </TouchableOpacity>
+            </View>
 
-                    <View style={styles.zoomControls}>
-                        <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
-                            <Text style={styles.zoomText}>+</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
-                            <Text style={styles.zoomText}>-</Text>
-                        </TouchableOpacity>
-                    </View>
-                </>
-            ) : (
-                <View style={styles.loadingContainer}>
-                    <Text>Loading map...</Text>
-                </View>
-            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
-        height: "100%",
-        borderRadius: 8,
+        flex: 1,
     },
     map: {
-        width: "100%",
-        height: "100%",
+        width: '100%',
+        height: '100%',
     },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+    calloutContainer: {
+        padding: 10,
+        width: 200,
     },
+    calloutTitle: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    calloutButton: {
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginTop: 5,
+    },
+    calloutButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+
     zoomControls: {
         position: "absolute",
         bottom: 30,

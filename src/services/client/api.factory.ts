@@ -4,6 +4,7 @@
  */
 import axios, { Axios, AxiosRequestConfig } from "axios";
 import { ApiException } from "./api.exception";
+import { SecureStorage } from "../secure.storage";
 
 
 /**
@@ -25,6 +26,16 @@ export type ApiRequestConfig = Exclude<AxiosRequestConfig, "method" | "url"> & {
     "params"?: { [key: string]: any },
     "queryParams"?: { [key: string]: any }
 }
+
+const getHeaders = async () => {
+    const session = await SecureStorage.getItemAsync("session");
+    if (!session) return {};
+    
+    const { token } = JSON.parse(session);
+    return {
+        'Authorization': `Bearer ${token}`
+    };
+};
 
 export class ApiConsumerFactory<ValidMethods extends string> {
     _axios: Axios;
@@ -81,8 +92,7 @@ export class ApiConsumerFactory<ValidMethods extends string> {
             throw new ApiException(405, 'Method not implemented');
 
         const endpoint = `${this._replaceParams(this._endpoint, data?.params)}${this._querySerializer(data?.queryParams)}`;
-        // const authHeaders = await getHeaders();
-        // console.log(endpoint, authHeaders);
+        const authHeaders = await getHeaders();
 
         delete data?.params;
         delete data?.queryParams;
@@ -90,7 +100,7 @@ export class ApiConsumerFactory<ValidMethods extends string> {
             method: method,
             url: endpoint,
             headers: {
-                // ...authHeaders,
+                ...authHeaders,
                 ...data?.headers,
                 'Content-Type': 'application/json'
             },

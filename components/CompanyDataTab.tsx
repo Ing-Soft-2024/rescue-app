@@ -8,34 +8,35 @@ interface CompanyDataTabProps {
 }
 
 export function CompanyDataTab({ companyName, location, rating }: CompanyDataTabProps) {
-  //  array de estrellas con base en el rating
-  const stars = Array.from({ length: 5 }, (_, index) => index < rating);
+  // Crear un array de estrellas basado en el rating
+  const stars = Array.from({ length: 5 }, (_, index) => index < Math.round(rating));
 
   return (
     <View style={styles.container}>
+
+      {/* Información de la empresa */}
       <View style={styles.textContainer}>
-
         <Text style={styles.companyName}>{companyName}</Text>
-
         <Text style={styles.location}>{location}</Text>
       </View>
 
+      {/* Rating y estrellas */}
       <View style={styles.ratingContainer}>
-        {/* Rating con estrellas */}
         <View style={styles.starsContainer}>
           {stars.map((filled, index) => (
-            <Text key={index} style={[styles.star, filled && styles.filledStar && { color: '#FFD700' }]}>
+            <Text
+              key={index}
+              style={[styles.star, filled ? styles.filledStar : null]}
+            >
               ★
             </Text>
           ))}
         </View>
-
-        {/* Valor numérico del rating */}
         <Text style={styles.ratingValue}>{rating.toFixed(1)}</Text>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

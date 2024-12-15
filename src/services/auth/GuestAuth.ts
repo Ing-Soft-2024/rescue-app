@@ -4,16 +4,16 @@ export class GuestAuth {
     static async signIn(): Promise<Session> {
         console.log("Sign in as guest");
         return {
-            token: "guest",
+            token: "guest", 
             isGuest: true,
             expiresAt: Date.now() + 1000 * 60 * 60 * 24,
             method: "Guest",
             user: {
-                id: "guest",
+                id: 0, // Changed to number to match Session type
                 name: "Guest",
                 email: ""
             }
-        } as Session;
+        };
     }
 
     static async signOut() {

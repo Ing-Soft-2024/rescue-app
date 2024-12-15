@@ -8,11 +8,11 @@ import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
 import { commerceDetailsConsumer } from '@/src/services/client';
 
-export default function CompanyScreen() {
+export default function CompanyScreen({ route }: { route: any }) {
   const router = useRouter();
   console.log("COMPANY SCREEN");
 
-  const screen = "Company";
+  const id = route?.params?.id;
 
   const onPressBack = () => {
     router.back();
@@ -29,39 +29,71 @@ export default function CompanyScreen() {
 
   const [company, setCompany] = React.useState({
     name: '',
-    ubication: '',
+    address: '',
     avgRating: 0,
     products: [],
   });
+
   const [arr1, setArr1] = React.useState<ProductType[]>([]);
+
+  // const fetchCompanyData = async () => {
+  //   try {
+  //     const companyData = await commerceDetailsConsumer.consume('GET', {
+  //       params: { id },
+  //     });
+  //     const { name, address, avgRating, products } = companyData;
+  //     setCompany({ name, address, avgRating, products });
+
+  //     console.log("Company data:", companyData);
+
+  //     setArr1(products);
+  //   } catch (error) {
+  //     console.error("Error fetching company data:", error);
+  //   }
+  // };
 
   const fetchCompanyData = async () => {
     try {
       const companyData = await commerceDetailsConsumer.consume('GET', {
-        params: { id: 1 }
+        params: { id },
       });
-      setCompany(companyData);
-      setArr1(companyData.products);
+
+      if (companyData) {
+        const { name, address, avgRating, products } = companyData;
+
+        setCompany({
+          name: name || 'Nombre no disponible',
+          address: address || 'Dirección no disponible',
+          avgRating: avgRating || 0,
+          products: products || [],
+        });
+
+        console.log("Company data fetched:", companyData);
+      }
     } catch (error) {
-      console.error("Error fetching company data:", error);
+      console.error("Error fetching company data (pop up):", error);
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchCompanyData();
-    }, []) // Empty dependency array to run only when screen comes into focus
+      if (id) { // Verificar que el ID esté definido
+        fetchCompanyData();
+      }
+    }, [id]) // Reaccionar solo cuando el ID cambia
   );
 
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
         <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
+
         <CompanyDataTab
           companyName={company.name}
-          location={company.ubication}
+          location={company.address}
           rating={company.avgRating}
         />
+
         <CategoryTab arr={[
           { title: 'tab1', tab: sectionRefs.section1, scrollView: scrollViewRef },
           { title: 'tab2', tab: sectionRefs.section2, scrollView: scrollViewRef },
@@ -69,6 +101,7 @@ export default function CompanyScreen() {
           { title: 'tab4', tab: sectionRefs.section4, scrollView: scrollViewRef },
           { title: 'tab5', tab: sectionRefs.section5, scrollView: scrollViewRef },
         ]} />
+
         <View ref={sectionRefs.section1}>
           <CategoryList products={arr1} />
         </View >
@@ -109,6 +142,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingHorizontal: 0,
-    paddingBottom: 20, // Add space at the end of the scroll
+    paddingBottom: 20,
   },
 });
