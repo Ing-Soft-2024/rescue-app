@@ -41,17 +41,40 @@ export default function CompanyScreen({ route }: { route: any }) {
 
   const [arr1, setArr1] = React.useState<ProductType[]>([]);
 
+  // const fetchCompanyData = async () => {
+  //   try {
+  //     const companyData = await commerceDetailsConsumer.consume('GET', {
+  //       params: { id },
+  //     });
+  //     const { name, address, avgRating, products } = companyData;
+  //     setCompany({ name, address, avgRating, products });
+
+  //     console.log("Company data:", companyData);
+
+  //     setArr1(products);
+  //   } catch (error) {
+  //     console.error("Error fetching company data:", error);
+  //   }
+  // };
+
   const fetchCompanyData = async () => {
     try {
       const companyData = await commerceDetailsConsumer.consume('GET', {
         params: { id },
       });
-      const { name, address, avgRating, products } = companyData;
-      setCompany({ name, address, avgRating, products });
 
-      console.log("Company data:", companyData);
+      if (companyData) {
+        const { name, address, avgRating, products } = companyData;
 
-      setArr1(products);
+        setCompany({
+          name: name || 'Nombre no disponible',
+          address: address || 'Dirección no disponible',
+          avgRating: avgRating || 0,
+          products: products || [],
+        });
+
+        console.log("Company data fetched:", companyData);
+      }
     } catch (error) {
       console.error("Error fetching company data:", error);
     }
