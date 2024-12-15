@@ -8,7 +8,7 @@ interface CompanyDataTabProps {
 }
 
 export function CompanyDataTab({ companyName, location, rating }: CompanyDataTabProps) {
-  // Crea un array de estrellas con base en el rating
+  // Crea un array de estrellas en base al rating
   const stars = Array.from({ length: 5 }, (_, index) => index < Math.round(rating));
 
   return (
