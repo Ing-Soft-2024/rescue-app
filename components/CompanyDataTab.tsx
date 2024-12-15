@@ -13,6 +13,7 @@ export function CompanyDataTab({ companyName, location, rating }: CompanyDataTab
 
   return (
     <View style={styles.container}>
+
       {/* Información de la empresa */}
       <View style={styles.textContainer}>
         <Text style={styles.companyName}>{companyName}</Text>

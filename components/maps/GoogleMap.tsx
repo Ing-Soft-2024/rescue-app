@@ -5,7 +5,6 @@ import { userLocationContext } from '@/src/context/userLocationContext';
 import { router, useRouter } from 'expo-router';
 import { commerceConsumer } from '@/src/services/client';
 
-
 interface MarkerData {
     coordinate: {
         latitude: number;
@@ -14,8 +13,6 @@ interface MarkerData {
     key: string;
     title: string;
 }
-
-
 
 interface GoogleMapProps {
     markersData: MarkerData[];
@@ -39,7 +36,7 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
     const goToCommerce = (commerceId: string) => {
         router.push(`/screens/companyScreen?id=${commerceId}`);
     };
-    
+
     const handleZoomIn = () => {
         setMapRegion((prevRegion) => {
             if (prevRegion) {
@@ -52,7 +49,7 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
             return prevRegion;
         });
     };
-    
+
     const handleZoomOut = () => {
         setMapRegion((prevRegion) => {
             if (prevRegion) {

@@ -12,11 +12,6 @@ export default function CompanyScreen({ route }: { route: any }) {
   const router = useRouter();
   console.log("COMPANY SCREEN");
 
-  // const { id } = useSearchParams();
-
-  // const searchParams = new URLSearchParams(router.asPath.split('?')[1]);
-  // const id = searchParams.get('id');
-
   const id = route?.params?.id;
 
   const onPressBack = () => {
@@ -87,12 +82,6 @@ export default function CompanyScreen({ route }: { route: any }) {
       }
     }, [id]) // Reaccionar solo cuando el ID cambia
   );
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchCompanyData();
-  //   }, []) // Empty dependency array to run only when screen comes into focus
-  // );
 
   return (
     <View style={{ flex: 1 }}>
