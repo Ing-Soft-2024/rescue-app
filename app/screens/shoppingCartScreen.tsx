@@ -1,5 +1,6 @@
 import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
+import { useSession } from "@/src/context/session.context";
 import { orderConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
@@ -12,6 +13,7 @@ import uuid from 'react-native-uuid';
 
 export default function ShoppingCartScreen() {
 
+    const { session } = useSession();
     
         
    
@@ -43,10 +45,11 @@ export default function ShoppingCartScreen() {
             }
         
         console.log("cart", cart);
+        console.log("id", session?.user.id);
         let response = await orderConsumer.consume('POST', {
             data:
             {
-                userId: 1,
+                userId: session?.user.id,
                 businessId:1,
                 status: "pending",
                 cart
