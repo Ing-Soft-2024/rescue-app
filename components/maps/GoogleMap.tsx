@@ -1,18 +1,17 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, Callout } from 'react-native-maps';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from 'expo-router';
-import { userLocationContext } from '../../src/context/userLocationContext';
-import { commerceConsumer } from '@/src/services/client'; // Traemos toda la lista de comercios
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { userLocationContext } from '@/src/context/userLocationContext';
 import { useRouter } from 'expo-router';
+import { commerceConsumer } from '@/src/services/client';
 
 interface MarkerData {
     coordinate: {
         latitude: number;
         longitude: number;
     };
-    key: string;  // ID del comercio
-    title: string; // Nombre del comercio
+    key: string;
+    title: string;
 }
 
 interface GoogleMapProps {
@@ -20,22 +19,19 @@ interface GoogleMapProps {
 }
 
 export default function GoogleMap({ onMapPress }: GoogleMapProps) {
-
-    const [mapRegion, setMapRegion] = useState<Region | null>(null);
-    const [isUserInteracting, setIsUserInteracting] = useState(false);
+    const [mapRegion, setMapRegion] = useState<Region>({
+        latitude: -34.6055045,
+        longitude: -58.3736717,
+        latitudeDelta: 0.0522,
+        longitudeDelta: 0.0421,
+    });
+    
     const [markers, setMarkers] = useState<MarkerData[]>([]);
     const userLocation = useContext(userLocationContext);
     const router = useRouter();
 
-    // const goToCommerce = (commerceId: string) => {
-    //     router.push({
-    //         pathname: "/screens/companyScreen",
-    //         query: { id: commerceId }, // Pasar el ID como query param
-    //     });
-    // };
-
     const goToCommerce = (commerceId: string) => {
-        router.push(`/screens/companyScreen?id=${commerceId}`); // Pasar el ID como parte de la URL
+        router.push(`/screens/companyScreen?id=${commerceId}`);
     };
 
     const fetchCommerces = async () => {
@@ -51,7 +47,6 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
             }));
 
             console.log("Commerces:", mappedCommerces);
-
             setMarkers(mappedCommerces);
         } catch (error: any) {
             if (error.response) {
@@ -77,155 +72,62 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
         }
     };
 
-    useFocusEffect(
-        React.useCallback(() => {
-            fetchCommerces();
-        }, [])
-    );
-
+    // Add this useEffect to fetch commerces when component mounts
     useEffect(() => {
-        if (!isUserInteracting && userLocation?.location) {
-            setMapRegion((prevRegion) => {
-                if (!prevRegion) {
-                    return {
-                        latitude: userLocation.location!.coords.latitude,
-                        longitude: userLocation.location!.coords.longitude,
-                        latitudeDelta: 0.0522,
-                        longitudeDelta: 0.0421,
-                    };
-                }
-                return prevRegion;
+        fetchCommerces();
+    }, []);
+
+    // Update map region when user location changes
+    useEffect(() => {
+        if (userLocation?.location) {
+            setMapRegion({
+                latitude: userLocation.location.coords.latitude,
+                longitude: userLocation.location.coords.longitude,
+                latitudeDelta: 0.0522,
+                longitudeDelta: 0.0421,
             });
         }
-    }, [userLocation?.location, isUserInteracting]);
-
-    const handleRegionChange = () => {
-        setIsUserInteracting(true);
-    };
-
-    const defaultRegion = {
-        latitude: -34.6055045,
-        longitude: -58.3736717,
-        latitudeDelta: 0.0522,
-        longitudeDelta: 0.0421,
-    };
-
-    const handleZoomIn = () => {
-        setMapRegion((prevRegion) => {
-            if (prevRegion) {
-                return {
-                    ...prevRegion,
-                    latitudeDelta: prevRegion.latitudeDelta / 2,
-                    longitudeDelta: prevRegion.longitudeDelta / 2,
-                };
-            }
-            return prevRegion;
-        });
-    };
-
-    const handleZoomOut = () => {
-        setMapRegion((prevRegion) => {
-            if (prevRegion) {
-                return {
-                    ...prevRegion,
-                    latitudeDelta: prevRegion.latitudeDelta * 2,
-                    longitudeDelta: prevRegion.longitudeDelta * 2,
-                };
-            }
-            return prevRegion;
-        });
-    };
+    }, [userLocation?.location]);
 
     return (
         <View style={styles.container}>
-            {mapRegion ? (
-                <>
-                    <MapView
-                        style={styles.map}
-                        provider={PROVIDER_GOOGLE}
-                        showsUserLocation={true}
-                        initialRegion={mapRegion}
-                        region={mapRegion || defaultRegion}
-                        onPress={onMapPress}
+            <MapView
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                showsUserLocation={true}
+                region={mapRegion}
+                onPress={onMapPress}
+            >
+                {markers.map((marker) => (
+                    <Marker
+                        key={marker.key}
+                        coordinate={marker.coordinate}
+                        title={marker.title}
                     >
-                        {markers.map((marker) => (  // Pines de los comercios
-                            <Marker
-                                key={marker.key}
-                                coordinate={marker.coordinate}
-                                title={marker.title}
-                            >
-                                <Callout>
-                                    <View style={styles.calloutContainer}>
-                                        <Text style={styles.calloutTitle}>{marker.title}</Text>
-                                        <TouchableOpacity
-                                            onPress={() => goToCommerce(marker.key)}
-                                            style={styles.calloutButton}
-                                        >
-                                            <Text style={styles.calloutButtonText}>Ver detalles</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </Callout>
-                            </Marker>
-                        ))}
-                    </MapView>
-
-                    <View style={styles.zoomControls}>
-                        <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
-                            <Text style={styles.zoomText}>+</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
-                            <Text style={styles.zoomText}>-</Text>
-                        </TouchableOpacity>
-                    </View>
-                </>
-            ) : (
-                <View style={styles.loadingContainer}>
-                    <Text>Loading map...</Text>
-                </View>
-            )}
+                        <Callout onPress={() => goToCommerce(marker.key)}>
+                            <View style={styles.calloutContainer}>
+                                <Text style={styles.calloutTitle}>{marker.title}</Text>
+                                <TouchableOpacity
+                                    style={styles.calloutButton}
+                                >
+                                    <Text style={styles.calloutButtonText}>Ver detalles</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Callout>
+                    </Marker>
+                ))}
+            </MapView>
         </View>
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
-        width: "100%",
-        height: "100%",
-        borderRadius: 8,
+        flex: 1,
     },
     map: {
-        width: "100%",
-        height: "100%",
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    zoomControls: {
-        position: "absolute",
-        bottom: 30,
-        right: 10,
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        borderRadius: 8,
-        padding: 5,
-    },
-    zoomButton: {
-        width: 40,
-        height: 40,
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 5,
-        backgroundColor: "#5d6d7e",
-        borderRadius: 20,
-    },
-    zoomText: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#fff",
+        width: '100%',
+        height: '100%',
     },
     calloutContainer: {
         padding: 10,
@@ -246,5 +148,4 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
     },
-
 });
