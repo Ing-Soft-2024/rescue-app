@@ -29,6 +29,13 @@ export function CompanyDataTab({ companyName, location, rating }: CompanyDataTab
                 filled ? styles.filledStar : null, // Estilo de estrella llena
               ]}
             >
+            <Text
+              key={index}
+              style={[
+                styles.star,
+                filled ? styles.filledStar : null, // Estilo de estrella llena
+              ]}
+            >
               ★
             </Text>
           ))}
@@ -36,53 +43,54 @@ export function CompanyDataTab({ companyName, location, rating }: CompanyDataTab
 
         <Text style={styles.ratingValue}>{rating.toFixed(1)}</Text>
       </View>
-    </View>
-  );
+      </View>
+      );
+}
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row', // Alinear elementos horizontalmente
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
-    elevation: 3,
-    margin: 10,
-    marginBottom: 0,
+      const styles = StyleSheet.create({
+        container: {
+        flexDirection: 'row', // Alinear elementos horizontalmente
+      justifyContent: 'space-between',
+      padding: 15,
+      backgroundColor: '#f9f9f9',
+      borderRadius: 10,
+      elevation: 3,
+      margin: 10,
+      marginBottom: 0,
   },
-  textContainer: {
-    flex: 1,
-    justifyContent: 'center',
+      textContainer: {
+        flex: 1,
+      justifyContent: 'center',
   },
-  companyName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5,
+      companyName: {
+        fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 5,
   },
-  location: {
-    fontSize: 16,
-    color: '#555',
+      location: {
+        fontSize: 16,
+      color: '#555',
   },
-  ratingContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+      ratingContainer: {
+        alignItems: 'center',
+      justifyContent: 'center',
   },
-  starsContainer: {
-    flexDirection: 'row',
-    marginBottom: 5,
+      starsContainer: {
+        flexDirection: 'row',
+      marginBottom: 5,
   },
-  star: {
-    fontSize: 20,
-    color: 'white',
-    marginRight: 2,
+      star: {
+        fontSize: 20,
+      color: 'white',
+      marginRight: 2,
   },
-  filledStar: {
-    color: 'black',
+      filledStar: {
+        color: 'black',
   },
-  ratingValue: {
-    fontSize: 16,
-    color: '#333',
+      ratingValue: {
+        fontSize: 16,
+      color: '#333',
   },
 });
 
