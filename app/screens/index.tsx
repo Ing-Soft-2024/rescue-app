@@ -9,10 +9,11 @@ import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
 
 export default function homeScreen() {
-  const { signOut } = useSession();
 
   const [category, setCategory] = React.useState<ProductType[]>([]);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  const { signOut } = useSession();
 
   const onRefresh = () => {
     setIsRefreshing(true);
@@ -23,27 +24,27 @@ export default function homeScreen() {
       })
       .finally(() => setIsRefreshing(false));
   }
-  
+
   React.useEffect(() => {
     productConsumer.consume('GET')
       .then(setCategory);
   }, [])
 
-  
-    const router = useRouter();
-  const { cart, total,orderQR } = useOrders();
 
-  const sampleProduct: ProductType = {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    name: "Item",
-    description: "Description of the item",
-    price: 100,
-    image: ''
-  };
+  const router = useRouter();
+  const { cart, total, orderQR } = useOrders();
+
+  // const sampleProduct: ProductType = {
+  //   id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+  //   name: "Item",
+  //   description: "Description of the item",
+  //   price: 100,
+  //   image: ''
+  // };
   const viewOrder = () => {
     // router.push("./(checkout)/mercadoPago");
     router.push("/screens/QRScreen");
- }
+  }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -51,12 +52,12 @@ export default function homeScreen() {
         <SearchBar />
       </View>
 
-    
-      {orderQR != "" && 
-      <Pressable style={{padding: 10, backgroundColor: "#D4685E", borderRadius: 10}} onPress={viewOrder}>
-      <Text style={{fontSize: 20, color: 'white'}}>Presiona aqui para ver el QR de tu orden</Text>
-      </Pressable>}
-      
+
+      {orderQR != "" &&
+        <Pressable style={{ padding: 10, backgroundColor: "#D4685E", borderRadius: 10 }} onPress={viewOrder}>
+          <Text style={{ fontSize: 20, color: 'white' }}>Presiona aqui para ver el QR de tu orden</Text>
+        </Pressable>}
+
       <FlatList
         data={[1]}
         renderItem={({ item }) =>

@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View, Image, StyleSheet } from "react-native";
 import logo from '../assets/images/reskue-logo.png';
 // import { useFonts } from 'expo-font';
-// import AppLoading from 'expo-app-loading';
 import { useFonts, Bungee_400Regular } from '@expo-google-fonts/bungee';
 
 
@@ -16,6 +15,10 @@ export default function AuthLayout() {
     const navigateToIndex = () => {
         router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
         //router.push("/index");  
+    };
+
+    const navigateToRegister = () => {
+        router.push('./register');
     };
 
     const [fontsLoaded] = useFonts({
@@ -72,7 +75,7 @@ export default function AuthLayout() {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 5,
-                marginTop: 20,
+                marginTop: 15,
             }}>
                 <TextInput
                     placeholder="Email"
@@ -113,30 +116,59 @@ export default function AuthLayout() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 gap: 5,
-                marginTop: 40,
+                marginTop: 30,
             }}>
                 <GoogleComponent />
                 <AppleIDButton />
             </View>
 
-            <Pressable
-                style={({ pressed }) => ({
-                    marginTop: 30,
-                    padding: 10,
+            <View
+                style={{
+                    // display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    borderRadius: 5,
-                    backgroundColor: pressed ? "#ddd" : "#fafafa",
-                })}
-               // onPress={() => signInWith("Guest")}
-               onPress={navigateToIndex}
+                    gap: 1, // Espacio entre los botones
+                    marginTop: 1,
+                }}
             >
-                <Text style={{
-                    color: "#D4685E",
-                    fontSize: 16,
-                    paddingTop: 10,
-                    paddingBottom: 10
-                }} >Iniciar sesión como invitado</Text>
-            </Pressable>
+                <Pressable
+                    style={({ pressed }) => ({
+                        marginTop: 1,
+                        padding: 10,
+                        alignItems: 'center',
+                        borderRadius: 5,
+                        backgroundColor: pressed ? "#ddd" : "#fafafa",
+                    })}
+                    // onPress={() => signInWith("Guest")}
+                    onPress={navigateToIndex}
+                >
+                    <Text style={{
+                        color: "#D4685E",
+                        fontSize: 16,
+                        paddingTop: 10,
+                        paddingBottom: 10
+                    }} >Iniciar sesión como invitado</Text>
+                </Pressable>
+
+                <Pressable
+                    style={({ pressed }) => ({
+                        marginTop: 1,
+                        padding: 10,
+                        alignItems: 'center',
+                        borderRadius: 5,
+                        backgroundColor: pressed ? "#ddd" : "#fafafa",
+                    })}
+                    onPress={navigateToRegister}
+                >
+                    <Text style={{
+                        color: "#8D6E63",
+                        fontSize: 16,
+                        paddingTop: 10,
+                        paddingBottom: 10
+                    }} >Registrarse</Text>
+                </Pressable>
+            </View>
+
         </KeyboardAvoidingView>
     )
 }
@@ -183,5 +215,18 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    registerButton: {
+        marginTop: 20,
+        padding: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        backgroundColor: '#f2f2f2',
+    },
+    registerButtonText: {
+        color: '#333',
+        fontSize: 16,
+        paddingTop: 10,
+        paddingBottom: 10,
     },
 });
