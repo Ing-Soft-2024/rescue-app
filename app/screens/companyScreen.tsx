@@ -29,7 +29,7 @@ export default function CompanyScreen() {
 
   const [company, setCompany] = React.useState({
     name: '',
-    ubication: '',
+    address: '',
     avgRating: 0,
     products: [],
   });
@@ -38,10 +38,11 @@ export default function CompanyScreen() {
   const fetchCompanyData = async () => {
     try {
       const companyData = await commerceDetailsConsumer.consume('GET', {
-        params: { id: 1 }
+        params: { id: 1 },
       });
-      setCompany(companyData);
-      setArr1(companyData.products);
+      const { name, address, avgRating, products } = companyData;
+      setCompany({ name, address, avgRating, products });
+      setArr1(products);
     } catch (error) {
       console.error("Error fetching company data:", error);
     }
@@ -57,11 +58,13 @@ export default function CompanyScreen() {
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
         <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
+
         <CompanyDataTab
           companyName={company.name}
-          location={company.ubication}
+          location={company.address}
           rating={company.avgRating}
         />
+
         <CategoryTab arr={[
           { title: 'tab1', tab: sectionRefs.section1, scrollView: scrollViewRef },
           { title: 'tab2', tab: sectionRefs.section2, scrollView: scrollViewRef },
@@ -69,6 +72,7 @@ export default function CompanyScreen() {
           { title: 'tab4', tab: sectionRefs.section4, scrollView: scrollViewRef },
           { title: 'tab5', tab: sectionRefs.section5, scrollView: scrollViewRef },
         ]} />
+
         <View ref={sectionRefs.section1}>
           <CategoryList products={arr1} />
         </View >
@@ -109,6 +113,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingHorizontal: 0,
-    paddingBottom: 20, // Add space at the end of the scroll
+    paddingBottom: 20,
   },
 });
