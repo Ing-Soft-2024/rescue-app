@@ -19,13 +19,14 @@ interface GoogleMapProps {
 }
 
 export default function GoogleMap({ onMapPress }: GoogleMapProps) {
+
     const [mapRegion, setMapRegion] = useState<Region>({
         latitude: -34.6055045,
         longitude: -58.3736717,
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0421,
     });
-    
+
     const [markers, setMarkers] = useState<MarkerData[]>([]);
     const userLocation = useContext(userLocationContext);
     const router = useRouter();
