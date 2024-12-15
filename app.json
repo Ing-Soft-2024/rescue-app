@@ -35,7 +35,7 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "<removed for security>"
+          "apiKey": "AIzaSyDkO9yZTw1mmEBrc5Vy6mIO1e5gAUfbG94"
         }
       },
       "package": "com.kepleris.rescue",
