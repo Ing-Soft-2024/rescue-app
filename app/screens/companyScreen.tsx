@@ -8,11 +8,16 @@ import { CategoryList } from '../../components/CategoryList';
 import { CompanyDataTab } from '../../components/CompanyDataTab';
 import { commerceDetailsConsumer } from '@/src/services/client';
 
-export default function CompanyScreen() {
+export default function CompanyScreen({ route }: { route: any }) {
   const router = useRouter();
   console.log("COMPANY SCREEN");
 
-  const screen = "Company";
+  // const { id } = useSearchParams();
+
+  // const searchParams = new URLSearchParams(router.asPath.split('?')[1]);
+  // const id = searchParams.get('id');
+
+  const id = route?.params?.id;
 
   const onPressBack = () => {
     router.back();
@@ -33,15 +38,19 @@ export default function CompanyScreen() {
     avgRating: 0,
     products: [],
   });
+
   const [arr1, setArr1] = React.useState<ProductType[]>([]);
 
   const fetchCompanyData = async () => {
     try {
       const companyData = await commerceDetailsConsumer.consume('GET', {
-        params: { id: 1 },
+        params: { id },
       });
       const { name, address, avgRating, products } = companyData;
       setCompany({ name, address, avgRating, products });
+
+      console.log("Company data:", companyData);
+
       setArr1(products);
     } catch (error) {
       console.error("Error fetching company data:", error);
@@ -50,9 +59,17 @@ export default function CompanyScreen() {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchCompanyData();
-    }, []) // Empty dependency array to run only when screen comes into focus
+      if (id) { // Verificar que el ID esté definido
+        fetchCompanyData();
+      }
+    }, [id]) // Reaccionar solo cuando el ID cambia
   );
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     fetchCompanyData();
+  //   }, []) // Empty dependency array to run only when screen comes into focus
+  // );
 
   return (
     <View style={{ flex: 1 }}>

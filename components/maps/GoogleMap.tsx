@@ -27,9 +27,15 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
     const userLocation = useContext(userLocationContext);
     const router = useRouter();
 
+    // const goToCommerce = (commerceId: string) => {
+    //     router.push({
+    //         pathname: "/screens/companyScreen",
+    //         query: { id: commerceId }, // Pasar el ID como query param
+    //     });
+    // };
+
     const goToCommerce = (commerceId: string) => {
-        //router.push(`/screens/companyScreen?commerceId=${commerceId}`);
-        router.push("/screens/companyScreen");
+        router.push(`/screens/companyScreen?id=${commerceId}`); // Pasar el ID como parte de la URL
     };
 
     const fetchCommerces = async () => {
