@@ -3,9 +3,7 @@ import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent } from 'react-n
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { userLocationContext } from '../../src/context/userLocationContext';
-import { commerceDetailsConsumer } from '@/src/services/client';
-import { red } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
-
+import { commerceConsumer } from '@/src/services/client'; // Traemos toda la lista de comercios
 
 interface MarkerData {
     coordinate: {
@@ -13,21 +11,15 @@ interface MarkerData {
         longitude: number;
     };
     key: string;
-    title: string; // nombre del comercio
+    title: string; // Nombre del comercio
 }
-
-// interface GoogleMapProps {
-//     markersData: MarkerData[]; // Recibe los marcadores como props
-//     onMapPress: (event: MapPressEvent) => void; // Recibe la función para manejar el evento de agregar pines
-// }
 
 interface GoogleMapProps {
     onMapPress: (event: MapPressEvent) => void;
 }
 
-
 export default function GoogleMap({ onMapPress }: GoogleMapProps) {
-    const scrollViewRef = useRef<ScrollView>(null);
+
     const [mapRegion, setMapRegion] = useState<Region | null>(null);
     const [isUserInteracting, setIsUserInteracting] = useState(false);
 
@@ -35,34 +27,10 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
 
     const userLocation = useContext(userLocationContext);
 
-    const [company, setCompany] = React.useState({
-        name: '',
-        latitude: 0,
-        longitude: 0,
-    });
-
-    // const fetchCompanyData = async () => {
-    //     try {
-    //         const companyData = await commerceDetailsConsumer.consume('GET', {
-    //             params: { id: 1 }
-    //         });
-    //         setCompany(companyData);
-    //     } catch (error) {
-    //         console.error("Error fetching company data:", error);
-    //     }
-    // };
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         fetchCompanyData();
-    //     }, []) // Empty dependency array to run only when screen comes into focus
-    // );
-
     const fetchCommerces = async () => {
         try {
-            const commerces = await commerceDetailsConsumer.consume('GET', {
-                params: { id: 1 } // le paso el id de 1 comercio. 
-            });
+            const commerces = await commerceConsumer.consume('GET');
+
             const mappedCommerces = commerces.map((commerce: any) => ({
                 coordinate: {
                     latitude: commerce.latitude,
@@ -71,9 +39,9 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                 key: commerce.id.toString(),
                 title: commerce.name,
             }));
-            setMarkers(mappedCommerces); // Actualizo el estado con los marcadores
+            setMarkers(mappedCommerces);
         } catch (error) {
-            console.error('Error fetching commerces:', error);
+            console.error("Error fetching commerces:", error);
         }
     };
 
@@ -86,7 +54,6 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
     useEffect(() => {
         if (!isUserInteracting && userLocation?.location) {
             setMapRegion((prevRegion) => {
-                // Solo actualiza si prevRegion no está definido
                 if (!prevRegion) {
                     return {
                         latitude: userLocation.location!.coords.latitude,
@@ -104,16 +71,9 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
         setIsUserInteracting(true);
     };
 
-    // const handleRegionChangeComplete = (region: Region) => {
-    //     setMapRegion(region);
-    //     setIsUserInteracting(false);
-    // };
-
-
-    // Provide a default region if mapRegion is null
     const defaultRegion = {
-        latitude: -34.6055045, // Default latitude
-        longitude: -58.3736717, // Default longitude
+        latitude: -34.6055045,
+        longitude: -58.3736717,
         latitudeDelta: 0.0522,
         longitudeDelta: 0.0421,
     };
@@ -127,7 +87,7 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                     longitudeDelta: prevRegion.longitudeDelta / 2,
                 };
             }
-            return prevRegion; // Si prevRegion es null, lo dejamos como está
+            return prevRegion;
         });
     };
 
@@ -140,11 +100,9 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                     longitudeDelta: prevRegion.longitudeDelta * 2,
                 };
             }
-            return prevRegion; // Si prevRegion es null, lo dejamos como está
+            return prevRegion;
         });
     };
-
-
 
     return (
         <View style={styles.container}>
@@ -155,28 +113,25 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                         provider={PROVIDER_GOOGLE}
                         showsUserLocation={true}
                         initialRegion={mapRegion}
-                        region={mapRegion}
+                        region={mapRegion || defaultRegion}
                         onPress={onMapPress}
-                    //    onRegionChange={handleRegionChange}
-                    // onRegionChangeComplete={handleRegionChangeComplete}
-                    // onRegionChangeComplete={(region) => setMapRegion(region)}
                     >
-                        {userLocation?.location && (
+                        {/* {userLocation?.location && (
                             <Marker
                                 coordinate={{
                                     latitude: userLocation.location.coords.latitude,
                                     longitude: userLocation.location.coords.longitude,
                                 }}
                             />
-                        )}
-                        {markers.map((marker) => (
+                        )} */}
+
+                        {markers.map((marker) => ( // Pines de los comercios
                             <Marker
                                 key={marker.key}
                                 coordinate={marker.coordinate}
                                 title={marker.title}
                             />
                         ))}
-
                     </MapView>
 
                     <View style={styles.zoomControls}>
@@ -188,13 +143,10 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
                         </TouchableOpacity>
                     </View>
                 </>
-
             ) : (
-                // Optionally show a loading spinner or placeholder
                 <View style={styles.loadingContainer}>
                     <Text>Loading map...</Text>
                 </View>
-
             )}
         </View>
     );
@@ -202,43 +154,41 @@ export default function GoogleMap({ onMapPress }: GoogleMapProps) {
 
 const styles = StyleSheet.create({
     container: {
-        //flex: 1,
-        width: '100%',
-        height: '100%',
-        //marginTop: 15,
+        width: "100%",
+        height: "100%",
         borderRadius: 8,
     },
     map: {
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
     },
     loadingContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
     },
     zoomControls: {
-        position: 'absolute',
+        position: "absolute",
         bottom: 30,
         right: 10,
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
         borderRadius: 8,
         padding: 5,
     },
     zoomButton: {
         width: 40,
         height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: "center",
+        alignItems: "center",
         marginVertical: 5,
         backgroundColor: "#5d6d7e",
         borderRadius: 20,
     },
     zoomText: {
         fontSize: 20,
-        fontWeight: 'bold',
-        color: '#fff',
+        fontWeight: "bold",
+        color: "#fff",
     },
 });
