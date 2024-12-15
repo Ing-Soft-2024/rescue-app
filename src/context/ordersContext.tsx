@@ -1,76 +1,115 @@
-import React, { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+import { Alert } from "react-native";
 
-import useCart from "../hooks/useCart";
+interface CartItem {
+    product: any;
+    quantity: number;
+    subtotal: number;
+}
 
-type OrdersContextType = {
-    cart: any;
-    clearCart: () => void;
-    addToCart: ({ product, quantity }: { product: any, quantity: number }) => void;
-    removeFromCart: (index: number) => void;
-    updateCart: (index: number, quantity: number) => void;
+interface OrdersContextType {
+    cart: CartItem[];
+    currentCommerceId: number | null;
     total: number;
-    orderQR: string; 
-    setOrderQR: (note: string) => void;
+    orderQR: string;
+    addToCart: (props: { product: any; quantity: number }) => void;
+    removeFromCart: (productId: string) => void;
+    clearCart: () => void;
+    setOrderQR: (qr: string) => void;
+    getProductQuantityInCart: (productId: string) => number;
+}
 
-    orders: OrdersDataType[];
-    // cancelOrder: (index: number) => void;
-    confirmOrder: (payment: number) => void;
-    getOrder: (index: number) => OrdersDataType | false;
-    getProductQuantityInCart: (productId: number) => number;
-};
+const OrdersContext = createContext<OrdersContextType>({
+    cart: [],
+    currentCommerceId: null,
+    total: 0,
+    orderQR: "",
+    addToCart: () => { },
+    removeFromCart: () => { },
+    clearCart: () => { },
+    setOrderQR: () => { },
+    getProductQuantityInCart: () => 0,
+});
 
-export const OrdersContext = createContext<OrdersContextType>({} as OrdersContextType);
+export function OrdersProvider({ children }: { children: React.ReactNode }) {
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [currentCommerceId, setCurrentCommerceId] = useState<number | null>(null);
+    const [orderQR, setOrderQR] = useState("");
 
-export const useOrders = () => React.useContext(OrdersContext);
-
-type OrdersDataType = {
-    bill: {
-        item: any;
-        total: number;
+    const getProductQuantityInCart = (productId: string): number => {
+        const item = cart.find(item => item.product.id === productId);
+        return item ? item.quantity : 0;
     };
-    status: string;
-    payment: number;
-};
 
-export const OrdersProvider = ({ children }: { children: React.ReactNode }) => {
-    // let { commerceRef } = useCommerce(); 
+    const addToCart = ({ product, quantity }: { product: any; quantity: number }) => {
+        if (currentCommerceId && product.commerceId !== currentCommerceId) {
+            Alert.alert(
+                "Different Commerce",
+                "You can only add products from the same commerce in a single order. Would you like to clear your cart and add this item?",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "Clear Cart & Add",
+                        onPress: () => {
+                            setCart([{ product, quantity, subtotal: product.price * quantity }]);
+                            setCurrentCommerceId(product.commerceId);
+                        }
+                    }
+                ]
+            );
+            return;
+        }
 
-    // let { data: ordersData, collectionObserver, addDocument } = useFirestoreCollection(collection(commerceRef, "orders"));
-    // TODO: Add a filter to get only the orders of the current session.
-    const [orders, setOrders] = useState<OrdersDataType[]>([]);
-    const [orderQR, setOrderQR] = useState<string>("");
+        if (!currentCommerceId) {
+            setCurrentCommerceId(product.commerceId);
+        }
 
-    let { cart, clearCart, addToCart, removeFromCart, updateCart, total } = useCart();
-
-    const getProductQuantityInCart = (productId: number): number => {
-        return cart.reduce((total: number, item: any) => {
-            if (item.product.id === productId) {
-                return total + item.quantity;
-            }
-            console.log("GET PRODUCT QUANTITY IN CART", total);
-            return total;
-        }, 0);
+        const existingItem = cart.find(item => item.product.id === product.id);
+        
+        if (existingItem) {
+            setCart(cart.map(item =>
+                item.product.id === product.id
+                    ? { ...item, quantity: item.quantity + quantity, subtotal: (item.quantity + quantity) * item.product.price }
+                    : item
+            ));
+        } else {
+            setCart([...cart, { product, quantity, subtotal: product.price * quantity }]);
+        }
     };
+
+    const removeFromCart = (productId: string) => {
+        setCart(cart.filter(item => item.product.id !== productId));
+        if (cart.length === 1) {
+            setCurrentCommerceId(null);
+        }
+    };
+
+    const clearCart = () => {
+        setCart([]);
+        setCurrentCommerceId(null);
+        setOrderQR("");
+    };
+
+    const total = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
     return (
         <OrdersContext.Provider value={{
             cart,
-            clearCart,
-            addToCart,
-            removeFromCart,
-            updateCart,
+            currentCommerceId,
             total,
             orderQR,
+            addToCart,
+            removeFromCart,
+            clearCart,
             setOrderQR,
-            orders,
             getProductQuantityInCart,
-            confirmOrder: (payment: number) => {
-                // addDocument({ bill: { item: cart, total }, status: "pending", payment: payment });
-                clearCart();
-            },
-            getOrder: (index: number) => index < orders.length && orders[index],
         }}>
             {children}
         </OrdersContext.Provider>
-    )
-};
+    );
+}
+
+export const useOrders = () => useContext(OrdersContext);

@@ -25,6 +25,11 @@ export const commerceDetailsConsumer = apiConsumerFactory({
     validEndpoints: ['GET', 'PATCH']
 });
 
+export const nearUserConsumer = apiConsumerFactory({
+    endpoint: 'nearuser/product',
+    validEndpoints: ['GET']
+});
+
 export const categoryDetailsConsumer = apiConsumerFactory({
     endpoint: 'category/{id}',
     validEndpoints: ['GET']
@@ -49,4 +54,15 @@ export const mercadoPagoConsumer = apiConsumerFactory({
     endpoint: 'checkout/mercadopago',
     validEndpoints: ['POST']
 });
+
+export const registerConsumer = apiConsumerFactory({
+    endpoint: 'auth/register',
+    validEndpoints: ['POST']
+});
+
+export const loginConsumer = apiConsumerFactory({
+    endpoint: 'auth/login',
+    validEndpoints: ['POST']
+});
+
 

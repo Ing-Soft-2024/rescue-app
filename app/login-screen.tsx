@@ -7,12 +7,17 @@ import logo from '../assets/images/reskue-logo.png';
 // import { useFonts } from 'expo-font';
 // import AppLoading from 'expo-app-loading';
 import { useFonts, Bungee_400Regular } from '@expo-google-fonts/bungee';
+import { useState } from 'react';
 
 
 export default function AuthLayout() {
     const { signInWith } = useSession();
     const router = useRouter();
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    
     const navigateToIndex = () => {
         router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
         //router.push("/index");  
@@ -22,6 +27,20 @@ export default function AuthLayout() {
         Bungee: Bungee_400Regular,
     });
 
+    const handleLogin = async (email: string, password: string) => {
+        try {
+            await signInWith("Credentials", { email, password });
+            // On success, user will be redirected automatically due to session context
+        } catch (error) {
+            console.error("Login failed:", error);
+            // Handle login error
+        }
+    };
+
+    const navigateToRegister = () => {
+        router.push('./register');  // Navigate to the register screen
+    };
+    
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -29,45 +48,22 @@ export default function AuthLayout() {
                 flexDirection: 'column',
                 flex: 1,
                 justifyContent: 'center',
-                // alignItems: 'center',
                 gap: 10,
                 backgroundColor: '#fafafa',
                 padding: 10,
             }}
         >
-            {/* <Image
-                source={require('../assets/images/reskue-logo.png')}
-                style={{
-                    height: 120,
-                    width: 220,
-                    alignSelf: 'center',
-                    marginTop: 40,
-                    resizeMode: 'contain' // Para mantener la relación de aspecto
-                }}
-            />
-
-            <Text style={{
-                fontFamily: 'Bungee', // tira error con Tilt Neon
-                fontSize: 38,
-                alignSelf: 'center',
-                color: '#D4685E',
-                marginTop: 10,
-                marginBottom: 20,
-            }}>
-                reskue
-            </Text> */}
-
             <View style={styles.container}>
                 <Image
                     source={require('../assets/images/reskue-logo.png')}
                     style={styles.logoContainer}
                 />
-
+    
                 <Text style={styles.appName}>
                     reskue
                 </Text>
             </View>
-
+    
             <View style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -76,6 +72,8 @@ export default function AuthLayout() {
             }}>
                 <TextInput
                     placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
                     style={{
                         backgroundColor: 'white',
                         padding: 10,
@@ -86,9 +84,11 @@ export default function AuthLayout() {
                         shadowOffset: { width: 0, height: 1 },
                     }}
                 />
-
+    
                 <TextInput
                     placeholder="Password"
+                    value={password}
+                    onChangeText={setPassword}
                     style={{
                         backgroundColor: 'white',
                         padding: 10,
@@ -99,15 +99,16 @@ export default function AuthLayout() {
                         shadowOffset: { width: 0, height: 1 },
                     }}
                     textContentType="password"
+                    secureTextEntry={true}
                 />
-
+    
                 <View style={styles.containerButton}>
-                    <Pressable style={styles.button} onPress={() => { }}>
+                    <Pressable style={styles.button} onPress={() => { handleLogin(email, password) }}>
                         <Text style={styles.buttonText}>Iniciar sesión</Text>
                     </Pressable>
                 </View>
             </View>
-
+    
             <View style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -118,7 +119,7 @@ export default function AuthLayout() {
                 <GoogleComponent />
                 <AppleIDButton />
             </View>
-
+    
             <Pressable
                 style={({ pressed }) => ({
                     marginTop: 30,
@@ -127,18 +128,41 @@ export default function AuthLayout() {
                     borderRadius: 5,
                     backgroundColor: pressed ? "#ddd" : "#fafafa",
                 })}
-               // onPress={() => signInWith("Guest")}
-               onPress={navigateToIndex}
+                onPress={navigateToIndex}
             >
                 <Text style={{
                     color: "#D4685E",
                     fontSize: 16,
                     paddingTop: 10,
                     paddingBottom: 10
-                }} >Iniciar sesión como invitado</Text>
+                }}>
+                    Iniciar sesión como invitado
+                </Text>
+            </Pressable>
+    
+            <Pressable
+                style={({ pressed }) => ({
+                    marginTop: 1,
+                    padding: 10,
+                    alignItems: 'center',
+                    borderRadius: 5,
+                    backgroundColor: pressed ? "#ddd" : "#fafafa",
+                })}
+                onPress={navigateToRegister}
+            >
+                <Text style={{
+                    color: "#8D6E63",
+                    fontSize: 16,
+                    paddingTop: 10,
+                    paddingBottom: 10
+                }}>
+                    Registrarse
+                </Text>
             </Pressable>
         </KeyboardAvoidingView>
-    )
+    );
+
+    
 }
 
 const styles = StyleSheet.create({

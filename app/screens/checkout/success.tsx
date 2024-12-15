@@ -39,10 +39,10 @@ export default function SuccessScreen() {
         }, [])
     );
 
-    async function handleSubmission() {
+    async function handleSubmission(commerceId: number) {
         
         var response = await commerceDetailsConsumer.consume('PATCH', {
-            params: { id: 1 },
+            params: { id: commerceId },
             data:
             {
                rating: Number(rating)
