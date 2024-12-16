@@ -1,147 +1,142 @@
 import { CategoryTab } from '@/src/components/commerce/CategoryTab';
 import { Header } from '@/src/components/product/ProductHeader';
 import { ProductType } from '@/src/types/product.type';
-import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useRef } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useFocusEffect, useRouter, useLocalSearchParams } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { CategoryList } from '../../components/CategoryList';
-import { CompanyDataTab } from '../../components/CompanyDataTab';
 import { commerceDetailsConsumer } from '@/src/services/client';
 
-export default function CompanyScreen({ route }: { route: any }) {
+export default function CompanyScreen() {
   const router = useRouter();
-  console.log("COMPANY SCREEN");
-
-  const id = route?.params?.id;
-
-  const onPressBack = () => {
-    router.back();
-  };
-
-  const scrollViewRef = useRef<ScrollView>(null);
-  const sectionRefs = {
-    section1: useRef<View>(null),
-    section2: useRef<View>(null),
-    section3: useRef<View>(null),
-    section4: useRef<View>(null),
-    section5: useRef<View>(null),
-  };
-
-  const [company, setCompany] = React.useState({
+  const { id } = useLocalSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [company, setCompany] = useState({
     name: '',
     address: '',
     avgRating: 0,
-    products: [],
+    products: [] as ProductType[],
   });
-
-  const [arr1, setArr1] = React.useState<ProductType[]>([]);
-
-  // const fetchCompanyData = async () => {
-  //   try {
-  //     const companyData = await commerceDetailsConsumer.consume('GET', {
-  //       params: { id },
-  //     });
-  //     const { name, address, avgRating, products } = companyData;
-  //     setCompany({ name, address, avgRating, products });
-
-  //     console.log("Company data:", companyData);
-
-  //     setArr1(products);
-  //   } catch (error) {
-  //     console.error("Error fetching company data:", error);
-  //   }
-  // };
-
-  const fetchCompanyData = async () => {
-    try {
-      const companyData = await commerceDetailsConsumer.consume('GET', {
-        params: { id },
-      });
-
-      if (companyData) {
-        const { name, address, avgRating, products } = companyData;
-
-        setCompany({
-          name: name || 'Nombre no disponible',
-          address: address || 'Dirección no disponible',
-          avgRating: avgRating || 0,
-          products: products || [],
-        });
-
-        console.log("Company data fetched:", companyData);
-      }
-    } catch (error) {
-      console.error("Error fetching company data (pop up):", error);
-    }
-  };
 
   useFocusEffect(
     React.useCallback(() => {
-      if (id) { // Verificar que el ID esté definido
+      const fetchCompanyData = async () => {
+        try {
+          setIsLoading(true);
+          console.log("Fetching company with ID:", id);
+          
+          const companyData = await commerceDetailsConsumer.consume('GET', {
+            params: { id: Number(id) },
+          });
+
+          console.log("Received company data:", companyData);
+
+          if (companyData) {
+            setCompany({
+              name: companyData.name || 'Nombre no disponible',
+              address: companyData.address || 'Dirección no disponible',
+              avgRating: companyData.avgRating || 0,
+              products: companyData.products || [],
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching company data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      if (id) {
         fetchCompanyData();
+      } else {
+        console.error("No ID provided");
+        setIsLoading(false);
       }
-    }, [id]) // Reaccionar solo cuando el ID cambia
+    }, [id])
   );
 
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#D4685E" />
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} ref={scrollViewRef}>
-        <Header onBackPress={onPressBack} imageUrl='https://picsum.photos/200' />
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{company.name}</Text>
+        <Text style={styles.address}>{company.address}</Text>
+        <View style={styles.ratingContainer}>
+          <Text style={styles.rating}>Calificación: {company.avgRating.toFixed(1)}</Text>
+          <Text style={styles.ratingText}>★</Text>
+        </View>
+      </View>
 
-        <CompanyDataTab
-          companyName={company.name}
-          location={company.address}
-          rating={company.avgRating}
-        />
-
-        <CategoryTab arr={[
-          { title: 'tab1', tab: sectionRefs.section1, scrollView: scrollViewRef },
-          { title: 'tab2', tab: sectionRefs.section2, scrollView: scrollViewRef },
-          { title: 'tab3', tab: sectionRefs.section3, scrollView: scrollViewRef },
-          { title: 'tab4', tab: sectionRefs.section4, scrollView: scrollViewRef },
-          { title: 'tab5', tab: sectionRefs.section5, scrollView: scrollViewRef },
-        ]} />
-
-        <View ref={sectionRefs.section1}>
-          <CategoryList products={arr1} />
-        </View >
-        <View ref={sectionRefs.section2}>
-          <CategoryList products={arr1} />
-        </View>
-        <View ref={sectionRefs.section3}>
-          <CategoryList products={arr1} />
-        </View>
-        <View ref={sectionRefs.section4}>
-          <CategoryList products={arr1} />
-        </View>
-        <View ref={sectionRefs.section5}>
-          <CategoryList products={arr1} />
-        </View>
-      </ScrollView>
+      <Text style={styles.sectionTitle}>Productos Disponibles</Text>
+      
+      <FlatList
+        data={[1]}
+        renderItem={({ item }) => (
+          <CategoryList
+            categoryTitle="Productos"
+            products={company.products}
+          />
+        )}
+        keyExtractor={(_, index) => index.toString()}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
   },
-  companyName: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
+    color: '#333',
+    marginBottom: 8,
   },
-  flatListContainer: {
-    paddingHorizontal: 20,
+  address: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 8,
   },
-  buttonContainer: {
-    padding: 20,
+  ratingContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  scrollContainer: {
-    paddingHorizontal: 0,
-    paddingBottom: 20,
+  rating: {
+    fontSize: 16,
+    color: '#333',
+    marginRight: 4,
+  },
+  ratingText: {
+    fontSize: 16,
+    color: '#D4685E',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+    padding: 20,
+    backgroundColor: 'white',
+    marginTop: 10,
   },
 });

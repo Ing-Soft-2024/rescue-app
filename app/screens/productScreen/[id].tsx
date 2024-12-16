@@ -7,7 +7,7 @@ import StorageController from '@/src/services/storage/controller/storage.control
 import { ProductType } from '@/src/types/product.type';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
 // export type ProductType = {
 //   title: string;
@@ -95,14 +95,17 @@ export default function ProductLayout() {
           onFavoritePress={() => console.log("Favorite pressed")}
         />
 
-        <View>
-          <Text
-            style={styles.link}
-            onPress={() => router.push('/screens/companyScreen')}
-          >
-            View Company
+        <TouchableOpacity 
+          style={styles.commerceButton}
+          onPress={() => router.push({
+            pathname: '/screens/companyScreen',
+            params: { id: product.businessId }
+          })}
+        >
+          <Text style={styles.commerceButtonText}>
+            Ver Comercio
           </Text>
-        </View>
+        </TouchableOpacity>
 
         {/* Detalles del producto */}
         <ProductDescription
@@ -198,5 +201,17 @@ const styles = StyleSheet.create({
   outOfStockText: {
     color: '#fff',
     fontSize: 16,
+  },
+  commerceButton: {
+    backgroundColor: '#D4685E',
+    padding: 10,
+    margin: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  commerceButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
