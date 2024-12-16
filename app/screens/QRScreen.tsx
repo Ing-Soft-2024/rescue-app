@@ -2,12 +2,12 @@ import { useOrders } from "@/src/context/ordersContext";
 import { orderDetailsConsumer } from "@/src/services/client";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 export default function QRScreen() {
     const router = useRouter();
-    const { orderQR } = useOrders();
+    const { orderQR, total } = useOrders();
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
     const intervalref = React.useRef<NodeJS.Timeout>();
 
@@ -64,6 +64,7 @@ export default function QRScreen() {
                 {paymentBtns && (
                     <View style={styles.paymentContainer}>
                         <Text style={styles.paymentTitle}>Selecciona tu método de pago</Text>
+                        <Text style={styles.totalAmount}>Total a pagar: ${total.toFixed(2)}</Text>
                         <TouchableOpacity 
                             style={[styles.paymentButton, styles.mpButton]}
                             onPress={() => router.push("./checkout/mercadoPago")}
@@ -135,6 +136,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: '#333',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    totalAmount: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#D4685E',
         marginBottom: 20,
         textAlign: 'center',
     },
