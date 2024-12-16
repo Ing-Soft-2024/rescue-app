@@ -13,9 +13,9 @@ import uuid from 'react-native-uuid';
 export default function ShoppingCartScreen() {
 
     const { session } = useSession();
-    
-        
-   
+
+
+
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
 
@@ -34,11 +34,11 @@ export default function ShoppingCartScreen() {
 
 
     async function payWithMercadoPago() {
-        if(orderQR != ""){
+        if (orderQR != "") {
             router.push("./QRScreen");
             return;
         }
-        
+
         if (!session?.user.id) {
             Alert.alert('Error', 'Usuario no identificado');
             return;
@@ -72,10 +72,10 @@ export default function ShoppingCartScreen() {
                 return;
             }
 
-            const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId; 
+            const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId;
             setOrderQR(QR);
             router.push("./QRScreen");
-            
+
         } catch (error) {
             console.error("Error creating order:", {
                 error,
@@ -93,13 +93,13 @@ export default function ShoppingCartScreen() {
     return (
         <View style={styles.container}>
             {/* <ScrollView style={{ flex: 1, minHeight: "auto" }}> */}
-                <View>
-                    {/* <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text> */}
-                    {cart.length === 0 &&
-                        <Text style={{ fontSize: 20, paddingTop: 30, paddingBottom: 30, color: "#D4685E" }}>
-                            Your shopping cart is empty :(
-                        </Text>}
-                    {/* <View style={styles.Botones}>
+            <View>
+                {/* <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text> */}
+                {cart.length === 0 &&
+                    <Text style={{ fontSize: 23, paddingTop: 75, paddingBottom: 30, paddingLeft: 50, color: "#D4685E" }}>
+                        Your shopping cart is empty
+                    </Text>}
+                {/* <View style={styles.Botones}>
 
                         <Button title="Add item" onPress={() => addToCart({
                             product: {
@@ -116,23 +116,23 @@ export default function ShoppingCartScreen() {
                         <Button title="Remove item" onPress={() => removeFromCart(0)}></Button>
                     </View> */}
 
-                    {/* <Button title="Update cart" onPress={() => updateCart}></Button> */}
-                </View>
-                <FlatList
-                    data={cart}
-                    // horizontal={true}
-                    contentContainerStyle={styles.listContainer}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
-                    renderItem={({ item, index }) => (
-                        <ProductItem product={item.product} onRemove={() => {
-                            if(!orderQR){
-                                removeFromCart(index)
-                            }
-                        }} />
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(_, index) => index.toString()}
-                />
+                {/* <Button title="Update cart" onPress={() => updateCart}></Button> */}
+            </View>
+            <FlatList
+                data={cart}
+                // horizontal={true}
+                contentContainerStyle={styles.listContainer}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                renderItem={({ item, index }) => (
+                    <ProductItem product={item.product} onRemove={() => {
+                        if (!orderQR) {
+                            removeFromCart(index)
+                        }
+                    }} />
+                )}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(_, index) => index.toString()}
+            />
 
             {/* </ScrollView> */}
 

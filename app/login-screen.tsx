@@ -2,7 +2,7 @@ import { AppleIDButton } from '@/src/components/auth/appleid.button';
 import { GoogleComponent } from '@/src/components/auth/google.button';
 import { useSession } from '@/src/context/session.context';
 import { useRouter } from 'expo-router';
-import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View, Image, StyleSheet } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View, Image, StyleSheet, ScrollView } from "react-native";
 import logo from '../assets/images/reskue-logo.png';
 // import { useFonts } from 'expo-font';
 // import AppLoading from 'expo-app-loading';
@@ -17,7 +17,7 @@ export default function AuthLayout() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    
+
     const navigateToIndex = () => {
         router.push('./screens/');  // lleva al usuario a la pantalla de home (index)
         //router.push("/index");  
@@ -40,7 +40,7 @@ export default function AuthLayout() {
     const navigateToRegister = () => {
         router.push('./register');  // Navigate to the register screen
     };
-    
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -53,119 +53,129 @@ export default function AuthLayout() {
                 padding: 10,
             }}
         >
-            <View style={styles.container}>
-                <Image
-                    source={require('../assets/images/reskue-logo.png')}
-                    style={styles.logoContainer}
-                />
-    
-                <Text style={styles.appName}>
-                    reskue
-                </Text>
-            </View>
-    
-            <View style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 5,
-                marginTop: 20,
-            }}>
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    style={{
-                        backgroundColor: 'white',
-                        padding: 10,
-                        borderRadius: 5,
-                        fontSize: 16,
-                        shadowColor: 'black',
-                        shadowOpacity: 0.1,
-                        shadowOffset: { width: 0, height: 1 },
-                    }}
-                />
-    
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    style={{
-                        backgroundColor: 'white',
-                        padding: 10,
-                        borderRadius: 5,
-                        fontSize: 16,
-                        shadowColor: 'black',
-                        shadowOpacity: 0.1,
-                        shadowOffset: { width: 0, height: 1 },
-                    }}
-                    textContentType="password"
-                    secureTextEntry={true}
-                />
-    
-                <View style={styles.containerButton}>
-                    <Pressable style={styles.button} onPress={() => { handleLogin(email, password) }}>
-                        <Text style={styles.buttonText}>Iniciar sesión</Text>
-                    </Pressable>
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={styles.container}>
+                    <Image
+                        source={require('../assets/images/reskue-logo.png')}
+                        style={styles.logoContainer}
+                    />
+
+                    <Text style={styles.appName}>
+                        reskue
+                    </Text>
                 </View>
-            </View>
-    
-            <View style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                gap: 5,
-                marginTop: 40,
-            }}>
-                <GoogleComponent />
-                <AppleIDButton />
-            </View>
-    
-            <Pressable
-                style={({ pressed }) => ({
-                    marginTop: 30,
-                    padding: 10,
-                    alignItems: 'center',
-                    borderRadius: 5,
-                    backgroundColor: pressed ? "#ddd" : "#fafafa",
-                })}
-                onPress={navigateToIndex}
-            >
-                <Text style={{
-                    color: "#D4685E",
-                    fontSize: 16,
-                    paddingTop: 10,
-                    paddingBottom: 10
+
+                <View style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 5,
+                    marginTop: 20,
                 }}>
-                    Iniciar sesión como invitado
-                </Text>
-            </Pressable>
-    
-            <Pressable
-                style={({ pressed }) => ({
-                    marginTop: 1,
-                    padding: 10,
-                    alignItems: 'center',
-                    borderRadius: 5,
-                    backgroundColor: pressed ? "#ddd" : "#fafafa",
-                })}
-                onPress={navigateToRegister}
-            >
-                <Text style={{
-                    color: "#8D6E63",
-                    fontSize: 16,
-                    paddingTop: 10,
-                    paddingBottom: 10
+                    <TextInput
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        style={{
+                            backgroundColor: 'white',
+                            padding: 10,
+                            borderRadius: 5,
+                            fontSize: 16,
+                            shadowColor: 'black',
+                            shadowOpacity: 0.1,
+                            shadowOffset: { width: 0, height: 1 },
+                        }}
+                    />
+
+                    <TextInput
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        style={{
+                            backgroundColor: 'white',
+                            padding: 10,
+                            borderRadius: 5,
+                            fontSize: 16,
+                            shadowColor: 'black',
+                            shadowOpacity: 0.1,
+                            shadowOffset: { width: 0, height: 1 },
+                        }}
+                        textContentType="password"
+                        secureTextEntry={true}
+                    />
+
+                    <View style={styles.containerButton}>
+                        <Pressable style={styles.button} onPress={() => { handleLogin(email, password) }}>
+                            <Text style={styles.buttonText}>Iniciar sesión</Text>
+                        </Pressable>
+                    </View>
+                </View>
+
+                <View style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    gap: 5,
+                    marginTop: 40,
                 }}>
-                    Registrarse
-                </Text>
-            </Pressable>
+                    <GoogleComponent />
+                    <AppleIDButton />
+                </View>
+
+                <Pressable
+                    style={({ pressed }) => ({
+                        marginTop: 30,
+                        padding: 10,
+                        alignItems: 'center',
+                        borderRadius: 5,
+                        backgroundColor: pressed ? "#ddd" : "#fafafa",
+                    })}
+                    onPress={navigateToIndex}
+                >
+                    <Text style={{
+                        color: "#D4685E",
+                        fontSize: 16,
+                        paddingTop: 1,
+                        paddingBottom: 10
+                    }}>
+                        Iniciar sesión como invitado
+                    </Text>
+                </Pressable>
+
+                <Pressable
+                    style={({ pressed }) => ({
+                        marginTop: 1,
+                        padding: 10,
+                        alignItems: 'center',
+                        borderRadius: 5,
+                        backgroundColor: pressed ? "#ddd" : "#fafafa",
+                    })}
+                    onPress={navigateToRegister}
+                >
+                    <Text style={{
+                        color: "#8D6E63",
+                        fontSize: 16,
+                        paddingTop: 1,
+                        paddingBottom: 10
+                    }}>
+                        Registrarse
+                    </Text>
+                </Pressable>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 
-    
+
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        padding: 10,
+    },
     container: {
         flexDirection: 'column',
         // flex: 1,
@@ -173,14 +183,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fafafa',
         padding: 10,
-        marginTop: 20,
+        marginTop: 10,
     },
     logoContainer: {
         height: 100,
         width: 200,
         resizeMode: 'contain',
         alignSelf: 'center',
-        marginTop: 40,
+        marginTop: 30,
     },
     appName: {
         fontFamily: 'Bungee',
