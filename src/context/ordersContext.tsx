@@ -16,7 +16,7 @@ interface OrdersContextType {
     removeFromCart: (productId: string) => void;
     clearCart: () => void;
     setOrderQR: (qr: string) => void;
-    getProductQuantityInCart: (productId: string) => number;
+    getProductQuantityInCart: (productId: number) => number;
 }
 
 const OrdersContext = createContext<OrdersContextType>({
@@ -36,7 +36,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     const [currentCommerceId, setCurrentCommerceId] = useState<number | null>(null);
     const [orderQR, setOrderQR] = useState("");
 
-    const getProductQuantityInCart = (productId: string): number => {
+    const getProductQuantityInCart = (productId: number): number => {
         const item = cart.find(item => item.product.id === productId);
         return item ? item.quantity : 0;
     };

@@ -1,4 +1,5 @@
 //@ts-ignore
+import { useOrders } from "@/src/context/ordersContext";
 import { colors, globalStyles } from "@/src/global-style";
 import StorageController from "@/src/services/storage/controller/storage.controller";
 import { ProductType } from "@/src/types/product.type";
@@ -6,7 +7,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useOrders } from "@/src/context/ordersContext";
 
 // import { colors, globalStyles } from "@src/global-style";
 // import { useCommerceImage } from "@hooks/useCommerceImage";
@@ -22,9 +22,9 @@ export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
     const router = useRouter();
     const { getProductQuantityInCart } = useOrders();
     const quantity = getProductQuantityInCart(product.id);
+
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
-
     useFocusEffect(
         React.useCallback(() => {
             if (!product.image) return;
@@ -61,11 +61,13 @@ export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
                         <ActivityIndicator size="small" color="#D4685E" />
                     </View>
                 )}
-                <Image 
+
+                <Image source={{ uri: image }} style={{ ...StyleSheet.absoluteFillObject }} />
+                {/* <Image 
                     source={{ uri: image }} 
                     style={{ ...StyleSheet.absoluteFillObject }} 
                     onLoad={() => setImageLoading(false)}
-                />
+                /> */}
                 {quantity > 0 && (
                     <View style={styles.quantityBadge}>
                         <Text style={styles.quantityText}>{quantity}</Text>
