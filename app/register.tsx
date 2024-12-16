@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { TextInput, View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { registerConsumer } from '@/src/services/client';
 
@@ -49,77 +49,87 @@ export default function RegisterScreen() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
         >
-            <Text style={styles.title}>Crear cuenta</Text>
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                showsVerticalScrollIndicator={false}
+            >
+                <Text style={styles.title}>Crear cuenta</Text>
 
-            <TextInput
-                placeholder="Nombre"
-                value={firstName}
-                onChangeText={setFirstName}
-                style={styles.input}
-            />
-
-            <TextInput
-                placeholder="Apellido"
-                value={lastName}
-                onChangeText={setLastName}
-                style={styles.input}
-            />
-
-            <TextInput
-                placeholder="Correo electrónico"
-                value={email}
-                onChangeText={setEmail}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-
-            <View style={styles.passwordContainer}>
                 <TextInput
-                    placeholder="Contraseña"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    style={styles.passwordInput}
+                    placeholder="Nombre"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    style={styles.input}
                 />
-                <Pressable onPress={togglePasswordVisibility} style={styles.toggleButton}>
-                    <Text>{showPassword ? 'Ocultar' : 'Mostrar'}</Text>
+
+                <TextInput
+                    placeholder="Apellido"
+                    value={lastName}
+                    onChangeText={setLastName}
+                    style={styles.input}
+                />
+
+                <TextInput
+                    placeholder="Correo electrónico"
+                    value={email}
+                    onChangeText={setEmail}
+                    style={styles.input}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+
+                <View style={styles.passwordContainer}>
+                    <TextInput
+                        placeholder="Contraseña"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        style={styles.passwordInput}
+                    />
+                    <Pressable onPress={togglePasswordVisibility} style={styles.toggleButton}>
+                        <Text>{showPassword ? 'Ocultar' : 'Mostrar'}</Text>
+                    </Pressable>
+                </View>
+
+                <TextInput
+                    placeholder="Dirección"
+                    value={address}
+                    onChangeText={setAddress}
+                    style={styles.input}
+                />
+
+                <TextInput
+                    placeholder="Ciudad"
+                    value={city}
+                    onChangeText={setCity}
+                    style={styles.input}
+                />
+
+                <TextInput
+                    placeholder="Estado/Provincia"
+                    value={state}
+                    onChangeText={setState}
+                    style={styles.input}
+                />
+
+                <Pressable style={styles.registerButton} onPress={handleRegister}>
+                    <Text style={styles.registerButtonText}>Registrarse</Text>
                 </Pressable>
-            </View>
 
-            <TextInput
-                placeholder="Dirección"
-                value={address}
-                onChangeText={setAddress}
-                style={styles.input}
-            />
-
-            <TextInput
-                placeholder="Ciudad"
-                value={city}
-                onChangeText={setCity}
-                style={styles.input}
-            />
-
-            <TextInput
-                placeholder="Estado/Provincia"
-                value={state}
-                onChangeText={setState}
-                style={styles.input}
-            />
-
-            <Pressable style={styles.registerButton} onPress={handleRegister}>
-                <Text style={styles.registerButtonText}>Registrarse</Text>
-            </Pressable>
-
-            <Pressable onPress={onPressBack}>
-                <Text style={styles.loginLink}>Ya tengo una cuenta</Text>
-            </Pressable>
+                <Pressable onPress={onPressBack}>
+                    <Text style={styles.loginLink}>Ya tengo una cuenta</Text>
+                </Pressable>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        padding: 10,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
