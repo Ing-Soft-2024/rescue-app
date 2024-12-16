@@ -25,6 +25,7 @@ export default function HistoryScreen() {
                     userId: Number(session.user.id)
                 } 
             });
+            
             console.log("Orders response:", resp);
             setOrders(resp);
         } catch (error) {
@@ -40,6 +41,36 @@ export default function HistoryScreen() {
         }, [session?.user?.id])
     );
 
+    const renderOrderItem = ({ item }: { item: any }) => (
+        <View style={styles.orderItem}>
+            <Text style={styles.date}>
+                Fecha: {new Date(item.createdAt).toLocaleDateString()}
+            </Text>
+            <Text style={styles.businessId}>
+                Comercio: {item.business?.name || 'No disponible'}
+            </Text>
+            <Text style={styles.price}>
+                Precio Total: ${Number(item.totalPrice).toFixed(2)}
+            </Text>
+
+            <View style={styles.orderItemsContainer}>
+                {item.order_items?.map((orderItem: any, index: number) => (
+                    <View key={index} style={styles.orderItemDetail}>
+                        <Text style={styles.productId}>
+                            Producto: {orderItem.product?.name || 'No disponible'}
+                        </Text>
+                        <Text style={styles.quantity}>
+                            Cantidad: {orderItem.quantity}
+                        </Text>
+                        <Text style={styles.price}>
+                            Precio por unidad: ${Number(orderItem.price).toFixed(2)}
+                        </Text>
+                    </View>
+                ))}
+            </View>
+        </View>
+    );
+
     if (isLoading) {
         return (
             <View style={styles.loadingContainer}>
@@ -47,24 +78,6 @@ export default function HistoryScreen() {
             </View>
         );
     }
-
-    const renderOrderItem = ({ item }: { item: any }) => (
-        <View style={styles.orderItem}>
-            <Text style={styles.date}>Fecha: {new Date(item.createdAt).toLocaleDateString()}</Text>
-            <Text style={styles.businessId}>Comercio: {item.business?.name || 'No disponible'}</Text>
-            <Text style={styles.price}>Precio Total: ${item.totalPrice?.toFixed(2) || '0.00'}</Text>
-
-            <View style={styles.orderItemsContainer}>
-                {item.order_items?.slice(0, 3).map((orderItem: any, index: number) => (
-                    <View key={index} style={styles.orderItemDetail}>
-                        <Text style={styles.productId}>Producto: {orderItem.product?.name || 'No disponible'}</Text>
-                        <Text style={styles.quantity}>Cantidad: {orderItem.quantity}</Text>
-                        <Text style={styles.price}>Precio por unidad: ${orderItem.price?.toFixed(2) || '0.00'}</Text>
-                    </View>
-                ))}
-            </View>
-        </View>
-    );
 
     return (
         <View style={styles.container}>
