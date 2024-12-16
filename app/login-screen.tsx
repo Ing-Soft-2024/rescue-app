@@ -120,11 +120,11 @@ export default function AuthLayout() {
                     gap: 5,
                     marginTop: 40,
                 }}>
-                    <GoogleComponent />
-                    <AppleIDButton />
+                    {/* <GoogleComponent />
+                    <AppleIDButton /> */}
                 </View>
 
-                <Pressable
+                {/* <Pressable
                     style={({ pressed }) => ({
                         marginTop: 30,
                         padding: 10,
@@ -142,7 +142,7 @@ export default function AuthLayout() {
                     }}>
                         Iniciar sesión como invitado
                     </Text>
-                </Pressable>
+                </Pressable> */}
 
                 <Pressable
                     style={({ pressed }) => ({
