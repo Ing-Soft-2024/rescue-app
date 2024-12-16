@@ -1,8 +1,8 @@
 import { useOrders } from "@/src/context/ordersContext";
 import { commerceConsumer, commerceDetailsConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { useFocusEffect, useRouter } from "expo-router";
-import React, { useEffect } from "react";
-import { Pressable, Text, View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Pressable, Text, View, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 
 export default function SuccessScreen() {
@@ -10,6 +10,7 @@ export default function SuccessScreen() {
     const router = useRouter();
     const [rating, setRating] = React.useState("");
     const [businessId, setBusinessId] = React.useState<number | null>(null);
+    const [isSubmittingRating, setIsSubmittingRating] = useState(false);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -39,23 +40,43 @@ export default function SuccessScreen() {
         }, [])
     );
 
+    const validateRating = (value: string) => {
+        const numValue = parseInt(value);
+        return !isNaN(numValue) && numValue >= 1 && numValue <= 5;
+    };
+
+    const handleRatingChange = (text: string) => {
+        // Only allow numbers 1-5
+        if (text === "" || (parseInt(text) >= 1 && parseInt(text) <= 5)) {
+            setRating(text);
+        }
+    };
+
     async function handleSubmission() {
         if (!businessId) {
             console.error("No business ID available");
             return;
         }
 
+        if (!validateRating(rating)) {
+            Alert.alert('Error', 'Por favor ingrese una calificación del 1 al 5');
+            return;
+        }
+
+        setIsSubmittingRating(true);
         try {
-            const response = await commerceDetailsConsumer.consume('PATCH', {
+            await commerceDetailsConsumer.consume('PATCH', {
                 params: { id: businessId },
                 data: {
-                    rating: Number(rating)
+                    rating: parseInt(rating)
                 }
             });
-            console.log("Rating submitted:", rating);
             router.navigate("/screens/");
         } catch (error) {
             console.error("Error submitting rating:", error);
+            Alert.alert('Error', 'No se pudo enviar la calificación');
+        } finally {
+            setIsSubmittingRating(false);
         }
     }
 
@@ -77,24 +98,35 @@ export default function SuccessScreen() {
                     </Text>
                     <TextInput 
                         keyboardType="numeric"
-                        onChangeText={setRating}
+                        onChangeText={handleRatingChange}
+                        value={rating}
                         placeholder="Califica del 1 al 5"
                         placeholderTextColor="#999"
                         style={styles.input}
                         maxLength={1}
+                        editable={!isSubmittingRating}
                     />
                 </View>
 
                 <TouchableOpacity 
-                    style={styles.submitButton}
+                    style={[
+                        styles.submitButton,
+                        isSubmittingRating && styles.submitButtonDisabled
+                    ]}
                     onPress={handleSubmission}
+                    disabled={isSubmittingRating}
                 >
-                    <Text style={styles.submitButtonText}>Enviar Valoración</Text>
+                    {isSubmittingRating ? (
+                        <ActivityIndicator size="small" color="white" />
+                    ) : (
+                        <Text style={styles.submitButtonText}>Enviar Valoración</Text>
+                    )}
                 </TouchableOpacity>
 
                 <TouchableOpacity 
                     style={styles.skipButton}
                     onPress={() => router.navigate("/screens/")}
+                    disabled={isSubmittingRating}
                 >
                     <Text style={styles.skipButtonText}>Saltear este paso</Text>
                 </TouchableOpacity>
@@ -186,5 +218,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
+    submitButtonDisabled: {
+        opacity: 0.7,
+    },
+    mercadoPagoDisabled: {
+        opacity: 0.7,
+    }
 });
 

@@ -2,7 +2,7 @@ import { AppleIDButton } from '@/src/components/auth/appleid.button';
 import { GoogleComponent } from '@/src/components/auth/google.button';
 import { useSession } from '@/src/context/session.context';
 import { useRouter } from 'expo-router';
-import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View, Image, StyleSheet, ScrollView } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, Pressable, Text, TextInput, View, Image, StyleSheet, ScrollView, ActivityIndicator, Alert } from "react-native";
 import logo from '../assets/images/reskue-logo.png';
 // import { useFonts } from 'expo-font';
 // import AppLoading from 'expo-app-loading';
@@ -16,6 +16,7 @@ export default function AuthLayout() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const navigateToIndex = () => {
@@ -28,12 +29,24 @@ export default function AuthLayout() {
     });
 
     const handleLogin = async (email: string, password: string) => {
+        if (!email || !password) {
+            Alert.alert('Error', 'Por favor complete todos los campos');
+            return;
+        }
+
+        setIsLoading(true);
         try {
             await signInWith("Credentials", { email, password });
             // On success, user will be redirected automatically due to session context
         } catch (error) {
             console.error("Login failed:", error);
-            // Handle login error
+            Alert.alert(
+                'Error de inicio de sesión',
+                'El correo electrónico o la contraseña son incorrectos',
+                [{ text: 'OK' }]
+            );
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -107,8 +120,16 @@ export default function AuthLayout() {
                     />
 
                     <View style={styles.containerButton}>
-                        <Pressable style={styles.button} onPress={() => { handleLogin(email, password) }}>
-                            <Text style={styles.buttonText}>Iniciar sesión</Text>
+                        <Pressable 
+                            style={[styles.button, isLoading && styles.buttonDisabled]} 
+                            onPress={() => { handleLogin(email, password) }}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator size="small" color="white" />
+                            ) : (
+                                <Text style={styles.buttonText}>Iniciar sesión</Text>
+                            )}
                         </Pressable>
                     </View>
                 </View>
@@ -217,5 +238,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    buttonDisabled: {
+        opacity: 0.7,
     },
 });

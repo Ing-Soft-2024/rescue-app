@@ -5,7 +5,7 @@ import { orderConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View, Alert } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
 import uuid from 'react-native-uuid';
 
 
@@ -18,6 +18,7 @@ export default function ShoppingCartScreen() {
 
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
+    const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
         console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
@@ -44,16 +45,14 @@ export default function ShoppingCartScreen() {
             return;
         }
 
+        setIsCreatingOrder(true);
         try {
-            // Format the order data according to the model
             const orderData = {
                 userId: session.user.id,
-                businessId: cart[0]?.product.businessId || 1, // Get businessId from first product
+                businessId: cart[0]?.product.businessId || 1,
                 status: "pending",
                 cart
             };
-
-            console.log("Sending order data:", orderData);
 
             const response = await orderConsumer.consume('POST', {
                 data: orderData
@@ -63,8 +62,6 @@ export default function ShoppingCartScreen() {
                 Alert.alert('Error', 'No se pudo crear la orden');
                 return;
             }
-
-            console.log("Response from server:", response);
 
             const orderId = response.orderId;
             if (!orderId) {
@@ -77,16 +74,10 @@ export default function ShoppingCartScreen() {
             router.push("./QRScreen");
 
         } catch (error) {
-            console.error("Error creating order:", {
-                error,
-                requestData: {
-                    userId: session.user.id,
-                    businessId: cart[0]?.product.businessId || 1,
-                    status: "pending",
-                    cart
-                }
-            });
+            console.error("Error creating order:", error);
             Alert.alert('Error', 'Hubo un error al crear la orden');
+        } finally {
+            setIsCreatingOrder(false);
         }
     }
 
@@ -156,11 +147,19 @@ export default function ShoppingCartScreen() {
                     </Text>
                     {!orderQR && <Pressable
                         onPress={payWithMercadoPago}
-                        style={styles.mercadoPago}
+                        style={[
+                            styles.mercadoPago,
+                            isCreatingOrder && styles.mercadoPagoDisabled
+                        ]}
+                        disabled={isCreatingOrder}
                     >
-                        <Text style={{ fontSize: 16, color: "white", fontWeight: "semibold" }}>
-                            Confirmar pedido
-                        </Text>
+                        {isCreatingOrder ? (
+                            <ActivityIndicator size="small" color="white" />
+                        ) : (
+                            <Text style={{ fontSize: 16, color: "white", fontWeight: "semibold" }}>
+                                Confirmar pedido
+                            </Text>
+                        )}
                     </Pressable>}
                 </View>
             }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { TextInput, View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { registerConsumer } from '@/src/services/client';
 
@@ -12,6 +12,7 @@ export default function RegisterScreen() {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
 
@@ -24,6 +25,12 @@ export default function RegisterScreen() {
     };
 
     const handleRegister = async () => {
+        if (!firstName || !lastName || !email || !password) {
+            Alert.alert('Error', 'Por favor complete los campos obligatorios');
+            return;
+        }
+
+        setIsLoading(true);
         try {
             const response = await registerConsumer.consume('POST', {
                 data: {
@@ -37,10 +44,14 @@ export default function RegisterScreen() {
                 }
             });
             console.log('Registration successful:', response);
-            router.push('/login-screen'); // Redirect to login after successful registration
+            Alert.alert('Éxito', 'Registro exitoso', [
+                { text: 'OK', onPress: () => router.push('/login-screen') }
+            ]);
         } catch (error) {
             console.error('Registration error:', error);
-            // Handle registration error (show message to user)
+            Alert.alert('Error', 'No se pudo completar el registro');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -112,8 +123,16 @@ export default function RegisterScreen() {
                     style={styles.input}
                 />
 
-                <Pressable style={styles.registerButton} onPress={handleRegister}>
-                    <Text style={styles.registerButtonText}>Registrarse</Text>
+                <Pressable 
+                    style={[styles.registerButton, isLoading && styles.registerButtonDisabled]} 
+                    onPress={handleRegister}
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color="white" />
+                    ) : (
+                        <Text style={styles.registerButtonText}>Registrarse</Text>
+                    )}
                 </Pressable>
 
                 <Pressable onPress={onPressBack}>
@@ -188,5 +207,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
         color: '#8D6E63',
         fontSize: 16,
+    },
+    registerButtonDisabled: {
+        opacity: 0.7,
     },
 });
