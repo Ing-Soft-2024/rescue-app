@@ -15,6 +15,7 @@ export default function homeScreen() {
   const [category, setCategory] = React.useState<ProductType[]>([]);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [searchText, setSearchText] = React.useState('');
 
   const getCurrentCoordinates = () => {
     if (location?.coords) {
@@ -26,13 +27,11 @@ export default function homeScreen() {
     return null;
   };
 
-  const onRefresh = async () => {
-    setIsRefreshing(true);
+  const fetchProducts = async () => {
     const coordinates = getCurrentCoordinates();
 
     if (!coordinates) {
       Alert.alert('Location Required', 'Please enable location services to see nearby products');
-      setIsRefreshing(false);
       return;
     }
 
@@ -40,6 +39,7 @@ export default function homeScreen() {
       const res = await nearUserConsumer.consume('GET', {
         queryParams: {
           ...coordinates,
+          search: searchText
         }
       });
       console.log(res);
@@ -47,28 +47,26 @@ export default function homeScreen() {
     } catch (error) {
       console.error('Error fetching nearby products:', error);
       Alert.alert('Error', 'Failed to fetch nearby products');
-    } finally {
-      setIsRefreshing(false);
     }
+  };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchProducts();
+    setIsRefreshing(false);
+  };
+
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+  };
+
+  const handleRefreshSearch = () => {
+    fetchProducts();
   };
   
   React.useEffect(() => {
     setIsLoading(true);
-    const coordinates = getCurrentCoordinates();
-    if (coordinates) {
-      nearUserConsumer.consume('GET', {
-        queryParams: {
-          ...coordinates
-        }
-      })
-        .then(setCategory)
-        .catch(error => {
-          console.error('Error fetching nearby products:', error);
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
-    }
+    fetchProducts().finally(() => setIsLoading(false));
   }, [location]);
 
   const router = useRouter();
@@ -85,7 +83,11 @@ export default function homeScreen() {
       ) : (
         <>
           <View style={{ paddingHorizontal: 10 }}>
-            <SearchBar />
+            <SearchBar 
+              onSearch={handleSearch}
+              onRefresh={handleRefreshSearch}
+              value={searchText}
+            />
           </View>
 
           {orderQR != "" && 
