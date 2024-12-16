@@ -65,12 +65,12 @@ export default function QRScreen() {
                     <View style={styles.paymentContainer}>
                         <Text style={styles.paymentTitle}>Selecciona tu método de pago</Text>
                         <Text style={styles.totalAmount}>Total a pagar: ${total.toFixed(2)}</Text>
-                        <TouchableOpacity 
+                        {/* <TouchableOpacity 
                             style={[styles.paymentButton, styles.mpButton]}
                             onPress={() => router.push("./checkout/mercadoPago")}
                         >
                             <Text style={styles.buttonText}>Mercado Pago</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity 
                             style={[styles.paymentButton, styles.cashButton]}
                             onPress={handleCashPayment}
