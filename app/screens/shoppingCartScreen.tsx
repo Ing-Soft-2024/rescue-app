@@ -5,7 +5,7 @@ import { orderConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View, Alert } from "react-native";
 import uuid from 'react-native-uuid';
 
 
@@ -30,37 +30,64 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, updateCart, total, setOrderQR, orderQR } = useOrders();
+    const { addToCart, cart, removeFromCart, total, setOrderQR, orderQR } = useOrders();
 
 
     async function payWithMercadoPago() {
-        //router.push("./(checkout)/mercadoPago");
-        // router.push("./success");
-        //const QR: string = generateUUID() as string;
+        if(orderQR != ""){
+            router.push("./QRScreen");
+            return;
+        }
+        
+        if (!session?.user.id) {
+            Alert.alert('Error', 'Usuario no identificado');
+            return;
+        }
 
-        
-            if(orderQR != ""){
-                router.push("./QRScreen");
-            }
-        
-        console.log("cart", cart);
-        console.log("id", session?.user.id);
-        let response = await orderConsumer.consume('POST', {
-            data:
-            {
-                userId: session?.user.id,
-                businessId:1,
+        try {
+            // Format the order data according to the model
+            const orderData = {
+                userId: session.user.id,
+                businessId: cart[0]?.product.businessId || 1, // Get businessId from first product
                 status: "pending",
                 cart
+            };
+
+            console.log("Sending order data:", orderData);
+
+            const response = await orderConsumer.consume('POST', {
+                data: orderData
+            });
+
+            if (!response) {
+                Alert.alert('Error', 'No se pudo crear la orden');
+                return;
             }
-        }).catch((error) => {
-            console.log("el error es:" + error);
-            return null;
-        });
-        const orderId = response.orderId;
-        const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId; 
-        setOrderQR(QR);
-        router.push("./QRScreen");
+
+            console.log("Response from server:", response);
+
+            const orderId = response.orderId;
+            if (!orderId) {
+                Alert.alert('Error', 'No se pudo obtener el ID de la orden');
+                return;
+            }
+
+            const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId; 
+            setOrderQR(QR);
+            router.push("./QRScreen");
+            
+        } catch (error) {
+            console.error("Error creating order:", {
+                error,
+                requestData: {
+                    userId: session.user.id,
+                    businessId: cart[0]?.product.businessId || 1,
+                    status: "pending",
+                    cart
+                }
+            });
+            Alert.alert('Error', 'Hubo un error al crear la orden');
+        }
     }
 
     return (
