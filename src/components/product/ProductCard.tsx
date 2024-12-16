@@ -78,9 +78,9 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
             }}>
                 {/* TODO: Same here. */}
                 <Text style={[globalStyles.text.lg, globalStyles.text.semiBold]}>{
-                    new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price * 0.85)
+                     new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price)
                 }</Text>
-                <Text style={[globalStyles.text.sm, globalStyles.text.medium,
+                {/* <Text style={[globalStyles.text.sm, globalStyles.text.medium,
                 {
                     color: "#D4685E",
                     textDecorationLine: "line-through"
@@ -88,7 +88,7 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
                     {
                         new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price)
                     }
-                </Text>
+                </Text> */}
             </View>
         </Pressable>
     );

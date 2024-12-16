@@ -126,7 +126,7 @@ export default function ShoppingCartScreen() {
                 renderItem={({ item, index }) => (
                     <ProductItem product={item.product} onRemove={() => {
                         if (!orderQR) {
-                            removeFromCart(index)
+                            removeFromCart(item.product.id)
                         }
                     }} />
                 )}
