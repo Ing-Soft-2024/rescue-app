@@ -4,9 +4,9 @@ export type ProductType = {
     description: string;
     price: number;
     image: string;
-    category: string;
     businessId: number;
     stock: number;
+    categories: Array<{ name: string, description: string }>;
 }
 
 //el productScreen tiene un productType propio, y ese es el que se le agrega al carrito. no deberia usar este?

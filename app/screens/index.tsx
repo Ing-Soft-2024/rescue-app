@@ -9,10 +9,14 @@ import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
 import { userLocationContext } from '@/src/context/userLocationContext';
 
+type CategoryProducts = {
+  [key: string]: ProductType[];
+};
+
 export default function homeScreen() {
   const { signOut } = useSession();
   const { location } = useContext(userLocationContext);
-  const [category, setCategory] = React.useState<ProductType[]>([]);
+  const [categorizedProducts, setCategorizedProducts] = React.useState<CategoryProducts>({});
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchText, setSearchText] = React.useState('');
@@ -42,8 +46,19 @@ export default function homeScreen() {
           search: searchText
         }
       });
-      console.log(res);
-      setCategory(res);
+      
+      const productsByCategory = res.reduce((acc: CategoryProducts, product: ProductType) => {
+        const category = product.categories[0]?.name;
+        if (!category) return acc;
+        
+        if (!acc[category]) {
+          acc[category] = [];
+        }
+        acc[category].push(product);
+        return acc;
+      }, {});
+      
+      setCategorizedProducts(productsByCategory);
     } catch (error) {
       console.error('Error fetching nearby products:', error);
       Alert.alert('Error', 'Failed to fetch nearby products');
@@ -102,12 +117,14 @@ export default function homeScreen() {
           }
           
           <FlatList
-            data={[1]}
-            renderItem={({ item }) =>
-              <CategoryList
-                categoryTitle={`Comidas`}
-                products={category}
-              />
+            data={Object.entries(categorizedProducts)}
+            renderItem={({ item: [categoryName, products] }) => 
+              products.length > 0 ? (
+                <CategoryList
+                  categoryTitle={categoryName}
+                  products={products}
+                />
+              ) : null
             }
             refreshControl={
               <RefreshControl 
