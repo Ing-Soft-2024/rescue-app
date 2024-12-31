@@ -62,7 +62,9 @@ export default function ProductLayout() {
   
 
   const canAddToCart = () => {
-    return product.stock > quantityInCart && !orderQR;
+    // Check if product is not in cart, has stock, and no active order
+    const productInCart = getProductQuantityInCart(Number(params.id)) > 0;
+    return !productInCart && product.stock > 0 && !orderQR;
   };
 
   return (
@@ -108,7 +110,8 @@ export default function ProductLayout() {
 
         {/* Detalles del producto */}
         <ProductDescription
-          category={product.category}
+          stock={product.stock}
+          category={product.categories?.[0]?.name}
           description={product.description}
           title={product.name}
           price={product.price}
@@ -118,7 +121,8 @@ export default function ProductLayout() {
         {!showSuccessCard && canAddToCart() && (
         <AddToCart 
           onAddToCartPress={() => {
-            if (canAddToCart()) {
+            const currentQuantity = getProductQuantityInCart(Number(params.id));
+            if (currentQuantity === 0) {
               addToCart({ 
                 product: {
                   ...product,
@@ -126,18 +130,17 @@ export default function ProductLayout() {
                 }, 
                 quantity: 1 
               });
-              setQuantityInCart(prev => prev + 1);
+              setQuantityInCart(1);
               setShowSuccessCard(true);
               setTimeout(() => setShowSuccessCard(false), 3000);
             }
           }}
-          
         />
         )}
       </ScrollView>
-      {product.stock <= quantityInCart && !showSuccessCard && (
+      {quantityInCart > 0 && !showSuccessCard && (
         <View style={styles.outOfStockCard}>
-          <Text style={styles.outOfStockText}>No more items available in stock</Text>
+          <Text style={styles.outOfStockText}>Product already in cart</Text>
         </View>
       )}
       {showSuccessCard && (

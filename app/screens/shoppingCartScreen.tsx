@@ -31,7 +31,7 @@ export default function ShoppingCartScreen() {
     // initMercadoPago('TEST-3000e8dc-02f3-4588-a548-279fa11c7ee3', {locale: 'es-AR',});
     const router = useRouter();
 
-    const { addToCart, cart, removeFromCart, total, setOrderQR, orderQR } = useOrders();
+    const { cart, removeFromCart, total, setOrderQR, orderQR, updateCartItem } = useOrders();
 
 
     async function payWithMercadoPago() {
@@ -81,6 +81,11 @@ export default function ShoppingCartScreen() {
         }
     }
 
+    const handleUpdateQuantity = (productId: number, newQuantity: number) => {
+        if (newQuantity < 1) return; // Prevent negative quantities
+        updateCartItem(productId, newQuantity);
+    };
+
     return (
         <View style={styles.container}>
             {/* <ScrollView style={{ flex: 1, minHeight: "auto" }}> */}
@@ -115,11 +120,16 @@ export default function ShoppingCartScreen() {
                 contentContainerStyle={styles.listContainer}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                 renderItem={({ item, index }) => (
-                    <ProductItem product={item.product} onRemove={() => {
-                        if (!orderQR) {
-                            removeFromCart(item.product.id)
-                        }
-                    }} />
+                    <ProductItem 
+                        product={item.product} 
+                        initialQuantity={item.quantity}
+                        onRemove={() => {
+                            if (!orderQR) {
+                                removeFromCart(item.product.id)
+                            }
+                        }}
+                        onUpdateQuantity={(newQuantity) => handleUpdateQuantity(item.product.id, newQuantity)}
+                    />
                 )}
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(_, index) => index.toString()}
@@ -195,6 +205,9 @@ const styles = StyleSheet.create({
     },
     separator: {
         width: 10, // Adjust the width of the separator if needed
+    },
+    mercadoPagoDisabled: {
+        backgroundColor: "#ccc",
     },
 
 });

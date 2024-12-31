@@ -6,25 +6,23 @@ import { ProductType } from "@/src/types/product.type";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
-
-// import { colors, globalStyles } from "@src/global-style";
-// import { useCommerceImage } from "@hooks/useCommerceImage";
-// import { ObjectToBase64 } from "@utils/base64";
-// import { Chip } from "@interface/chip";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 
 interface ProductItemProps {
     product: ProductType;
     onRemove?: () => void;
+    onUpdateQuantity?: (newQuantity: number) => void;
+    initialQuantity?: number;
 }
 
-export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
+export const ProductItem = ({ product, onRemove, onUpdateQuantity, initialQuantity }: ProductItemProps) => {
     const router = useRouter();
-    const { getProductQuantityInCart } = useOrders();
-    const quantity = getProductQuantityInCart(product.id);
+    const { orderQR, getProductQuantityInCart } = useOrders();
+    const quantity = initialQuantity ?? getProductQuantityInCart(product.id);
 
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
+
     useFocusEffect(
         React.useCallback(() => {
             if (!product.image) return;
@@ -35,11 +33,19 @@ export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
         }, [])
     );
 
+    const handleQuantityUpdate = (newQuantity: number) => {
+        if (orderQR) return;
+        if (newQuantity > product.stock) {
+            Alert.alert('Error', 'No hay suficiente stock disponible');
+            return;
+        }
+        onUpdateQuantity?.(newQuantity);
+    };
+
     return (
         <Pressable
             onPress={() => router.push(`/screens/productScreen/${product.id}`)}
             style={{
-                // flex: 1,
                 flexDirection: "row",
                 gap: 12,
                 width: "100%",
@@ -63,11 +69,6 @@ export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
                 )}
 
                 <Image source={{ uri: image }} style={{ ...StyleSheet.absoluteFillObject }} />
-                {/* <Image 
-                    source={{ uri: image }} 
-                    style={{ ...StyleSheet.absoluteFillObject }} 
-                    onLoad={() => setImageLoading(false)}
-                /> */}
                 {quantity > 0 && (
                     <View style={styles.quantityBadge}>
                         <Text style={styles.quantityText}>{quantity}</Text>
@@ -85,60 +86,58 @@ export const ProductItem = ({ product, onRemove }: ProductItemProps) => {
                 }}>
                     <View style={{
                         flexDirection: "row",
-                        // alignItems: "center",
                         gap: 8
                     }}>
                         <Text style={[globalStyles.text.lg, globalStyles.text.semiBold]}>{product.name}</Text>
-
-                        {/* TODO: Make discount visible only when available. */}
-                        {/* <Chip title="-15%" /> */}
                     </View>
                 </View>
 
                 <View style={{
                     flexDirection: "row",
-                    // alignItems: "center",
                     gap: 4
                 }}>
                     <Text style={[globalStyles.text.lg, globalStyles.text.semiBold]}>{
-                               new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price)
+                        new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price)
                     }</Text>
-                    {/* <Text style={[globalStyles.text.sm, globalStyles.text.medium,
-                    {
-                        color: "#D4685E",
-                        textDecorationLine: "line-through"
-                    }]}>
-                        {
-                            new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(product.price)
-                        }
-                    </Text> */}
                 </View>
 
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flex: 1,
-                }}>
-                    {/* Buttons */}
-                    {/* <Pressable
-                        style={styles.actionButtons}
-                        onPress={() => console.log("Add to cart")}
+                <View style={styles.quantityContainer}>
+                    <TouchableOpacity 
+                        style={[
+                            styles.quantityButton,
+                            (quantity <= 1 || Boolean(orderQR)) && { opacity: 0.5 }
+                        ]}
+                        onPress={() => handleQuantityUpdate(quantity - 1)}
+                        disabled={quantity <= 1 || Boolean(orderQR)}
                     >
-                        <MaterialIcons name="add" size={24} color="#D4685E" />
-                    </Pressable> */}
-                    {/* <Text>
-                       cantidad:  {quantity}
-                    </Text> */}
-
-                    <Pressable
-                        style={styles.actionButtons}
-                        onPress={onRemove}
+                        <Text style={styles.quantityButtonText}>-</Text>
+                    </TouchableOpacity>
+                    
+                    <Text style={styles.quantityText}>{quantity}</Text>
+                    
+                    <TouchableOpacity 
+                        style={[
+                            styles.quantityButton,
+                            (quantity >= product.stock || Boolean(orderQR)) && { opacity: 0.5 }
+                        ]}
+                        onPress={() => handleQuantityUpdate(quantity + 1)}
+                        disabled={quantity >= product.stock || Boolean(orderQR)}
                     >
-                        <Text style={styles.actionButtontext}>Eliminar</Text>
-                        <MaterialIcons name="delete" size={24} color="#FFF" />
-                    </Pressable>
+                        <Text style={styles.quantityButtonText}>+</Text>
+                    </TouchableOpacity>
                 </View>
+
+                <Pressable
+                    style={[
+                        styles.actionButtons,
+                        Boolean(orderQR) && { opacity: 0.5 }
+                    ]}
+                    onPress={onRemove}
+                    disabled={Boolean(orderQR)}
+                >
+                    <Text style={styles.actionButtontext}>Eliminar</Text>
+                    <MaterialIcons name="delete" size={24} color="#FFF" />
+                </Pressable>
             </View>
         </Pressable>
     );
@@ -155,9 +154,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         width: 100,
         height: 30
-
     },
-
     actionButtontext: {
         color: "#FFF",
         fontSize: 12,
@@ -180,4 +177,26 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: 'bold',
     },
-})
+    quantityContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginVertical: 10,
+    },
+    quantityButton: {
+        backgroundColor: '#D4685E',
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    quantityButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    disabledButton: {
+        opacity: 0.5,
+    }
+});

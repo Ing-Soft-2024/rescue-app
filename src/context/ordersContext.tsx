@@ -17,6 +17,7 @@ interface OrdersContextType {
     clearCart: () => void;
     setOrderQR: (qr: string) => void;
     getProductQuantityInCart: (productId: number) => number;
+    updateCartItem: (productId: number, newQuantity: number) => void;
 }
 
 const OrdersContext = createContext<OrdersContextType>({
@@ -29,6 +30,7 @@ const OrdersContext = createContext<OrdersContextType>({
     clearCart: () => { },
     setOrderQR: () => { },
     getProductQuantityInCart: () => 0,
+    updateCartItem: () => { },
 });
 
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
@@ -95,6 +97,14 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
 
     const total = cart.reduce((acc, item) => acc + item.subtotal, 0);
 
+    const updateCartItem = (productId: number, newQuantity: number) => {
+        setCart(cart.map(item => 
+            item.product.id === productId
+                ? { ...item, quantity: newQuantity, subtotal: item.product.price * newQuantity }
+                : item
+        ));
+    };
+
     return (
         <OrdersContext.Provider value={{
             cart,
@@ -106,6 +116,7 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
             clearCart,
             setOrderQR,
             getProductQuantityInCart,
+            updateCartItem,
         }}>
             {children}
         </OrdersContext.Provider>
