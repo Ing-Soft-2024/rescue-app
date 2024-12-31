@@ -13,9 +13,10 @@ interface ProductDescriptionProps {
   description: string;
   price: number;
   category: string;
+  stock: number;
 }
 
-export function ProductDescription({ title, description, price, category }: ProductDescriptionProps) {
+export function ProductDescription({ title, description, price, category, stock }: ProductDescriptionProps) {
   return (
     <View style={styles.container}>
 
@@ -27,6 +28,8 @@ export function ProductDescription({ title, description, price, category }: Prod
           new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(price)
         }</Text>
       </View>
+
+      <Text style={styles.stock}>{stock} disponibles</Text>
 
       <Text style={styles.description}>{description}</Text>
     </View>
@@ -62,5 +65,10 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     color: "#333",
+  },
+  stock: {
+    fontSize: 12,
+    color: "#888",
+    marginBottom: 10,
   },
 });

@@ -27,12 +27,12 @@ export function Header({
 
       {/* Botones de compartir y agregar a favoritos */}
       <View style={styles.rightButtons}>
-        <TouchableOpacity onPress={onSharePress} style={styles.iconButton}>
+        {/* <TouchableOpacity onPress={onSharePress} style={styles.iconButton}>
           <Ionicons name="share-social" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity onPress={onFavoritePress} style={styles.iconButton}>
           <Ionicons name="heart" size={24} color="white" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
