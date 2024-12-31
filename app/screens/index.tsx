@@ -14,7 +14,7 @@ type CategoryProducts = {
 };
 
 export default function homeScreen() {
-  const { signOut } = useSession();
+  const { signOut, session } = useSession();
   const { location } = useContext(userLocationContext);
   const [categorizedProducts, setCategorizedProducts] = React.useState<CategoryProducts>({});
   const [isRefreshing, setIsRefreshing] = React.useState(false);
@@ -97,6 +97,16 @@ export default function homeScreen() {
         <ActivityIndicator size="large" color="#D4685E" />
       ) : (
         <>
+          <Text style={{ 
+            fontSize: 24, 
+            fontWeight: 'bold', 
+            color: '#D4685E',
+            padding: 16,
+            textAlign: 'left'
+          }}>
+            ¡Bienvenido {session?.user.firstName}!
+          </Text>
+
           <View style={{ paddingHorizontal: 10 }}>
             <SearchBar 
               onSearch={handleSearch}

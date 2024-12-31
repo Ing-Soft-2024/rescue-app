@@ -8,9 +8,6 @@ export default function RegisterScreen() {
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [state, setState] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -38,9 +35,6 @@ export default function RegisterScreen() {
                     lastName,
                     email,
                     password,
-                    address,
-                    city,
-                    state
                 }
             });
             console.log('Registration successful:', response);
@@ -102,26 +96,6 @@ export default function RegisterScreen() {
                     </Pressable>
                 </View>
 
-                <TextInput
-                    placeholder="Dirección"
-                    value={address}
-                    onChangeText={setAddress}
-                    style={styles.input}
-                />
-
-                <TextInput
-                    placeholder="Ciudad"
-                    value={city}
-                    onChangeText={setCity}
-                    style={styles.input}
-                />
-
-                <TextInput
-                    placeholder="Estado/Provincia"
-                    value={state}
-                    onChangeText={setState}
-                    style={styles.input}
-                />
 
                 <Pressable 
                     style={[styles.registerButton, isLoading && styles.registerButtonDisabled]} 

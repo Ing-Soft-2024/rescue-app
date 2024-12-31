@@ -14,7 +14,7 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "rea
 
 export const ProductCard = ({ product }: { product: ProductType }) => {
     let router = useRouter();
-    console.log(product);
+  
     const [image, setImage] = React.useState<string>("https://picsum.photos/200");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
     useFocusEffect(

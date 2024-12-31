@@ -87,7 +87,7 @@ export class ApiConsumerFactory<ValidMethods extends string> {
         method: ValidMethods,
         data?: ApiRequestConfig
     ) => {
-        console.log(this._endpoint, method, data);
+       
         if (this._validEndpoints && !this._validEndpoints.includes(method))
             throw new ApiException(405, 'Method not implemented');
 

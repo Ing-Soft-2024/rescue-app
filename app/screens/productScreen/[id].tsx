@@ -35,8 +35,7 @@ export default function ProductLayout() {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log(params);
-      console.log("PRODUCT SCREEN");
+     
       if (!params.id) return;
   
       setIsLoading(true);

@@ -75,7 +75,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
                     .then((session) => {
                         if (!session) return;
                         setSession(session);
-                        console.log("SESSION", session);
+                        console.log("USER", session.user);
 
                         // Save session to secure store, persisting the session
                         SecureStorage
