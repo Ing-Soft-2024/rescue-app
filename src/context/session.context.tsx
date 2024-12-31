@@ -71,19 +71,12 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
             signInWith: async (method, opt?) => {
                 if (!isValidAuthMethod(method)) throw Error("Invalid sign in method");
 
-                authMethods[method].signIn(opt)
-                    .then((session) => {
-                        if (!session) return;
-                        setSession(session);
-                        console.log("USER", session.user);
-
-                        // Save session to secure store, persisting the session
-                        SecureStorage
-                            .setItemAsync("session", JSON.stringify(session));
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                const session = await authMethods[method].signIn(opt);
+                if (!session) throw Error("Failed to get session");
+                
+                setSession(session);
+                await SecureStorage.setItemAsync("session", JSON.stringify(session));
+                return session;
             },
             signOut: () => {
                 if (!session) return;

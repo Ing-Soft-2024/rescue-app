@@ -17,6 +17,7 @@ export default function AuthLayout() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
 
     const navigateToIndex = () => {
@@ -29,22 +30,35 @@ export default function AuthLayout() {
     });
 
     const handleLogin = async (email: string, password: string) => {
+        setIsLoading(true);
+        setError(''); // Clear previous errors
         if (!email || !password) {
-            Alert.alert('Error', 'Por favor complete todos los campos');
+            setError('Por favor, complete todos los campos');
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
         try {
-            await signInWith("Credentials", { email, password });
+            const session = await signInWith("Credentials", { email, password });
+            
             // On success, user will be redirected automatically due to session context
-        } catch (error) {
+
+            if (!session) {
+                setError('Error al iniciar sesión. Por favor, intente nuevamente.');
+                return;
+            }
+
+
+        } catch (error: any) {
             console.error("Login failed:", error);
-            Alert.alert(
-                'Error de inicio de sesión',
-                'El correo electrónico o la contraseña son incorrectos',
-                [{ text: 'OK' }]
-            );
+             // Handle different types of errors
+             if (error.message?.includes('401')) {
+                setError('Credenciales inválidas. Por favor, verifique su email y contraseña.');
+            } else if (error.message?.includes('Network')) {
+                setError('Error de conexión. Por favor, verifique su conexión a internet.');
+            } else {
+                setError('El mail o la contraseña son incorrectos.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -87,6 +101,9 @@ export default function AuthLayout() {
                     gap: 5,
                     marginTop: 20,
                 }}>
+                     {error ? (
+                <Text style={styles.errorText}>{error}</Text>
+            ) : null}
                     <TextInput
                         placeholder="Email"
                         value={email}
@@ -241,5 +258,15 @@ const styles = StyleSheet.create({
     },
     buttonDisabled: {
         opacity: 0.7,
+    },
+    inputError: {
+        borderWidth: 1,
+        borderColor: '#D4685E',
+    },
+    errorText: {
+        color: '#D4685E',
+        fontSize: 14,
+        textAlign: 'center',
+        marginBottom: 10,
     },
 });
