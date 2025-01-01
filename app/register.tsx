@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { registerConsumer } from '@/src/services/client';
+import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';    
+
 
 export default function RegisterScreen() {
     const [firstName, setFirstName] = useState('');
@@ -22,6 +24,12 @@ export default function RegisterScreen() {
     };
 
     const handleRegister = async () => {
+        const isConnected = await checkInternetConnection();
+        if (!isConnected) {
+          Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
+          return;
+        }
+
         if (!firstName || !lastName || !email || !password) {
             Alert.alert('Error', 'Por favor complete los campos obligatorios');
             return;

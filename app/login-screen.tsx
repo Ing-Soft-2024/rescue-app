@@ -8,6 +8,7 @@ import logo from '../assets/images/reskue-logo.png';
 // import AppLoading from 'expo-app-loading';
 import { useFonts, Bungee_400Regular } from '@expo-google-fonts/bungee';
 import { useState } from 'react';
+import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
 
 
 export default function AuthLayout() {
@@ -31,7 +32,15 @@ export default function AuthLayout() {
 
     const handleLogin = async (email: string, password: string) => {
         setIsLoading(true);
-        setError(''); // Clear previous errors
+        setError('');
+
+        const isConnected = await checkInternetConnection();
+        if (!isConnected) {
+            setError(NO_INTERNET_MESSAGE);
+            setIsLoading(false);
+            return;
+        }
+
         if (!email || !password) {
             setError('Por favor, complete todos los campos');
             setIsLoading(false);
@@ -41,21 +50,17 @@ export default function AuthLayout() {
         try {
             const session = await signInWith("Credentials", { email, password });
             
-            // On success, user will be redirected automatically due to session context
-
             if (!session) {
                 setError('Error al iniciar sesión. Por favor, intente nuevamente.');
                 return;
             }
 
-
         } catch (error: any) {
             console.error("Login failed:", error);
-             // Handle different types of errors
-             if (error.message?.includes('401')) {
+            if (!await checkInternetConnection()) {
+                setError(NO_INTERNET_MESSAGE);
+            } else if (error.message?.includes('401')) {
                 setError('Credenciales inválidas. Por favor, verifique su email y contraseña.');
-            } else if (error.message?.includes('Network')) {
-                setError('Error de conexión. Por favor, verifique su conexión a internet.');
             } else {
                 setError('El mail o la contraseña son incorrectos.');
             }

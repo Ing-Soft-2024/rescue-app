@@ -9,6 +9,7 @@ import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
 import { userLocationContext } from '@/src/context/userLocationContext';
 import * as Location from 'expo-location';
+import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
 
 
 type CategoryProducts = {
@@ -82,10 +83,16 @@ export default function homeScreen() {
   };
 
   const fetchProducts = async () => {
-    const coordinates = await getCurrentCoordinates(); // Make this call async
+    const isConnected = await checkInternetConnection();
+    if (!isConnected) {
+      Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
+      return;
+    }
+
+    const coordinates = await getCurrentCoordinates();
 
     if (!coordinates) {
-      Alert.alert('Location Error', 'Unable to determine your location. Some features may be limited.');
+      Alert.alert('Error de Ubicación', 'No se pudo determinar tu ubicación. Algunas funciones pueden estar limitadas.');
       return;
     }
 
@@ -110,8 +117,12 @@ export default function homeScreen() {
       
       setCategorizedProducts(productsByCategory);
     } catch (error) {
-      console.error('Error fetching nearby products:', error);
-      Alert.alert('Error', 'Failed to fetch nearby products');
+      if (!await checkInternetConnection()) {
+        Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
+      } else {
+        console.error('Error fetching nearby products:', error);
+        Alert.alert('Error', 'No se pudieron cargar los productos cercanos');
+      }
     }
   };
 

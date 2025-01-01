@@ -7,7 +7,8 @@ import StorageController from '@/src/services/storage/controller/storage.control
 import { ProductType } from '@/src/types/product.type';
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
 
 // export type ProductType = {
 //   title: string;
@@ -35,29 +36,46 @@ export default function ProductLayout() {
 
   useFocusEffect(
     React.useCallback(() => {
-     
       if (!params.id) return;
-  
-      setIsLoading(true);
-      productDetailsConsumer.consume('GET', {
-        params: { id: Number(params.id) }
-      }).then(async (product) => {
-        if (!product.image) return product;
-        return await StorageController.download(product.image)
-          .then(image => ({
-            ...product,
-            image
-          }))
-          .catch(() => product);
-      })
-      .then(setProduct)
-      .finally(() => setIsLoading(false));
-  
-      // Update the quantity in cart when the screen is focused
-      const currentQuantity = getProductQuantityInCart(String(params.id));
-      setQuantityInCart(currentQuantity);
-  
-    }, [params.id, getProductQuantityInCart]) // Add getProductQuantityInCart as a dependency
+
+      const fetchProduct = async () => {
+        setIsLoading(true);
+        
+        const isConnected = await checkInternetConnection();
+        if (!isConnected) {
+          Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
+          setIsLoading(false);
+          return;
+        }
+
+        try {
+          const product = await productDetailsConsumer.consume('GET', {
+            params: { id: Number(params.id) }
+          });
+
+          if (!product.image) return product;
+          
+          const productWithImage = await StorageController.download(product.image)
+            .then(image => ({
+              ...product,
+              image
+            }))
+            .catch(() => product);
+
+          setProduct(productWithImage);
+        } catch (error) {
+          if (!await checkInternetConnection()) {
+            Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
+          } else {
+            Alert.alert('Error', 'No se pudo cargar el producto');
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchProduct();
+    }, [params.id])
   );
   
 
