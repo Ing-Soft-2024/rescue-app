@@ -1,6 +1,6 @@
 import { useOrders } from '@/src/context/ordersContext';
 import { useSession } from '@/src/context/session.context';
-import { nearUserConsumer } from '@/src/services/client';
+import { nearUserConsumer, orderConsumer } from '@/src/services/client';
 import { ProductType } from '@/src/types/product.type';
 import { useRouter } from 'expo-router';
 import React, { useContext } from 'react';
@@ -20,6 +20,8 @@ export default function homeScreen() {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchText, setSearchText] = React.useState('');
+  const router = useRouter();
+  const { cart, total, orderQR, setOrderQR } = useOrders();
 
   const getCurrentCoordinates = () => {
     if (location?.coords) {
@@ -29,6 +31,35 @@ export default function homeScreen() {
       };
     }
     return null;
+  };
+
+  const getInitialData = async () => {
+    await getCurrentOrder();
+    await fetchProducts();
+  };
+
+  const getCurrentOrder = async () => {
+    try {
+      const resp = await orderConsumer.consume('GET', { 
+        queryParams: { 
+          userId: Number(session?.user.id)
+        } 
+      });
+      
+      // Find pending order
+      console.log("ORDERS",resp);
+      const pendingOrder = resp.find((order: any) => order.status === "pending");
+      console.log("PENDING ORDER",pendingOrder);
+      
+      if (pendingOrder) {
+        const QR = "rescueappbussiness://scan/scannedOrder?id=" + pendingOrder.id;
+        setOrderQR(QR);
+      } else {
+        setOrderQR("");
+      }
+    } catch (error) {
+      console.error('Error fetching current order:', error);
+    }
   };
 
   const fetchProducts = async () => {
@@ -81,11 +112,10 @@ export default function homeScreen() {
   
   React.useEffect(() => {
     setIsLoading(true);
-    fetchProducts().finally(() => setIsLoading(false));
+    getInitialData().finally(() => setIsLoading(false));
   }, [location]);
 
-  const router = useRouter();
-  const { cart, total, orderQR } = useOrders();
+ 
 
   const viewOrder = () => {
     router.push("/screens/QRScreen");
