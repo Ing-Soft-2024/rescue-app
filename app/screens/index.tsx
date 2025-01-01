@@ -8,6 +8,8 @@ import { Button, FlatList, Pressable, RefreshControl, Text, View, Alert, Activit
 import { CategoryList } from '../../components/CategoryList';
 import { SearchBar } from '../../components/SearchBar';
 import { userLocationContext } from '@/src/context/userLocationContext';
+import * as Location from 'expo-location';
+
 
 type CategoryProducts = {
   [key: string]: ProductType[];
@@ -23,14 +25,31 @@ export default function homeScreen() {
   const router = useRouter();
   const { cart, total, orderQR, setOrderQR } = useOrders();
 
-  const getCurrentCoordinates = () => {
+  const getCurrentCoordinates = async () => {
     if (location?.coords) {
+      console.log("GPS LOCATION",location);
       return {
         userLatitude: location.coords.latitude,
         userLongitude: location.coords.longitude
       };
     }
-    return null;
+
+    // Try to get network-based location if GPS is not available
+    try {
+      const networkLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Lowest, // Lower accuracy allows for network-based location
+        mayShowUserSettingsDialog: false // Prevents GPS permission prompt
+      });
+
+      console.log("NETWORK LOCATION",networkLocation);
+      return {
+        userLatitude: networkLocation.coords.latitude,
+        userLongitude: networkLocation.coords.longitude
+      };
+    } catch (error) {
+      console.error('Error getting network location:', error);
+      return null;
+    }
   };
 
   const getInitialData = async () => {
@@ -63,10 +82,10 @@ export default function homeScreen() {
   };
 
   const fetchProducts = async () => {
-    const coordinates = getCurrentCoordinates();
+    const coordinates = await getCurrentCoordinates(); // Make this call async
 
     if (!coordinates) {
-      Alert.alert('Location Required', 'Please enable location services to see nearby products');
+      Alert.alert('Location Error', 'Unable to determine your location. Some features may be limited.');
       return;
     }
 
