@@ -7,16 +7,29 @@ import { ScrollView, StyleSheet, View, Text, FlatList, ActivityIndicator } from 
 import { CategoryList } from '../../components/CategoryList';
 import { commerceDetailsConsumer } from '@/src/services/client';
 
+interface Company {
+  name: string;
+  streetName: string;
+  streetNumber: string;
+  city: string;
+  country: string;
+  avgRating: number | null;
+  products: ProductType[];
+}
+
 export default function CompanyScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   
-  const [company, setCompany] = useState({
+  const [company, setCompany] = useState<Company>({
     name: '',
-    address: '',
-    avgRating: 0,
-    products: [] as ProductType[],
+    streetName: '',
+    streetNumber: '',
+    city: '',
+    country: '',
+    avgRating: null,
+    products: [],
   });
 
   useFocusEffect(
@@ -35,8 +48,11 @@ export default function CompanyScreen() {
           if (companyData) {
             setCompany({
               name: companyData.name || 'Nombre no disponible',
-              address: companyData.address || 'Dirección no disponible',
-              avgRating: companyData.avgRating || 0,
+              streetName: companyData.streetName || '',
+              streetNumber: companyData.streetNumber || '',
+              city: companyData.city || '',
+              country: companyData.country || '',
+              avgRating: companyData.avgRating || null,
               products: companyData.products || [],
             });
           }
@@ -56,6 +72,14 @@ export default function CompanyScreen() {
     }, [id])
   );
 
+  const getFullAddress = () => {
+    return [
+      company.streetName && company.streetNumber ? `${company.streetName} ${company.streetNumber}` : null,
+      company.city,
+      company.country
+    ].filter(Boolean).join(', ') || 'Dirección no disponible';
+  };
+
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -68,10 +92,12 @@ export default function CompanyScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{company.name}</Text>
-        <Text style={styles.address}>{company.address}</Text>
+        <Text style={styles.address}>{getFullAddress()}</Text>
         <View style={styles.ratingContainer}>
-          <Text style={styles.rating}>Calificación: {company.avgRating.toFixed(1)}</Text>
-          <Text style={styles.ratingText}>★</Text>
+          <Text style={styles.rating}>
+            Calificación: {company.avgRating ? company.avgRating.toFixed(1) : 'Sin calificaciones'}
+          </Text>
+          {company.avgRating && <Text style={styles.ratingText}>★</Text>}
         </View>
       </View>
 

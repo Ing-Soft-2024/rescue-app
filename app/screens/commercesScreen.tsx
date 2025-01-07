@@ -7,8 +7,11 @@ import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networ
 interface Commerce {
   id: number;
   name: string;
-  address: string;
-  avgRating: number;
+  streetName: string;
+  streetNumber: string;
+  city: string;
+  country: string;
+  avgRating: number | null;
 }
 
 export default function CommercesScreen() {
@@ -41,24 +44,32 @@ export default function CommercesScreen() {
     }
   };
 
-  const renderCommerceItem = ({ item }: { item: Commerce }) => (
-    <TouchableOpacity 
-      style={styles.commerceItem}
-      onPress={() => router.push({
-        pathname: '/screens/companyScreen',
-        params: { id: item.id }
-      })}
-    >
-      <Text style={styles.commerceName}>{item.name}</Text>
-      <Text style={styles.commerceAddress}>{item.address || 'Sin dirección'}</Text>
-      <View style={styles.ratingContainer}>
-        <Text style={styles.rating}>
-          Calificación: {item.avgRating ? item.avgRating.toFixed(1) : 'Sin calificaciones'}
-        </Text>
-        {item.avgRating && <Text style={styles.ratingText}>★</Text>}
-      </View>
-    </TouchableOpacity>
-  );
+  const renderCommerceItem = ({ item }: { item: Commerce }) => {
+    const fullAddress = [
+      item.streetName && item.streetNumber ? `${item.streetName} ${item.streetNumber}` : null,
+      item.city,
+      item.country
+    ].filter(Boolean).join(', ');
+
+    return (
+      <TouchableOpacity 
+        style={styles.commerceItem}
+        onPress={() => router.push({
+          pathname: '/screens/companyScreen',
+          params: { id: item.id }
+        })}
+      >
+        <Text style={styles.commerceName}>{item.name}</Text>
+        <Text style={styles.commerceAddress}>{fullAddress || 'Sin dirección'}</Text>
+        <View style={styles.ratingContainer}>
+          <Text style={styles.rating}>
+            Calificación: {item.avgRating ? item.avgRating.toFixed(1) : 'Sin calificaciones'}
+          </Text>
+          {item.avgRating && <Text style={styles.ratingText}>★</Text>}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   if (isLoading) {
     return (
