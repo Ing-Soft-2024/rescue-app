@@ -22,6 +22,17 @@ export default function AppLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="commercesScreen"
+                options={{
+                    title: 'Comercios',
+                    tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
+                    tabBarLabel: ({ color }) => (
+                    <Text style={{ color: '#D4685E' }}>Comercios</Text>
+                    ),
+                }}
+            />
+            
 
 
             <Tabs.Screen
