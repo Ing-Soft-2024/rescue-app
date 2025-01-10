@@ -1,8 +1,9 @@
 import { useOrders } from "@/src/context/ordersContext";
-import { orderDetailsConsumer } from "@/src/services/client";
+import { mercadoPagoConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { useRouter } from "expo-router";
+import { openAuthSessionAsync } from "expo-web-browser";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 export default function QRScreen() {
@@ -44,6 +45,52 @@ export default function QRScreen() {
         router.push("./checkout/success");
     }
 
+    // Add this to QRScreen.tsx after the handleCashPayment function
+
+async function handleMercadoPagoPayment() {
+    if (!orderQR) return;
+    
+    try {
+        const orderId = Number(orderQR.split('=')[1]);
+        const orderDetails = await orderDetailsConsumer.consume('GET', {
+            params: { id: orderId }
+        });
+
+        // Create Mercado Pago preference with business ID
+        const response = await mercadoPagoConsumer.consume('POST', {
+            data: {
+                orderId: orderId,
+                businessId: orderDetails.businessId,
+                productId: 1,
+                quantity: 1,
+                price: orderDetails.total,
+            }
+        });
+
+        if (!response || !response.checkoutURL) {
+            Alert.alert('Error', 'No se pudo crear el pago con Mercado Pago');
+            return;
+        }
+
+        // Open Mercado Pago checkout in browser
+        const result = await openAuthSessionAsync(
+            response.checkoutURL, 
+            "myapp://screens/checkout/"
+        );
+
+        if (result.type === 'success') {
+            if (result.url.includes("success")) {
+                router.navigate("/screens/checkout/success");
+            } else if (result.url.includes("failure")) {
+                router.navigate("/screens/checkout/failure");
+            }
+        }
+    } catch (error) {
+        console.error("Error processing Mercado Pago payment:", error);
+        Alert.alert('Error', 'Hubo un error al procesar el pago');
+    }
+}
+
     return (
         <View style={styles.container}>
             <View style={styles.card}>
@@ -71,6 +118,15 @@ export default function QRScreen() {
                         >
                             <Text style={styles.buttonText}>Mercado Pago</Text>
                         </TouchableOpacity> */}
+                        
+                        <TouchableOpacity 
+                            style={[styles.paymentButton, styles.mpButton]}
+                            onPress={handleMercadoPagoPayment}
+                        >
+                            <Text style={styles.buttonText}>Pagar con Mercado Pago</Text>
+                        </TouchableOpacity>
+
+
                         <TouchableOpacity 
                             style={[styles.paymentButton, styles.cashButton]}
                             onPress={handleCashPayment}
