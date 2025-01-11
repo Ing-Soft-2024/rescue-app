@@ -9,6 +9,7 @@ import logo from '../assets/images/reskue-logo.png';
 import { useFonts, Bungee_400Regular } from '@expo-google-fonts/bungee';
 import { useState } from 'react';
 import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
+import { devConsumer } from '@/src/services/client';
 
 
 export default function AuthLayout() {
@@ -31,6 +32,15 @@ export default function AuthLayout() {
     });
 
     const handleLogin = async (email: string, password: string) => {
+
+
+        try {
+            const response = await devConsumer.consume('GET');
+            console.log("DEV GET", response);
+        } catch (error) {
+            console.log("NO ANDA EL DEV GET");
+        }
+        
         setIsLoading(true);
         setError('');
 

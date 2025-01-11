@@ -10,6 +10,11 @@ export const commerceConsumer = apiConsumerFactory({
     validEndpoints: ['GET', 'POST']
 });
 
+export const devConsumer = apiConsumerFactory({
+    endpoint: 'dev',
+    validEndpoints: ['GET']
+});
+
 export const orderConsumer = apiConsumerFactory({
     endpoint: 'order',
     validEndpoints: ['GET','POST']
