@@ -35,11 +35,9 @@ export default function ShoppingCartScreen() {
 
 
     async function payWithMercadoPago() {
-        if (orderQR != "") {
-            router.push("./QRScreen");
-            return;
-        }
-
+        // Clear any existing orderQR first
+        setOrderQR("");
+        
         if (!session?.user.id) {
             Alert.alert('Error', 'Usuario no identificado');
             return;
@@ -69,7 +67,7 @@ export default function ShoppingCartScreen() {
                 return;
             }
 
-            // Set the QR code immediately after creating the order
+            // Set the new QR code
             const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId;
             setOrderQR(QR);
             

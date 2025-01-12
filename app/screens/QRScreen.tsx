@@ -5,54 +5,67 @@ import { openAuthSessionAsync } from "expo-web-browser";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function QRScreen() {
     const router = useRouter();
     const { orderQR, total, setOrderQR } = useOrders();
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
     const [accepted, setAccepted] = useState<boolean>(false);
-    const intervalref = React.useRef<NodeJS.Timeout>();
+    const intervalRef = React.useRef<NodeJS.Timeout>();
 
-    useEffect(() => {
-        const fetchOrderStatus = async () => {
-            try {
-                const orderId = orderQR ? Number(orderQR.split('=')[1]) : null;
-                if (!orderId) return;
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchOrderStatus = async () => {
+                try {
+                    const orderId = orderQR ? Number(orderQR.split('=')[1]) : null;
+                    if (!orderId) {
+                        if (intervalRef.current) {
+                            clearInterval(intervalRef.current);
+                        }
+                        return;
+                    }
 
-                const response = await orderDetailsConsumer.consume('GET', {
-                    params: { id: orderId }
-                });
-                console.log("STATUS", response.status);
-                console.log("ORDER QR", orderQR);
-                console.log("ACCEPTED", accepted);
-                console.log("PAYMENT BTNS", paymentBtns);
-                
-                if (response.status === "scanned") {
-                    setPaymentBtns(true);
-                    setAccepted(true);
-                
-                } else if (response.status === "accepted") {
-                    setPaymentBtns(false);
-                    setAccepted(true);
+                    const response = await orderDetailsConsumer.consume('GET', {
+                        params: { id: orderId }
+                    });
+                    console.log("Fetching status:", response.status);
+                    
+                    if (response.status === "scanned") {
+                        setPaymentBtns(true);
+                        setAccepted(true);
+                    } else if (response.status === "accepted") {
+                        setPaymentBtns(false);
+                        setAccepted(true);
+                    } else {
+                        setAccepted(false);
+                        setPaymentBtns(false);
+                    }
+                } catch (error) {
+                    console.error("Error fetching order status:", error);
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                    }
                 }
-                else{
-                    setAccepted(false);
-                    setPaymentBtns(false);
+            };
+
+            // Initial fetch
+            fetchOrderStatus();
+
+            // Set up the interval
+            intervalRef.current = setInterval(() => {
+                fetchOrderStatus();
+            }, 5000);
+
+            // Cleanup function
+            return () => {
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                    intervalRef.current = undefined;
                 }
-            } catch (error) {
-                console.error("Error fetching order status:", error);
-            }
-        };
-
-        intervalref.current = setInterval(fetchOrderStatus, 5000);
-        fetchOrderStatus();
-
-        return () => {
-            if (intervalref.current) {
-                clearInterval(intervalref.current);
-            }
-        };
-    }, []);
+            };
+        }, [orderQR]) // Dependencies array includes orderQR
+    );
 
     async function handleCashPayment() {
         try {

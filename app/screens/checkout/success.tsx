@@ -14,27 +14,38 @@ export default function SuccessScreen() {
 
     useFocusEffect(
         React.useCallback(() => {
-            console.log("AFTER ORDER QR", orderQR);
             const updateState = async () => {
                 try {
+                    if (!orderQR) {
+                        console.warn("No orderQR found in success screen");
+                        return;
+                    }
+
                     const orderId = Number(orderQR.split('=')[1]);
                     const orderDetails = await orderDetailsConsumer.consume('GET', {
                         params: { id: orderId }
                     });
-                    setBusinessId(orderDetails.businessId);
 
-                    let response = await orderDetailsConsumer.consume('PATCH', {
+                    if (!orderDetails) {
+                        console.error("No order details found");
+                        return;
+                    }
+
+                    setBusinessId(orderDetails.businessId);
+                    
+                    await orderDetailsConsumer.consume('PATCH', {
                         params: { id: orderId },
                         data: {
                             status: "completed"
                         }
                     });
 
-                    
+                    // Clear everything
                     setOrderQR("");
                     clearCart();
                 } catch (error) {
                     console.error("Error updating order:", error);
+                    Alert.alert('Error', 'No se pudo actualizar el estado de la orden');
                 }
             };
             updateState();
