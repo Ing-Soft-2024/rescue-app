@@ -29,7 +29,7 @@ export default function QRScreen() {
                     const response = await orderDetailsConsumer.consume('GET', {
                         params: { id: orderId }
                     });
-                    console.log("Fetching status:", response.status);
+                    
                     
                     if (response.status === "scanned") {
                         setPaymentBtns(true);

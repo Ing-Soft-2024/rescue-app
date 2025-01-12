@@ -29,7 +29,8 @@ export default function ProductLayout() {
   const {
     addToCart,
     getProductQuantityInCart,
-    orderQR
+    orderQR,
+    cart
   } = useOrders();
   const [showSuccessCard, setShowSuccessCard] = useState(false);
   const [quantityInCart, setQuantityInCart] = useState(0);
@@ -80,10 +81,22 @@ export default function ProductLayout() {
   
 
   const canAddToCart = () => {
-    // Check if product is not in cart, has stock, and no active order
-    const productInCart = getProductQuantityInCart(Number(params.id)) > 0;
-    return !productInCart && product.stock > 0 && !orderQR;
+    // Add debug logs
+    
+    
+    // First check if there's an active order
+    if (orderQR) return false;
+    
+    // Then check product stock
+    if (product.stock <= 0) return false;
+    
+    // Finally check if product is already in cart
+    const productInCart = getProductQuantityInCart(Number(params.id));
+    return productInCart === 0;
   };
+
+  // Add this debug log
+ 
 
   return (
     <View style={styles.container}>
@@ -136,31 +149,30 @@ export default function ProductLayout() {
         />
 
         {/* Banner inferior para agregar al carrito */}
-        {!showSuccessCard && canAddToCart() && (
-        <AddToCart 
-          onAddToCartPress={() => {
-            const currentQuantity = getProductQuantityInCart(Number(params.id));
-            if (currentQuantity === 0) {
-              addToCart({ 
-                product: {
-                  ...product,
-                  commerceId: product.businessId
-                }, 
-                quantity: 1 
-              });
-              setQuantityInCart(1);
-              setShowSuccessCard(true);
-              setTimeout(() => setShowSuccessCard(false), 3000);
-            }
-          }}
-        />
+        {canAddToCart() ? (
+            <AddToCart 
+              onAddToCartPress={() => {
+                const currentQuantity = getProductQuantityInCart(Number(params.id));
+                if (currentQuantity === 0) {
+                  addToCart({ 
+                    product: {
+                      ...product,
+                      commerceId: product.businessId
+                    }, 
+                    quantity: 1 
+                  });
+                  setQuantityInCart(1);
+                  setShowSuccessCard(true);
+                  setTimeout(() => setShowSuccessCard(false), 3000);
+                }
+              }}
+            />
+        ) : (
+            <View style={styles.outOfStockCard}>
+              <Text style={styles.outOfStockText}>Product already in cart</Text>
+            </View>
         )}
       </ScrollView>
-      {quantityInCart > 0 && !showSuccessCard && (
-        <View style={styles.outOfStockCard}>
-          <Text style={styles.outOfStockText}>Product already in cart</Text>
-        </View>
-      )}
       {showSuccessCard && (
         <View style={styles.successCard}>
           <Text style={styles.successText}>Added to cart successfully!</Text>
