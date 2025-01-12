@@ -81,9 +81,6 @@ export default function ProductLayout() {
   
 
   const canAddToCart = () => {
-    // Add debug logs
-    
-    
     // First check if there's an active order
     if (orderQR) return false;
     
@@ -95,8 +92,13 @@ export default function ProductLayout() {
     return productInCart === 0;
   };
 
-  // Add this debug log
- 
+  // Add a helper function to determine the banner message
+  const getBannerMessage = () => {
+    if (product.stock <= 0) {
+      return "Sin stock";
+    }
+    return "Product already in cart";
+  };
 
   return (
     <View style={styles.container}>
@@ -169,7 +171,7 @@ export default function ProductLayout() {
             />
         ) : (
             <View style={styles.outOfStockCard}>
-              <Text style={styles.outOfStockText}>Product already in cart</Text>
+              <Text style={styles.outOfStockText}>{getBannerMessage()}</Text>
             </View>
         )}
       </ScrollView>
