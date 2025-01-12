@@ -10,6 +10,7 @@ import { SearchBar } from '../../components/SearchBar';
 import { userLocationContext } from '@/src/context/userLocationContext';
 import * as Location from 'expo-location';
 import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 type CategoryProducts = {
@@ -53,6 +54,12 @@ export default function homeScreen() {
     }
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      getInitialData();
+    }, [session?.user?.id])
+  );
+
   const getInitialData = async () => {
     await getCurrentOrder();
     await fetchProducts();
@@ -67,13 +74,20 @@ export default function homeScreen() {
       });
       
       // Find pending order
-      console.log("ORDERS",resp);
-      const pendingOrder = resp.find((order: any) => order.status === "pending");
-      console.log("PENDING ORDER",pendingOrder);
+      console.log("ORDERS", resp);
+      const pendingOrder = resp.find((order: any) => 
+        order.status === "pending" || order.status === "accepted"
+      );
+      console.log("PENDING ORDER", pendingOrder);
       
       if (pendingOrder) {
         const QR = "rescueappbussiness://scan/scannedOrder?id=" + pendingOrder.id;
         setOrderQR(QR);
+        
+        // If order is already accepted, set payment buttons
+        if (pendingOrder.status === "accepted") {
+          router.push("/screens/QRScreen");
+        }
       } else {
         setOrderQR("");
       }
@@ -164,7 +178,7 @@ export default function homeScreen() {
             padding: 16,
             textAlign: 'left'
           }}>
-            ¡Bienvenido {session?.user.firstName}!
+            ¡Bienvenido {session?.user.name}!
           </Text>
 
           <View style={{ paddingHorizontal: 10 }}>

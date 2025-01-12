@@ -69,8 +69,10 @@ export default function ShoppingCartScreen() {
                 return;
             }
 
+            // Set the QR code immediately after creating the order
             const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId;
             setOrderQR(QR);
+            
             router.push("./QRScreen");
 
         } catch (error) {

@@ -14,6 +14,7 @@ export default function SuccessScreen() {
 
     useFocusEffect(
         React.useCallback(() => {
+            console.log("AFTER ORDER QR", orderQR);
             const updateState = async () => {
                 try {
                     const orderId = Number(orderQR.split('=')[1]);

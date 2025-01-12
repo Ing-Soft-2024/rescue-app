@@ -3,33 +3,41 @@ import { mercadoPagoConsumer, orderDetailsConsumer } from "@/src/services/client
 import { useRouter } from "expo-router";
 import { openAuthSessionAsync } from "expo-web-browser";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 export default function QRScreen() {
     const router = useRouter();
-    const { orderQR, total } = useOrders();
+    const { orderQR, total, setOrderQR } = useOrders();
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
+    const [accepted, setAccepted] = useState<boolean>(false);
     const intervalref = React.useRef<NodeJS.Timeout>();
 
     useEffect(() => {
-        if(!paymentBtns) return;
-        clearInterval(intervalref.current);
-    }, [paymentBtns]);
-
-    useEffect(() => {
         const fetchOrderStatus = async () => {
-            if(!orderQR) {
-                intervalref.current && clearInterval(intervalref.current);
-                setPaymentBtns(false);
-                return;
-            }
             try {
+                const orderId = orderQR ? Number(orderQR.split('=')[1]) : null;
+                if (!orderId) return;
+
                 const response = await orderDetailsConsumer.consume('GET', {
-                    params: { id: Number(orderQR.split('=')[1]) }
+                    params: { id: orderId }
                 });
+                console.log("STATUS", response.status);
+                console.log("ORDER QR", orderQR);
+                console.log("ACCEPTED", accepted);
+                console.log("PAYMENT BTNS", paymentBtns);
+                
                 if (response.status === "scanned") {
                     setPaymentBtns(true);
+                    setAccepted(true);
+                
+                } else if (response.status === "accepted") {
+                    setPaymentBtns(false);
+                    setAccepted(true);
+                }
+                else{
+                    setAccepted(false);
+                    setPaymentBtns(false);
                 }
             } catch (error) {
                 console.error("Error fetching order status:", error);
@@ -37,64 +45,81 @@ export default function QRScreen() {
         };
 
         intervalref.current = setInterval(fetchOrderStatus, 5000);
-        return () => clearInterval(intervalref.current);
-    }, [orderQR]);
+        fetchOrderStatus();
+
+        return () => {
+            if (intervalref.current) {
+                clearInterval(intervalref.current);
+            }
+        };
+    }, []);
 
     async function handleCashPayment() {
-        setPaymentBtns(false);
-        router.push("./checkout/success");
+        try {
+            if (!orderQR) return;
+            
+            const orderId = Number(orderQR.split('=')[1]);
+            await orderDetailsConsumer.consume('PATCH', {
+                params: { id: orderId },
+                data: {
+                    status: "completed"
+                }
+            });
+            
+            setPaymentBtns(false);
+            router.push("./checkout/success");
+        } catch (error) {
+            console.error("Error processing cash payment:", error);
+            Alert.alert('Error', 'Hubo un error al procesar el pago en efectivo');
+        }
     }
 
-    // Add this to QRScreen.tsx after the handleCashPayment function
+    async function handleMercadoPagoPayment() {
+        if (!orderQR) return;
+        
+        try {
+            const orderId = Number(orderQR.split('=')[1]);
+            const orderDetails = await orderDetailsConsumer.consume('GET', {
+                params: { id: orderId }
+            });
 
-async function handleMercadoPagoPayment() {
-    if (!orderQR) return;
-    
-    try {
-        const orderId = Number(orderQR.split('=')[1]);
-        const orderDetails = await orderDetailsConsumer.consume('GET', {
-            params: { id: orderId }
-        });
+            const response = await mercadoPagoConsumer.consume('POST', {
+                data: {
+                    orderId: orderId,
+                    businessId: orderDetails.businessId,
+                    productId: 1,
+                    quantity: 1,
+                    price: orderDetails.total,
+                }
+            });
 
-        // Create Mercado Pago preference with business ID
-        const response = await mercadoPagoConsumer.consume('POST', {
-            data: {
-                orderId: orderId,
-                businessId: orderDetails.businessId,
-                productId: 1,
-                quantity: 1,
-                price: orderDetails.total,
+            if (!response || !response.checkoutURL) {
+                Alert.alert('Error', 'No se pudo crear el pago con Mercado Pago');
+                return;
             }
-        });
 
-        if (!response || !response.checkoutURL) {
-            Alert.alert('Error', 'No se pudo crear el pago con Mercado Pago');
-            return;
-        }
+            const result = await openAuthSessionAsync(
+                response.checkoutURL, 
+                "myapp://screens/checkout/"
+            );
 
-        // Open Mercado Pago checkout in browser
-        const result = await openAuthSessionAsync(
-            response.checkoutURL, 
-            "myapp://screens/checkout/"
-        );
-
-        if (result.type === 'success') {
-            if (result.url.includes("success")) {
-                router.navigate("/screens/checkout/success");
-            } else if (result.url.includes("failure")) {
-                router.navigate("/screens/checkout/failure");
+            if (result.type === 'success') {
+                if (result.url.includes("success")) {
+                    router.navigate("/screens/checkout/success");
+                } else if (result.url.includes("failure")) {
+                    router.navigate("/screens/checkout/failure");
+                }
             }
+        } catch (error) {
+            console.error("Error processing Mercado Pago payment:", error);
+            Alert.alert('Error', 'Hubo un error al procesar el pago');
         }
-    } catch (error) {
-        console.error("Error processing Mercado Pago payment:", error);
-        Alert.alert('Error', 'Hubo un error al procesar el pago');
     }
-}
 
     return (
         <View style={styles.container}>
             <View style={styles.card}>
-                {(orderQR && !paymentBtns) && (
+                {(!paymentBtns && accepted && orderQR) && (
                     <>
                         <View style={styles.qrContainer}>
                             <QRCode
@@ -107,33 +132,38 @@ async function handleMercadoPagoPayment() {
                         </Text>
                     </>
                 )}
-                
-                {paymentBtns && (
-                    <View style={styles.paymentContainer}>
-                        <Text style={styles.paymentTitle}>Selecciona tu método de pago</Text>
-                        <Text style={styles.totalAmount}>Total a pagar: ${total.toFixed(2)}</Text>
-                        {/* <TouchableOpacity 
-                            style={[styles.paymentButton, styles.mpButton]}
-                            onPress={() => router.push("./checkout/mercadoPago")}
-                        >
-                            <Text style={styles.buttonText}>Mercado Pago</Text>
-                        </TouchableOpacity> */}
-                        
-                        <TouchableOpacity 
-                            style={[styles.paymentButton, styles.mpButton]}
-                            onPress={handleMercadoPagoPayment}
-                        >
-                            <Text style={styles.buttonText}>Pagar con Mercado Pago</Text>
-                        </TouchableOpacity>
-
-
-                        <TouchableOpacity 
-                            style={[styles.paymentButton, styles.cashButton]}
-                            onPress={handleCashPayment}
-                        >
-                            <Text style={styles.buttonText}>Pagar en efectivo</Text>
-                        </TouchableOpacity>
-                    </View>
+                {(paymentBtns && accepted && orderQR) && (
+                    <>
+                        <Text style={styles.paymentTitle}>
+                            Selecciona tu método de pago
+                        </Text>
+                        <View style={styles.paymentContainer}>
+                            <TouchableOpacity 
+                                style={styles.paymentButton} 
+                                onPress={handleCashPayment}
+                            >
+                                <Text style={styles.paymentButtonText}>
+                                    Pagar en efectivo
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={styles.paymentButton}
+                                onPress={handleMercadoPagoPayment}
+                            >
+                                <Text style={styles.paymentButtonText}>
+                                    Pagar con MercadoPago
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                )}
+                {(!paymentBtns && !accepted && orderQR) && (
+                    <>
+                        <ActivityIndicator size="large" color="#D4685E" />
+                        <Text style={styles.instructions}>
+                            Esperando que el comercio acepte tu pedido...
+                        </Text>
+                    </>
                 )}
             </View>
         </View>
@@ -203,21 +233,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     paymentButton: {
-        width: '100%',
+        backgroundColor: '#D4685E',
         padding: 15,
         borderRadius: 10,
-        marginVertical: 8,
-        alignItems: 'center',
+        marginVertical: 5,
+        width: '100%',
     },
-    mpButton: {
-        backgroundColor: '#009EE3', // Mercado Pago blue
-    },
-    cashButton: {
-        backgroundColor: '#4CAF50', // Green for cash
-    },
-    buttonText: {
+    paymentButtonText: {
         color: 'white',
         fontSize: 16,
+        textAlign: 'center',
         fontWeight: '600',
     },
 });
