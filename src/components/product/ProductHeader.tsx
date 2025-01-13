@@ -1,42 +1,50 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
 
 interface HeaderProps {
   imageUrl?: string;
-  onBackPress?: () => void;
-  onSharePress?: () => void;
-  onFavoritePress?: () => void;
+  onBackPress: () => void;
+  onSharePress: () => void;
+  onFavoritePress: () => void;
+  isImageLoading?: boolean;
 }
 
-export function Header({
+export const Header: React.FC<HeaderProps> = ({
   imageUrl,
   onBackPress,
   onSharePress,
   onFavoritePress,
-}: HeaderProps) {
+  isImageLoading
+}) => {
   return (
     <View style={styles.container}>
-      {/* Imagen de fondo */}
-      {imageUrl && <Image source={{ uri: imageUrl }} style={styles.image} />}
+      <View style={[styles.imageContainer, styles.placeholderBackground]}>
+        {isImageLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#D4685E" />
+          </View>
+        ) : (
+          imageUrl && (
+            <Image
+              source={{ uri: imageUrl }}
+              style={styles.image}
+            />
+          )
+        )}
 
-      {/* Botón de volver atrás */}
-      <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="white" />
-      </TouchableOpacity>
-
-      {/* Botones de compartir y agregar a favoritos */}
-      <View style={styles.rightButtons}>
-        {/* <TouchableOpacity onPress={onSharePress} style={styles.iconButton}>
-          <Ionicons name="share-social" size={24} color="white" />
+        {/* Botón de volver atrás */}
+        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onFavoritePress} style={styles.iconButton}>
-          <Ionicons name="heart" size={24} color="white" />
-        </TouchableOpacity> */}
+
+        <View style={styles.rightButtons}>
+          {/* ... buttons ... */}
+        </View>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -69,5 +77,21 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
     marginLeft: 10,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1
+  },
+  placeholderBackground: {
+    backgroundColor: '#f5f5f5',
   },
 });

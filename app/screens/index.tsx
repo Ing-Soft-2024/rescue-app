@@ -29,7 +29,7 @@ export default function homeScreen() {
 
   const getCurrentCoordinates = async () => {
     if (location?.coords) {
-      console.log("GPS LOCATION",location);
+      
       return {
         userLatitude: location.coords.latitude,
         userLongitude: location.coords.longitude
@@ -43,7 +43,7 @@ export default function homeScreen() {
         mayShowUserSettingsDialog: false // Prevents GPS permission prompt
       });
 
-      console.log("NETWORK LOCATION",networkLocation);
+      
       return {
         userLatitude: networkLocation.coords.latitude,
         userLongitude: networkLocation.coords.longitude
@@ -74,11 +74,11 @@ export default function homeScreen() {
       });
       
       // Find pending order
-      console.log("ORDERS", resp);
+      
       const pendingOrder = resp.find((order: any) => 
         order.status === "pending" || order.status === "accepted"
       );
-      console.log("PENDING ORDER", pendingOrder);
+      
       
       if (pendingOrder) {
         const QR = "rescueappbussiness://scan/scannedOrder?id=" + pendingOrder.id;

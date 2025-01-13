@@ -25,6 +25,7 @@ export default function ProductLayout() {
   const params = useLocalSearchParams();
   const [product, setProduct] = React.useState<ProductType>({} as ProductType);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const {
     addToCart,
@@ -41,11 +42,13 @@ export default function ProductLayout() {
 
       const fetchProduct = async () => {
         setIsLoading(true);
+        setIsImageLoading(true);
         
         const isConnected = await checkInternetConnection();
         if (!isConnected) {
           Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
           setIsLoading(false);
+          setIsImageLoading(false);
           return;
         }
 
@@ -54,16 +57,21 @@ export default function ProductLayout() {
             params: { id: Number(params.id) }
           });
 
-          if (!product.image) return product;
-          
-          const productWithImage = await StorageController.download(product.image)
-            .then(image => ({
-              ...product,
-              image
-            }))
-            .catch(() => product);
+          const { image, ...productWithoutImage } = product;
+          setProduct(productWithoutImage);
+          setIsLoading(false);
 
-          setProduct(productWithImage);
+          if (image) {
+            try {
+              const imageUrl = await StorageController.download(image);
+              setProduct(prev => ({
+                ...prev,
+                image: imageUrl
+              }));
+            } catch (error) {
+              console.log('Error loading image:', error);
+            }
+          }
         } catch (error) {
           if (!await checkInternetConnection()) {
             Alert.alert('Error de Conexión', NO_INTERNET_MESSAGE);
@@ -72,10 +80,16 @@ export default function ProductLayout() {
           }
         } finally {
           setIsLoading(false);
+          setIsImageLoading(false);
         }
       };
 
       fetchProduct();
+
+      return () => {
+        setProduct({} as ProductType);
+        setIsImageLoading(true);
+      };
     }, [params.id])
   );
   
@@ -127,6 +141,7 @@ export default function ProductLayout() {
           onBackPress={() => router.back()}
           onSharePress={() => console.log("Share pressed")}
           onFavoritePress={() => console.log("Favorite pressed")}
+          isImageLoading={isImageLoading}
         />
 
         <TouchableOpacity 
