@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker, Region, MapPressEvent, Callout } from 'react-native-maps';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { userLocationContext } from '@/src/context/userLocationContext';
 import { router, useRouter } from 'expo-router';
 import { commerceConsumer } from '@/src/services/client';
+import { useOrders } from "@/src/context/ordersContext";
+import { orderDetailsConsumer } from '@/src/services/client';
 
 interface MarkerData {
     coordinate: {
@@ -22,8 +24,10 @@ interface GoogleMapProps {
 export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
     const { location } = useContext(userLocationContext);
     const router = useRouter();
-    const [isUserInteracting, setIsUserInteracting] = useState(false);
+    const { orderQR } = useOrders();
+    const [activeBusinessId, setActiveBusinessId] = useState<string | null>(null);
     const [markers, setMarkers] = useState<MarkerData[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [mapRegion, setMapRegion] = useState<Region>({
         latitude: location?.coords.latitude || -34.6055045,
@@ -32,61 +36,63 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
         longitudeDelta: 0.0421,
     });
 
-
-    const goToCommerce = (commerceId: string) => {
-        router.push(`/screens/companyScreen?id=${commerceId}`);
-    };
-
-    const handleZoomIn = () => {
-        setMapRegion((prevRegion) => {
-            if (prevRegion) {
-                return {
-                    ...prevRegion,
-                    latitudeDelta: prevRegion.latitudeDelta / 2,
-                    longitudeDelta: prevRegion.longitudeDelta / 2,
-                };
-            }
-            return prevRegion;
-        });
-    };
-
-    const handleZoomOut = () => {
-        setMapRegion((prevRegion) => {
-            if (prevRegion) {
-                return {
-                    ...prevRegion,
-                    latitudeDelta: prevRegion.latitudeDelta * 2,
-                    longitudeDelta: prevRegion.longitudeDelta * 2,
-                };
-            }
-            return prevRegion;
-        });
-    };
-
-    const handleMarkerPress = (commerceId: string) => {
-        router.push(`/screens/companyScreen?id=${commerceId}`);
-    };
-
-    const fetchCommerces = async () => {
-        try {
-            const commerces = await commerceConsumer.consume('GET');
-            const mappedCommerces = commerces.map((commerce: any) => ({
-                coordinate: {
-                    latitude: parseFloat(commerce.latitude),
-                    longitude: parseFloat(commerce.longitude)
-                },
-                key: commerce.id.toString(),
-                title: commerce.name
-            }));
-            setMarkers(mappedCommerces);
-        } catch (error) {
-            console.error('Error fetching commerces:', error);
-        }
-    };
-
+    // Fetch commerces first
     useEffect(() => {
+        const fetchCommerces = async () => {
+            setIsLoading(true);
+            try {
+                const commerces = await commerceConsumer.consume('GET');
+                const mappedCommerces = commerces.map((commerce: any) => ({
+                    coordinate: {
+                        latitude: parseFloat(commerce.latitude),
+                        longitude: parseFloat(commerce.longitude)
+                    },
+                    key: commerce.id.toString(),
+                    title: commerce.name
+                }));
+                setMarkers(mappedCommerces);
+            } catch (error) {
+                console.error('Error fetching commerces:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         fetchCommerces();
     }, []);
+
+    // Then get active business ID
+    useEffect(() => {
+        const getActiveBusinessId = async () => {
+            if (!orderQR) {
+                setActiveBusinessId(null);
+                return;
+            }
+
+            try {
+                const orderId = Number(orderQR.split('=')[1]);
+                const orderDetails = await orderDetailsConsumer.consume('GET', {
+                    params: { id: orderId }
+                });
+                
+                if (orderDetails && orderDetails.businessId) {
+                    setActiveBusinessId(orderDetails.businessId.toString());
+                }
+            } catch (error) {
+                console.error('Error fetching order details:', error);
+            }
+        };
+
+        getActiveBusinessId();
+    }, [orderQR]);
+
+    if (isLoading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#D4685E" />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -102,6 +108,7 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
                         key={marker.key}
                         coordinate={marker.coordinate}
                         title={marker.title}
+                        pinColor={marker.key === activeBusinessId ? 'green' : 'red'}
                     >
                         <Callout onPress={() => goToCommerce(marker.key)}>
                             <View style={styles.calloutContainer}>
@@ -116,16 +123,6 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
                     </Marker>
                 ))}
             </MapView>
-
-            <View style={styles.zoomControls}>
-                <TouchableOpacity onPress={handleZoomIn} style={styles.zoomButton}>
-                    <Text style={styles.zoomText}>+</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleZoomOut} style={styles.zoomButton}>
-                    <Text style={styles.zoomText}>-</Text>
-                </TouchableOpacity>
-            </View>
-
         </View>
     );
 }
