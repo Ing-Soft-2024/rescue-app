@@ -108,9 +108,17 @@ export default function ProductLayout() {
 
   // Add a helper function to determine the banner message
   const getBannerMessage = () => {
+    // First check if there's an active order
+    if (orderQR) {
+      return "Ya tienes una orden activa";
+    }
+    
+    // Then check stock
     if (product.stock <= 0) {
       return "Sin stock";
     }
+    
+    // Finally check cart
     return "Product already in cart";
   };
 

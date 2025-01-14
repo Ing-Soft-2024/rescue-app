@@ -83,11 +83,6 @@ export default function homeScreen() {
       if (pendingOrder) {
         const QR = "rescueappbussiness://scan/scannedOrder?id=" + pendingOrder.id;
         setOrderQR(QR);
-        
-        // If order is already accepted, set payment buttons
-        if (pendingOrder.status === "accepted") {
-          router.push("/screens/QRScreen");
-        }
       } else {
         setOrderQR("");
       }
@@ -195,7 +190,7 @@ export default function homeScreen() {
               onPress={viewOrder}
             >
               <Text style={{fontSize: 20, color: 'white'}}>
-                Presiona aqui para ver el QR de tu orden
+                Presiona aqui para ver el Estado de tu orden
               </Text>
             </Pressable>
           }
