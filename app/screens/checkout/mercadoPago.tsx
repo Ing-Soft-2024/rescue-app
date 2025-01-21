@@ -1,4 +1,3 @@
-
 import { useOrders } from "@/src/context/ordersContext";
 import { mercadoPagoConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { initMercadoPago } from "@mercadopago/sdk-react";
@@ -35,16 +34,9 @@ export default function MercadoPagoScreen() {
                 });
                 
                 var response = await mercadoPagoConsumer.consume('POST', {
-                    data:
-                    {
-                        orderId: id,
-                        productId: 1,
-                        quantity: 1,
-                        price: getOrderResponse.total,
+                    data: {
+                        orderId: id
                     }
-                }).catch((error) => {
-                    console.log("el error es:" + error);
-                    return null;
                 });
                 setIsLoading(false);
 

@@ -92,17 +92,9 @@ export default function QRScreen() {
         
         try {
             const orderId = Number(orderQR.split('=')[1]);
-            const orderDetails = await orderDetailsConsumer.consume('GET', {
-                params: { id: orderId }
-            });
-
             const response = await mercadoPagoConsumer.consume('POST', {
                 data: {
-                    orderId: orderId,
-                    businessId: orderDetails.businessId,
-                    productId: 1,
-                    quantity: 1,
-                    price: orderDetails.total,
+                    orderId: orderId
                 }
             });
 
