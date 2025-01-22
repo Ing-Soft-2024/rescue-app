@@ -189,7 +189,7 @@ export default function QRScreen() {
                                     Pagar en efectivo
                                 </Text>
                             </TouchableOpacity>
-                            {response?.business?.hasMercadoPago && (
+                            {businessData?.hasMercadoPago && (
                                 <TouchableOpacity 
                                     style={styles.paymentButton}
                                     onPress={handleMercadoPagoPayment}
