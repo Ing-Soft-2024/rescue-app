@@ -15,6 +15,7 @@ interface Company {
   country: string;
   avgRating: number | null;
   products: ProductType[];
+  hasMercadoPago: boolean;
 }
 
 export default function CompanyScreen() {
@@ -30,6 +31,7 @@ export default function CompanyScreen() {
     country: '',
     avgRating: null,
     products: [],
+    hasMercadoPago: false,
   });
 
   useFocusEffect(
@@ -54,6 +56,7 @@ export default function CompanyScreen() {
               country: companyData.country || '',
               avgRating: companyData.avgRating || null,
               products: companyData.products || [],
+              hasMercadoPago: companyData.hasMercadoPago || false,
             });
           }
         } catch (error) {
@@ -99,6 +102,7 @@ export default function CompanyScreen() {
           </Text>
           {company.avgRating && <Text style={styles.ratingText}>★</Text>}
         </View>
+        {!company.hasMercadoPago && <Text style={styles.cashOnly}>Solo efectivo</Text>}
       </View>
 
       <Text style={styles.sectionTitle}>Productos Disponibles</Text>
@@ -164,5 +168,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     marginTop: 10,
+  },
+  cashOnly: {
+    fontSize: 18,
+    color: '#666',
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    marginTop: 8,
   },
 });

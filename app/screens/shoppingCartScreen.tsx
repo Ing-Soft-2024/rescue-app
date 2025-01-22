@@ -1,10 +1,10 @@
 import { ProductItem } from "@/src/components/product/ProductItem";
 import { useOrders } from '@/src/context/ordersContext';
 import { useSession } from "@/src/context/session.context";
-import { orderConsumer } from "@/src/services/client";
+import { orderConsumer, commerceConsumer } from "@/src/services/client";
 
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View, Alert, ActivityIndicator } from "react-native";
 import uuid from 'react-native-uuid';
 
@@ -19,6 +19,7 @@ export default function ShoppingCartScreen() {
 
     const [checkoutURL, setcheckoutURL] = useState<string | null>(null);
     const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+    const [businessData, setBusinessData] = useState<any>(null);
 
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
         console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
@@ -33,6 +34,31 @@ export default function ShoppingCartScreen() {
 
     const { cart, removeFromCart, total, setOrderQR, orderQR, updateCartItem } = useOrders();
 
+    console.log("Cart product business data:", cart[0]?.product?.business);
+    console.log("Cart product businessId:", cart[0]?.product?.businessId);
+
+    useEffect(() => {
+        const fetchBusinessData = async () => {
+            if (cart[0]?.product?.businessId) {
+                try {
+                    console.log("Fetching business data for ID:", cart[0].product.businessId);
+                    const response = await commerceConsumer.consume('GET', {
+                        params: { id: cart[0].product.businessId }
+                    });
+                    console.log("Business data response:", response);
+                    // Find the specific business in the array
+                    const business = response.find((b: any) => b.id === cart[0].product.businessId);
+                    setBusinessData(business);
+                } catch (error) {
+                    console.error('Error fetching business data:', error);
+                }
+            } else {
+                setBusinessData(null);
+            }
+        };
+
+        fetchBusinessData();
+    }, [cart]); // Changed dependency to include all cart changes
 
     async function payWithMercadoPago() {
         // Clear any existing orderQR first
@@ -88,35 +114,44 @@ export default function ShoppingCartScreen() {
 
     return (
         <View style={styles.container}>
-            {/* <ScrollView style={{ flex: 1, minHeight: "auto" }}> */}
-            <View>
-                {/* <Text style={{ fontSize: 40, fontWeight: 'bold', paddingTop: 20, color: "#D4685E" }} >Shopping Cart</Text> */}
-                {cart.length === 0 &&
-                    <Text style={{ fontSize: 23, paddingTop: 75, paddingBottom: 30, paddingLeft: 50, color: "#D4685E" }}>
-                        Your shopping cart is empty
-                    </Text>}
-                {/* <View style={styles.Botones}>
+            {/* Business Details at the top */}
+            {!orderQR && cart[0]?.product && businessData && (
+                <View style={styles.businessInfoContainer}>
+                    <Text style={styles.businessName}>{businessData.name}</Text>
+                    <Text style={styles.businessAddress}>
+                        {[
+                            businessData.streetName && businessData.streetNumber 
+                                ? `${businessData.streetName} ${businessData.streetNumber}`
+                                : businessData.streetName,
+                            businessData.city,
+                            businessData.country
+                        ].filter(Boolean).join(', ')}
+                    </Text>
+                    <View style={styles.businessDetailsRow}>
+                        <Text style={styles.businessRating}>
+                            {businessData.avgRating 
+                                ? `★ ${businessData.avgRating.toFixed(1)}`
+                                : 'Sin calificaciones'}
+                        </Text>
+                        {!businessData.hasMercadoPago && (
+                            <Text style={styles.paymentInfoText}>
+                                Solo efectivo
+                            </Text>
+                        )}
+                    </View>
+                </View>
+            )}
 
-                        <Button title="Add item" onPress={() => addToCart({
-                            product: {
-                                id: 1,
-                                name: "Product 1",
-                                description: "Description 1",
-                                price: 10,
-                                image: "https://via.placeholder.com/150"
-                            },
-                            quantity: 1,
-                            subtotal: 10
-                        })}>
-                        </Button>
-                        <Button title="Remove item" onPress={() => removeFromCart(0)}></Button>
-                    </View> */}
+            {/* Empty Cart Message */}
+            {cart.length === 0 &&
+                <Text style={{ fontSize: 23, paddingTop: 75, paddingBottom: 30, paddingLeft: 50, color: "#D4685E" }}>
+                    Your shopping cart is empty
+                </Text>
+            }
 
-                {/* <Button title="Update cart" onPress={() => updateCart}></Button> */}
-            </View>
+            {/* Product List */}
             <FlatList
                 data={cart}
-                // horizontal={true}
                 contentContainerStyle={styles.listContainer}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                 renderItem={({ item, index }) => (
@@ -135,42 +170,30 @@ export default function ShoppingCartScreen() {
                 keyExtractor={(_, index) => index.toString()}
             />
 
-            {/* </ScrollView> */}
-
+            {/* Bottom Total and Checkout Section */}
             {cart.length >= 1 &&
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        backgroundColor: "#fff",
-                        padding: 10,
-                    }}
-                >
-                    <Text
-                        style={{
-                            padding: 10,
-                            fontSize: 16,
-                            fontWeight: "semibold",
-                        }}
-                    >
+                <View style={styles.bottomContainer}>
+                    <Text style={styles.totalText}>
                         Total: {new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(total)}
                     </Text>
-                    {!orderQR && <Pressable
-                        onPress={payWithMercadoPago}
-                        style={[
-                            styles.mercadoPago,
-                            isCreatingOrder && styles.mercadoPagoDisabled
-                        ]}
-                        disabled={isCreatingOrder}
-                    >
-                        {isCreatingOrder ? (
-                            <ActivityIndicator size="small" color="white" />
-                        ) : (
-                            <Text style={{ fontSize: 16, color: "white", fontWeight: "semibold" }}>
-                                Confirmar pedido
-                            </Text>
-                        )}
-                    </Pressable>}
+                    {!orderQR && cart[0]?.product && (
+                        <Pressable
+                            onPress={payWithMercadoPago}
+                            style={[
+                                styles.mercadoPago,
+                                isCreatingOrder && styles.mercadoPagoDisabled
+                            ]}
+                            disabled={isCreatingOrder}
+                        >
+                            {isCreatingOrder ? (
+                                <ActivityIndicator size="small" color="white" />
+                            ) : (
+                                <Text style={styles.buttonText}>
+                                    Confirmar pedido
+                                </Text>
+                            )}
+                        </Pressable>
+                    )}
                 </View>
             }
         </View>
@@ -180,11 +203,12 @@ export default function ShoppingCartScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // padding: 5,
+        backgroundColor: '#fff',
     },
     listContainer: {
         padding: 5,
-        gap: 10,
+        gap: 8,
+        paddingTop: 2,
     },
     Botones: {
         flexDirection: "row",
@@ -209,7 +233,63 @@ const styles = StyleSheet.create({
     mercadoPagoDisabled: {
         backgroundColor: "#ccc",
     },
-
+    paymentInfoContainer: {
+        flex: 1,
+        padding: 10,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 5,
+        marginRight: 10,
+    },
+    paymentInfoText: {
+        color: '#666',
+        fontSize: 28,
+        fontStyle: 'italic',
+        fontWeight: 'bold',
+    },
+    businessInfoContainer: {
+        backgroundColor: '#f8f8f8',
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        marginBottom: 0,
+    },
+    businessName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 2,
+    },
+    businessAddress: {
+        fontSize: 14,
+        color: '#666',
+        marginBottom: 4,
+    },
+    businessDetailsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    businessRating: {
+        fontSize: 14,
+        color: '#D4685E',
+        fontWeight: '600',
+    },
+    bottomContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#fff",
+        padding: 10,
+    },
+    totalText: {
+        padding: 10,
+        fontSize: 16,
+        fontWeight: "semibold",
+    },
+    buttonText: {
+        fontSize: 16,
+        color: "white",
+        fontWeight: "semibold",
+    },
 });
 
 

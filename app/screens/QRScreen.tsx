@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useFocusEffect } from "@react-navigation/native";
+import { commerceDetailsConsumer } from "@/src/services/client";
 
 export default function QRScreen() {
     const router = useRouter();
@@ -13,9 +14,23 @@ export default function QRScreen() {
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
     const [accepted, setAccepted] = useState<boolean>(false);
     const intervalRef = React.useRef<NodeJS.Timeout>();
+    const [response, setResponse] = useState<any>(null);
+    const [businessData, setBusinessData] = useState<any>(null);
 
     useFocusEffect(
         React.useCallback(() => {
+            const fetchBusinessDetails = async (businessId: number) => {
+                try {
+                    const businessResponse = await commerceDetailsConsumer.consume('GET', {
+                        params: { id: businessId, type: 'business' }
+                    });
+                    console.log('Business response:', businessResponse);
+                    setBusinessData(businessResponse);
+                } catch (error) {
+                    console.error("Error fetching business details:", error);
+                }
+            };
+
             const fetchOrderStatus = async () => {
                 try {
                     const orderId = orderQR ? Number(orderQR.split('=')[1]) : null;
@@ -30,7 +45,11 @@ export default function QRScreen() {
                         params: { id: orderId }
                     });
                     
-                    
+                    // Fetch business details only once when we first get the businessId
+                    if (response.businessId && !businessData) {
+                        fetchBusinessDetails(response.businessId);
+                    }
+
                     if (response.status === "scanned") {
                         setPaymentBtns(true);
                         setAccepted(true);
@@ -52,7 +71,7 @@ export default function QRScreen() {
             // Initial fetch
             fetchOrderStatus();
 
-            // Set up the interval
+            // Set up the interval only for order status
             intervalRef.current = setInterval(() => {
                 fetchOrderStatus();
             }, 5000);
@@ -64,7 +83,7 @@ export default function QRScreen() {
                     intervalRef.current = undefined;
                 }
             };
-        }, [orderQR]) // Dependencies array includes orderQR
+        }, [orderQR, businessData]) // Added businessData to dependencies
     );
 
     async function handleCashPayment() {
@@ -124,6 +143,25 @@ export default function QRScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.card}>
+                {businessData && (
+                    <View style={styles.businessDetails}>
+                        <Text style={styles.businessName}>{businessData.name}</Text>
+                        <Text style={styles.businessAddress}>
+                            {businessData.streetName} {businessData.streetNumber}
+                        </Text>
+                        <Text style={styles.businessCity}>
+                            {businessData.city}, {businessData.country}
+                        </Text>
+                    </View>
+                )}
+                {(!paymentBtns && !accepted && orderQR) && (
+                    <>
+                        <ActivityIndicator size="large" color="#D4685E" />
+                        <Text style={styles.instructions}>
+                            Esperando que el comercio acepte tu pedido...
+                        </Text>
+                    </>
+                )}
                 {(!paymentBtns && accepted && orderQR) && (
                     <>
                         <View style={styles.qrContainer}>
@@ -151,23 +189,17 @@ export default function QRScreen() {
                                     Pagar en efectivo
                                 </Text>
                             </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={styles.paymentButton}
-                                onPress={handleMercadoPagoPayment}
-                            >
-                                <Text style={styles.paymentButtonText}>
-                                    Pagar con MercadoPago
-                                </Text>
-                            </TouchableOpacity>
+                            {response?.business?.hasMercadoPago && (
+                                <TouchableOpacity 
+                                    style={styles.paymentButton}
+                                    onPress={handleMercadoPagoPayment}
+                                >
+                                    <Text style={styles.paymentButtonText}>
+                                        Pagar con MercadoPago
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
-                    </>
-                )}
-                {(!paymentBtns && !accepted && orderQR) && (
-                    <>
-                        <ActivityIndicator size="large" color="#D4685E" />
-                        <Text style={styles.instructions}>
-                            Esperando que el comercio acepte tu pedido...
-                        </Text>
                     </>
                 )}
             </View>
@@ -249,5 +281,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         fontWeight: '600',
+    },
+    businessDetails: {
+        width: '100%',
+        marginBottom: 20,
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    businessName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 5,
+    },
+    businessAddress: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 2,
+    },
+    businessCity: {
+        fontSize: 16,
+        color: '#666',
     },
 });

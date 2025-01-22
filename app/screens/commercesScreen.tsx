@@ -12,6 +12,7 @@ interface Commerce {
   city: string;
   country: string;
   avgRating: number | null;
+  hasMercadoPago: boolean;
 }
 
 export default function CommercesScreen() {
@@ -67,6 +68,7 @@ export default function CommercesScreen() {
           </Text>
           {item.avgRating && <Text style={styles.ratingText}>★</Text>}
         </View>
+        {!item.hasMercadoPago && <Text style={styles.cashOnly}>Solo efectivo</Text>}
       </TouchableOpacity>
     );
   };
@@ -144,5 +146,12 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 10,
+  },
+  cashOnly: {
+    fontSize: 18,
+    color: '#666',
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    marginTop: 4,
   },
 }); 
