@@ -86,6 +86,13 @@ export default function GoogleMap({ markersData, onMapPress }: GoogleMapProps) {
         getActiveBusinessId();
     }, [orderQR]);
 
+    const goToCommerce = (commerceId: string) => {
+        router.push({
+            pathname: '/screens/companyScreen',
+            params: { id: commerceId }
+        });
+    };
+
     if (isLoading) {
         return (
             <View style={styles.container}>

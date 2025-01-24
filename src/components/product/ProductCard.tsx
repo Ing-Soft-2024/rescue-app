@@ -15,17 +15,24 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "rea
 export const ProductCard = ({ product }: { product: ProductType }) => {
     let router = useRouter();
   
-    const [image, setImage] = React.useState<string>("https://picsum.photos/200");
-    const [imageLoading, setImageLoading] = React.useState<boolean>(true);
+    const [image, setImage] = React.useState<string>("");
+    const [isImageLoading, setIsImageLoading] = React.useState(true);
+
     useFocusEffect(
         React.useCallback(() => {
-            if (!product.image) return;
+            setIsImageLoading(true);
+            if (!product.image) {
+                setImage("https://picsum.photos/200");
+                setIsImageLoading(false);
+                return;
+            }
             StorageController.download(product.image)
                 .then(setImage)
                 .catch(() => setImage("https://picsum.photos/200"))
-                .then(() => setImageLoading(false));
+                .finally(() => setIsImageLoading(false));
         }, [])
     );
+
     return (
         <Pressable
             onPress={() => {
@@ -34,7 +41,6 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
             style={{
                 flexDirection: "column",
                 gap: 12,
-
                 width: 207,
                 height: "auto"
             }}>
@@ -44,11 +50,20 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
                 height: 120,
                 borderRadius: 6,
                 overflow: "hidden",
+                justifyContent: 'center',
+                alignItems: 'center'
             }}>
-                <View style={StyleSheet.absoluteFillObject} >
-                    <ActivityIndicator size="small" color="#D4685E" />
-                </View>
-                <Image source={{ uri: image }} style={{ ...StyleSheet.absoluteFillObject }} />
+                {isImageLoading ? (
+                    <ActivityIndicator 
+                        size="small" 
+                        color="#D4685E" 
+                    />
+                ) : (
+                    <Image 
+                        source={{ uri: image }} 
+                        style={StyleSheet.absoluteFillObject}
+                    />
+                )}
             </View>
 
             <View style={{
