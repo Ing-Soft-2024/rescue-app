@@ -18,17 +18,27 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
     const [image, setImage] = React.useState<string>("");
     const [isImageLoading, setIsImageLoading] = React.useState(true);
 
+
+    
+
     useFocusEffect(
         React.useCallback(() => {
             setIsImageLoading(true);
             if (!product.image) {
+                //console.log('No product image available, using fallback');
                 setImage("https://picsum.photos/200");
                 setIsImageLoading(false);
                 return;
             }
             StorageController.download(product.image)
-                .then(setImage)
-                .catch(() => setImage("https://picsum.photos/200"))
+                .then((downloadedImage) => {
+                    //console.log('Downloaded image:', downloadedImage.split('n').pop());
+                    setImage(downloadedImage);
+                })
+                .catch((error) => {
+                   // console.error('Error downloading image:', error.split('n').pop());
+                    setImage("https://picsum.photos/200");
+                })
                 .finally(() => setIsImageLoading(false));
         }, [])
     );

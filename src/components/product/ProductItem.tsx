@@ -20,17 +20,43 @@ export const ProductItem = ({ product, onRemove, onUpdateQuantity, initialQuanti
     const { orderQR, getProductQuantityInCart } = useOrders();
     const quantity = initialQuantity ?? getProductQuantityInCart(product.id);
 
-    const [image, setImage] = React.useState<string>("https://picsum.photos/200");
+    const [image, setImage] = React.useState<string>("");
     const [imageLoading, setImageLoading] = React.useState<boolean>(true);
 
     useFocusEffect(
         React.useCallback(() => {
-            if (!product.image) return;
-            StorageController.download(product.image)
-                .then(setImage)
-                .catch(() => setImage("https://picsum.photos/200"))
-                .then(() => setImageLoading(false));
-        }, [])
+            setImageLoading(true);
+            if (!product.image) {
+                setImage("");
+                setImageLoading(false);
+                return;
+            }
+
+            // Check if the image is already Base64 encoded
+            if (product.image.includes('/') || product.image.includes('+')) {
+                // It's likely Base64, set it directly with the data URI prefix
+                setImage(product.image);
+                setImageLoading(false);
+            } else {
+                // It's a storage path, use the controller to download
+                StorageController.download(product.image)
+                    .then((downloadedImage) => {
+                        if (downloadedImage) {
+                            setImage(downloadedImage);
+                        } else {
+                            setImage("");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log('Storage error details:', {
+                            productId: product.id,
+                            error: error
+                        });
+                        setImage("");
+                    })
+                    .finally(() => setImageLoading(false));
+            }
+        }, [product.id])
     );
 
     const handleQuantityUpdate = (newQuantity: number) => {
@@ -60,15 +86,18 @@ export const ProductItem = ({ product, onRemove, onUpdateQuantity, initialQuanti
                 height: 90,
                 borderRadius: 6,
                 overflow: "hidden",
-                position: "relative"
+                position: "relative",
+                justifyContent: 'center',
+                alignItems: 'center'
             }}>
-                {imageLoading && (
-                    <View style={StyleSheet.absoluteFillObject}>
-                        <ActivityIndicator size="small" color="#D4685E" />
-                    </View>
-                )}
-
-                <Image source={{ uri: image }} style={{ ...StyleSheet.absoluteFillObject }} />
+                {imageLoading ? (
+                    <ActivityIndicator size="small" color="#D4685E" />
+                ) : image ? (
+                    <Image 
+                        source={{ uri: image }} 
+                        style={StyleSheet.absoluteFillObject}
+                    />
+                ) : null}
                 {quantity > 0 && (
                     <View style={styles.quantityBadge}>
                         <Text style={styles.quantityText}>{quantity}</Text>
