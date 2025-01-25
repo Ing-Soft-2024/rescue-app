@@ -5,6 +5,7 @@ import { ProductType } from "@/src/types/product.type";
 import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import ImageCacheService from '@/src/services/cache/imageCache';
 
 // import { colors, globalStyles } from "@src/global-style";
 // import { useCommerceImage } from "@hooks/useCommerceImage";
@@ -25,22 +26,25 @@ export const ProductCard = ({ product }: { product: ProductType }) => {
         React.useCallback(() => {
             setIsImageLoading(true);
             if (!product.image) {
-                //console.log('No product image available, using fallback');
                 setImage("https://picsum.photos/200");
                 setIsImageLoading(false);
                 return;
             }
-            StorageController.download(product.image)
-                .then((downloadedImage) => {
-                    //console.log('Downloaded image:', downloadedImage.split('n').pop());
-                    setImage(downloadedImage);
-                })
-                .catch((error) => {
-                   // console.error('Error downloading image:', error.split('n').pop());
+
+            const loadImage = async () => {
+                try {
+                    const cachedImage = await ImageCacheService.getImage(product.id, product.image);
+                    setImage(cachedImage);
+                } catch (error) {
+                    console.log('Error loading image:', error);
                     setImage("https://picsum.photos/200");
-                })
-                .finally(() => setIsImageLoading(false));
-        }, [])
+                } finally {
+                    setIsImageLoading(false);
+                }
+            };
+
+            loadImage();
+        }, [product.id, product.image])
     );
 
     return (

@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import ImageCacheService from '@/src/services/cache/imageCache';
 
 interface HeaderProps {
   imageUrl?: string;
+  productId?: number;
   onBackPress: () => void;
   onSharePress: () => void;
   onFavoritePress: () => void;
@@ -12,11 +14,22 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   imageUrl,
+  productId,
   onBackPress,
   onSharePress,
   onFavoritePress,
   isImageLoading
 }) => {
+  const [cachedImage, setCachedImage] = React.useState<string>("");
+
+  React.useEffect(() => {
+    if (productId && imageUrl) {
+      ImageCacheService.getImage(productId, imageUrl)
+        .then(setCachedImage)
+        .catch(console.error);
+    }
+  }, [productId, imageUrl]);
+
   return (
     <View style={styles.container}>
       <View style={[styles.imageContainer, styles.placeholderBackground]}>
@@ -25,9 +38,9 @@ export const Header: React.FC<HeaderProps> = ({
             <ActivityIndicator size="large" color="#D4685E" />
           </View>
         ) : (
-          imageUrl && (
+          cachedImage && (
             <Image
-              source={{ uri: imageUrl }}
+              source={{ uri: cachedImage }}
               style={styles.image}
             />
           )

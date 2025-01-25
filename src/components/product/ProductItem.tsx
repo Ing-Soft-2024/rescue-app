@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import ImageCacheService from '@/src/services/cache/imageCache';
 
 interface ProductItemProps {
     product: ProductType;
@@ -27,36 +28,25 @@ export const ProductItem = ({ product, onRemove, onUpdateQuantity, initialQuanti
         React.useCallback(() => {
             setImageLoading(true);
             if (!product.image) {
-                setImage("");
+                setImage("https://picsum.photos/200");
                 setImageLoading(false);
                 return;
             }
 
-            // Check if the image is already Base64 encoded
-            if (product.image.includes('/') || product.image.includes('+')) {
-                // It's likely Base64, set it directly with the data URI prefix
-                setImage(product.image);
-                setImageLoading(false);
-            } else {
-                // It's a storage path, use the controller to download
-                StorageController.download(product.image)
-                    .then((downloadedImage) => {
-                        if (downloadedImage) {
-                            setImage(downloadedImage);
-                        } else {
-                            setImage("");
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('Storage error details:', {
-                            productId: product.id,
-                            error: error
-                        });
-                        setImage("");
-                    })
-                    .finally(() => setImageLoading(false));
-            }
-        }, [product.id])
+            const loadImage = async () => {
+                try {
+                    const cachedImage = await ImageCacheService.getImage(product.id, product.image);
+                    setImage(cachedImage);
+                } catch (error) {
+                    console.log('Error loading image:', error);
+                    setImage("https://picsum.photos/200");
+                } finally {
+                    setImageLoading(false);
+                }
+            };
+
+            loadImage();
+        }, [product.id, product.image])
     );
 
     const handleQuantityUpdate = (newQuantity: number) => {

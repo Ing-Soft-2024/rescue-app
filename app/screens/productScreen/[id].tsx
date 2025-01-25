@@ -9,6 +9,7 @@ import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { checkInternetConnection, NO_INTERNET_MESSAGE } from '@/src/utils/networkUtils';
+import ImageCacheService from '@/src/services/cache/imageCache';
 
 // export type ProductType = {
 //   title: string;
@@ -57,16 +58,18 @@ export default function ProductLayout() {
             params: { id: Number(params.id) }
           });
 
-          const { image, ...productWithoutImage } = product;
-          setProduct(productWithoutImage);
+          // Store the raw product data without modifying the image
+          setProduct(product);
           setIsLoading(false);
 
-          if (image) {
+          // Handle image loading separately
+          if (product.image) {
             try {
-              const imageUrl = await StorageController.download(image);
+              // Use the original image path directly
+              const imageUrl = await ImageCacheService.getImage(product.id, product.image);
               setProduct(prev => ({
                 ...prev,
-                image: imageUrl
+                image: product.image // Keep the original image path
               }));
             } catch (error) {
               console.log('Error loading image:', error);
@@ -146,6 +149,7 @@ export default function ProductLayout() {
         {/* Header con imagen y botones */}
         <Header
           imageUrl={product.image}
+          productId={product.id}
           onBackPress={() => router.back()}
           onSharePress={() => console.log("Share pressed")}
           onFavoritePress={() => console.log("Favorite pressed")}
