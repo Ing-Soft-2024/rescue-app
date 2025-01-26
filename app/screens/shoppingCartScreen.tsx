@@ -94,7 +94,7 @@ export default function ShoppingCartScreen() {
             }
 
             // Set the new QR code
-            const QR = "rescueappbussiness://scan/scannedOrder?id=" + orderId;
+            const QR = "rescueapp-bussiness://scan/scannedOrder?id=" + orderId;
             setOrderQR(QR);
             
             router.push("./QRScreen");

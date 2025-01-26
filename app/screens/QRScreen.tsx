@@ -2,14 +2,15 @@ import { useOrders } from "@/src/context/ordersContext";
 import { mercadoPagoConsumer, orderDetailsConsumer } from "@/src/services/client";
 import { useRouter } from "expo-router";
 import { openAuthSessionAsync } from "expo-web-browser";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator, BackHandler } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { commerceDetailsConsumer } from "@/src/services/client";
 
 export default function QRScreen() {
     const router = useRouter();
+    const navigation = useNavigation();
     const { orderQR, total, setOrderQR } = useOrders();
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
     const [accepted, setAccepted] = useState<boolean>(false);
@@ -86,6 +87,32 @@ export default function QRScreen() {
         }, [orderQR, businessData]) // Added businessData to dependencies
     );
 
+    useFocusEffect(
+        useCallback(() => {
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+                // Prevent going back if payment buttons are shown
+                if (paymentBtns && accepted) {
+                    return true; // Prevents default back behavior
+                }
+                return false; // Allows default back behavior
+            });
+
+            return () => backHandler.remove();
+        }, [paymentBtns, accepted])
+    );
+
+    React.useEffect(() => {
+        if (paymentBtns && accepted) {
+            navigation.setOptions({
+                tabBarStyle: { display: 'none' }
+            });
+        } else {
+            navigation.setOptions({
+                tabBarStyle: { display: 'flex' }
+            });
+        }
+    }, [paymentBtns, accepted]);
+
     async function handleCashPayment() {
         try {
             if (!orderQR) return;
@@ -94,7 +121,7 @@ export default function QRScreen() {
             await orderDetailsConsumer.consume('PATCH', {
                 params: { id: orderId },
                 data: {
-                    status: "completed"
+                    status: "completed_cash"
                 }
             });
             

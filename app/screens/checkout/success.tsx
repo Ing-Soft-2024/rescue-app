@@ -36,7 +36,7 @@ export default function SuccessScreen() {
                     await orderDetailsConsumer.consume('PATCH', {
                         params: { id: orderId },
                         data: {
-                            status: "completed"
+                            status: "completed_mercadopago"
                         }
                     });
 

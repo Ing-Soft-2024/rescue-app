@@ -81,7 +81,7 @@ export default function homeScreen() {
       
       
       if (pendingOrder) {
-        const QR = "rescueappbussiness://scan/scannedOrder?id=" + pendingOrder.id;
+        const QR = "rescueapp-bussiness://scan/scannedOrder?id=" + pendingOrder.id;
         setOrderQR(QR);
       } else {
         setOrderQR("");
