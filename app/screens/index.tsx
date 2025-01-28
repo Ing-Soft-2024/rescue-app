@@ -25,7 +25,7 @@ export default function homeScreen() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchText, setSearchText] = React.useState('');
   const router = useRouter();
-  const { cart, total, orderQR, setOrderQR } = useOrders();
+  const { cart, total, orderQR, setOrderQR, clearCart } = useOrders();
 
   const getCurrentCoordinates = async () => {
     if (location?.coords) {
@@ -160,6 +160,12 @@ export default function homeScreen() {
     router.push("/screens/QRScreen");
   };
 
+  const handleSignOut = async () => {
+    clearCart();
+    setOrderQR("");
+    await signOut();
+  };
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {isLoading ? (
@@ -215,7 +221,7 @@ export default function homeScreen() {
           <View>
             <Button 
               title="Cerrar sesión" 
-              onPress={signOut} 
+              onPress={handleSignOut} 
               color="#D4685E" 
             />
           </View>
