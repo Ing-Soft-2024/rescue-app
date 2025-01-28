@@ -11,7 +11,7 @@ import { commerceDetailsConsumer } from "@/src/services/client";
 export default function QRScreen() {
     const router = useRouter();
     const navigation = useNavigation();
-    const { orderQR, total, setOrderQR } = useOrders();
+    const { orderQR, total, setOrderQR, clearCart } = useOrders();
     const [paymentBtns, setPaymentBtns] = useState<boolean>(false);
     const [accepted, setAccepted] = useState<boolean>(false);
     const intervalRef = React.useRef<NodeJS.Timeout>();
@@ -167,6 +167,27 @@ export default function QRScreen() {
         }
     }
 
+    const handleCancelOrder = async () => {
+        try {
+            if (!orderQR) return;
+            
+            const orderId = Number(orderQR.split('=')[1]);
+            await orderDetailsConsumer.consume('PATCH', {
+                params: { id: orderId },
+                data: {
+                    status: "canceled"
+                }
+            });
+            
+            clearCart();
+            setOrderQR("");
+            router.replace("/screens/");
+        } catch (error) {
+            console.error("Error canceling order:", error);
+            Alert.alert('Error', 'No se pudo cancelar la orden');
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.card}>
@@ -228,6 +249,16 @@ export default function QRScreen() {
                             )}
                         </View>
                     </>
+                )}
+                {(!paymentBtns && (accepted || !accepted) && orderQR) && (
+                    <TouchableOpacity 
+                        style={styles.cancelButton}
+                        onPress={handleCancelOrder}
+                    >
+                        <Text style={styles.cancelButtonText}>
+                            Cancelar Orden
+                        </Text>
+                    </TouchableOpacity>
                 )}
             </View>
         </View>
@@ -330,5 +361,18 @@ const styles = StyleSheet.create({
     businessCity: {
         fontSize: 16,
         color: '#666',
+    },
+    cancelButton: {
+        backgroundColor: '#ff4444',
+        padding: 15,
+        borderRadius: 10,
+        marginTop: 10,
+        width: '100%',
+    },
+    cancelButtonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+        fontWeight: '600',
     },
 });

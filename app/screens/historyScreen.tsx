@@ -41,11 +41,53 @@ export default function HistoryScreen() {
         }, [session?.user?.id])
     );
 
+    const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'completed':
+            case 'completed_cash':
+            case 'completed_mercadopago':
+                return '#4CAF50'; // Green for completed orders
+            case 'pending':
+                return '#FFC107'; // Yellow for pending
+            case 'accepted':
+                return '#2196F3'; // Blue for accepted
+            case 'canceled':
+                return '#F44336'; // Red for canceled
+            default:
+                return '#757575'; // Grey for other statuses
+        }
+    };
+
+    const getStatusText = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'completed':
+            case 'completed_cash':
+                return 'Completado (Efectivo)';
+            case 'completed_mercadopago':
+                return 'Completado (MercadoPago)';
+            case 'pending':
+                return 'Pendiente';
+            case 'accepted':
+                return 'Aceptado';
+            case 'canceled':
+                return 'Cancelado';
+            default:
+                return status;
+        }
+    };
+
     const renderOrderItem = ({ item }: { item: any }) => (
         <View style={styles.orderItem}>
-            <Text style={styles.date}>
-                Fecha: {new Date(item.createdAt).toLocaleDateString()}
-            </Text>
+            <View style={styles.orderHeader}>
+                <Text style={styles.date}>
+                    Fecha: {new Date(item.createdAt).toLocaleDateString()}
+                </Text>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+                    <Text style={styles.statusText}>
+                        {getStatusText(item.status)}
+                    </Text>
+                </View>
+            </View>
             <Text style={styles.businessId}>
                 Comercio: {item.business?.name || 'No disponible'}
             </Text>
@@ -174,5 +216,21 @@ const styles = StyleSheet.create({
     quantity: {
         fontSize: 14,
         color: '#666',
+    },
+    orderHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    statusBadge: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    statusText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
     },
 });
