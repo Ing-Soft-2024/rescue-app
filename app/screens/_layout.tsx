@@ -38,7 +38,7 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="companyScreen"
                 options={{
-                    title: 'Company',
+                    title: 'Comercio',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
                     href: null
                 }}
@@ -46,7 +46,7 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="QRScreen"
                 options={{
-                    title: 'Escanear QR',
+                    title: 'Estado de la orden',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
                     href: null,
                     headerLeft: () => null,
@@ -55,7 +55,7 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="productScreen/[id]"
                 options={{
-                    title: 'Product',
+                    title: 'Producto',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="barcode" color={color} />,
                     href: null
                 }}
@@ -73,7 +73,7 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="googleMapScreen"
                 options={{
-                    title: 'Map',
+                    title: 'Mapa',
                     tabBarIcon: ({ color }) => <FontAwesome size={28} name="map" color={color} />,
                     tabBarStyle: { display: 'none' },
                     // headerBackVisible: true,
@@ -99,14 +99,14 @@ export default function AppLayout() {
             <Tabs.Screen
                 name="shoppingCartScreen"
                 options={{
-                    title: 'Cart',
+                    title: 'Carrito',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="shopping-cart" color={color} />,
                 }}
             />
             <Tabs.Screen
                 name="historyScreen"
                 options={{
-                    title: 'History',
+                    title: 'Historial',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="search" color={color} />,
                 }}
             />

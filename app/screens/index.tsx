@@ -166,6 +166,8 @@ export default function homeScreen() {
     await signOut();
   };
 
+  console.log('Session data:', session);
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {isLoading ? (
@@ -179,7 +181,7 @@ export default function homeScreen() {
             padding: 16,
             textAlign: 'left'
           }}>
-            ¡Bienvenido {session?.user.name}!
+            ¡Bienvenido {session?.user?.firstName ? `${session.user.firstName}` : session?.user?.email || 'Usuario'}!
           </Text>
 
           <View style={{ paddingHorizontal: 10 }}>
