@@ -46,15 +46,15 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     const addToCart = ({ product, quantity }: { product: any; quantity: number }) => {
         if (currentCommerceId && product.commerceId !== currentCommerceId) {
             Alert.alert(
-                "Different Commerce",
-                "You can only add products from the same commerce in a single order. Would you like to clear your cart and add this item?",
+                "Diferente comercio",
+                "Solo puedes agregar productos del mismo comercio en una sola orden. ¿Quieres limpiar tu carrito y agregar este producto?",
                 [
                     {
-                        text: "Cancel",
+                        text: "Cancelar",
                         style: "cancel"
                     },
                     {
-                        text: "Clear Cart & Add",
+                        text: "Limpiar carrito y agregar",
                         onPress: () => {
                             setCart([{ product, quantity, subtotal: product.price * quantity }]);
                             setCurrentCommerceId(product.commerceId);

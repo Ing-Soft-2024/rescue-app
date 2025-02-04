@@ -22,6 +22,8 @@ export default function SuccessScreen() {
                     }
 
                     const orderId = Number(orderQR.split('=')[1]);
+                    console.log("Processing success for order:", orderId);
+
                     const orderDetails = await orderDetailsConsumer.consume('GET', {
                         params: { id: orderId }
                     });
@@ -31,24 +33,38 @@ export default function SuccessScreen() {
                         return;
                     }
 
+                    console.log("Current order status:", orderDetails.status);
                     setBusinessId(orderDetails.businessId);
-                    
-                    await orderDetailsConsumer.consume('PATCH', {
+
+                    // Always attempt to update the status for Mercado Pago success
+                    const updateResponse = await orderDetailsConsumer.consume('PATCH', {
                         params: { id: orderId },
                         data: {
                             status: "completed_mercadopago"
                         }
                     });
 
-                    // Clear everything
-                    setOrderQR("");
-                    clearCart();
+                    console.log("Order status update response:", updateResponse);
+
+                    // Only clear order data if the update was successful
+                    if (updateResponse) {
+                        setOrderQR("");
+                        clearCart();
+                        console.log("Order data cleared successfully");
+                    }
                 } catch (error) {
-                    console.error("Error updating order:", error);
+                    console.error("Error in success screen:", error);
                     Alert.alert('Error', 'No se pudo actualizar el estado de la orden');
                 }
             };
+
+            console.log("Success screen mounted, executing updateState");
             updateState();
+
+            // Cleanup function
+            return () => {
+                console.log("Success screen unmounted");
+            };
         }, [])
     );
 

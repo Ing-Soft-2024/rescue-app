@@ -22,47 +22,78 @@ export default function MercadoPagoScreen() {
         React.useCallback(() => {
             const createPreference = async () => {
                 setIsLoading(true);
-                // var response = null;
+                console.log("Creating Mercado Pago preference");
+                
+                if (!orderQR) {
+                    console.warn("No orderQR found");
+                    setIsLoading(false);
+                    return null;
+                }
 
-                console.log("la url es:" + orderQR);
-                const id = Number(orderQR.split('=')[1]);
-                var getOrderResponse = await orderDetailsConsumer.consume('GET', {
-                    params: { id: id }
+                const orderId = Number(orderQR.split('=')[1]);
+                console.log("Processing order:", orderId);
+
+                const getOrderResponse = await orderDetailsConsumer.consume('GET', {
+                    params: { id: orderId }
                 }).catch((error) => {
-                    console.log("el error es:" + error);
+                    console.error("Error fetching order:", error);
                     return null;
                 });
-                
-                var response = await mercadoPagoConsumer.consume('POST', {
+
+                if (!getOrderResponse) {
+                    setIsLoading(false);
+                    return null;
+                }
+
+                console.log("Current order status:", getOrderResponse.status);
+
+                // Only proceed if the order is not already completed
+                if (getOrderResponse.status === 'completed_mercadopago') {
+                    console.log("Order already completed, redirecting to success");
+                    router.replace("/screens/checkout/success");
+                    setIsLoading(false);
+                    return null;
+                }
+
+                const response = await mercadoPagoConsumer.consume('POST', {
                     data: {
-                        orderId: id
+                        orderId: orderId
                     }
                 });
+
                 setIsLoading(false);
-
-                if(!response) return null;
-
-                console.log("la respuesta es:" + response.checkoutURL);
+                if (!response) {
+                    console.warn("No response from Mercado Pago");
+                    return null;
+                }
+                
+                console.log("Mercado Pago checkout URL received");
                 return response.checkoutURL;
             }
 
             createPreference()
                 .then((url) => {
-                    setCheckoutURL(url);
                     if (url) {
+                        console.log("Opening Mercado Pago browser");
                         openAuthSessionAsync(url, "myapp://screens/checkout/")
                             .then((res) => {
-                                if(res.type !== 'success') return;
+                                console.log("Browser session result:", res.type);
+                                if (res.type !== 'success') return;
 
-                                console.log("Redirecting to success");
-                                if(res.url.includes("success")) router.navigate("/screens/checkout/success");
-                                if(res.url.includes("failure")) router.navigate("/screens/checkout/failure");
+                                if (res.url.includes("success")) {
+                                    console.log("Payment successful, navigating to success screen");
+                                    // Use replace instead of navigate to prevent going back
+                                    router.replace("/screens/checkout/success");
+                                } else if (res.url.includes("failure")) {
+                                    console.log("Payment failed, navigating to failure screen");
+                                    router.replace("/screens/checkout/failure");
+                                }
                             })
                             .catch((error) => {
-                                console.log("Error al abrir la sesión de autenticación", error);
+                                console.error("Error in auth session:", error);
                             });
                     }
-                })
+                });
         }, [])
     );
 

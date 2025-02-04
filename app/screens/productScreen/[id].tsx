@@ -122,7 +122,7 @@ export default function ProductLayout() {
     }
     
     // Finally check cart
-    return "Product already in cart";
+    return "El producto ya está en el carrito";
   };
 
   return (
@@ -204,7 +204,7 @@ export default function ProductLayout() {
       </ScrollView>
       {showSuccessCard && (
         <View style={styles.successCard}>
-          <Text style={styles.successText}>Added to cart successfully!</Text>
+          <Text style={styles.successText}>Agregado al carrito correctamente!</Text>
         </View>
       )}
     </View>

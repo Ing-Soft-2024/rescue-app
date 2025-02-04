@@ -145,7 +145,7 @@ export default function ShoppingCartScreen() {
             {/* Empty Cart Message */}
             {cart.length === 0 &&
                 <Text style={{ fontSize: 23, paddingTop: 75, paddingBottom: 30, paddingLeft: 50, color: "#D4685E" }}>
-                    Your shopping cart is empty
+                    Tu carrito está vacío
                 </Text>
             }
 

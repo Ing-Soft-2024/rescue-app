@@ -18,6 +18,12 @@ export default function QRScreen() {
     const [response, setResponse] = useState<any>(null);
     const [businessData, setBusinessData] = useState<any>(null);
 
+    React.useEffect(() => {
+        if (!orderQR) {
+            setBusinessData(null);
+        }
+    }, [orderQR]);
+
     useFocusEffect(
         React.useCallback(() => {
             const fetchBusinessDetails = async (businessId: number) => {
@@ -25,7 +31,6 @@ export default function QRScreen() {
                     const businessResponse = await commerceDetailsConsumer.consume('GET', {
                         params: { id: businessId, type: 'business' }
                     });
-                    console.log('Business response:', businessResponse);
                     setBusinessData(businessResponse);
                 } catch (error) {
                     console.error("Error fetching business details:", error);
@@ -36,6 +41,7 @@ export default function QRScreen() {
                 try {
                     const orderId = orderQR ? Number(orderQR.split('=')[1]) : null;
                     if (!orderId) {
+                        setBusinessData(null);
                         if (intervalRef.current) {
                             clearInterval(intervalRef.current);
                         }
@@ -46,8 +52,7 @@ export default function QRScreen() {
                         params: { id: orderId }
                     });
                     
-                    // Fetch business details only once when we first get the businessId
-                    if (response.businessId && !businessData) {
+                    if (response.businessId) {
                         fetchBusinessDetails(response.businessId);
                     }
 
@@ -69,22 +74,20 @@ export default function QRScreen() {
                 }
             };
 
-            // Initial fetch
             fetchOrderStatus();
 
-            // Set up the interval only for order status
             intervalRef.current = setInterval(() => {
                 fetchOrderStatus();
             }, 5000);
 
-            // Cleanup function
             return () => {
                 if (intervalRef.current) {
                     clearInterval(intervalRef.current);
                     intervalRef.current = undefined;
                 }
+                setBusinessData(null);
             };
-        }, [orderQR, businessData]) // Added businessData to dependencies
+        }, [orderQR])
     );
 
     useFocusEffect(
@@ -175,7 +178,7 @@ export default function QRScreen() {
             await orderDetailsConsumer.consume('PATCH', {
                 params: { id: orderId },
                 data: {
-                    status: "canceled"
+                    status: "cancelled"
                 }
             });
             
