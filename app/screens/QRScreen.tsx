@@ -159,13 +159,14 @@ export default function QRScreen() {
 
             if (result.type === 'success') {
                 if (result.url.includes("success")) {
-                    router.navigate("/screens/checkout/success");
+                    
                     await orderDetailsConsumer.consume('PATCH', {
                         params: { id: orderId },
                         data: {
                             status: "completed_mercadopago"
                         }
                     });
+                    router.navigate("/screens/checkout/success");
 
                 } else if (result.url.includes("failure")) {
                     router.navigate("/screens/checkout/failure");
