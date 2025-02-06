@@ -36,22 +36,25 @@ export default function SuccessScreen() {
                     console.log("Current order status:", orderDetails.status);
                     setBusinessId(orderDetails.businessId);
 
-                    // Always attempt to update the status for Mercado Pago success
-                    const updateResponse = await orderDetailsConsumer.consume('PATCH', {
-                        params: { id: orderId },
-                        data: {
-                            status: "completed_mercadopago"
-                        }
-                    });
+                    setOrderQR("");
+                    clearCart();
 
-                    console.log("Order status update response:", updateResponse);
+                    // // Always attempt to update the status for Mercado Pago success
+                    // const updateResponse = await orderDetailsConsumer.consume('PATCH', {
+                    //     params: { id: orderId },
+                    //     data: {
+                    //         status: "completed_mercadopago"
+                    //     }
+                    // });
 
-                    // Only clear order data if the update was successful
-                    if (updateResponse) {
-                        setOrderQR("");
-                        clearCart();
-                        console.log("Order data cleared successfully");
-                    }
+                    // console.log("Order status update response:", updateResponse);
+
+                    // // Only clear order data if the update was successful
+                    // if (updateResponse) {
+                    //     setOrderQR("");
+                    //     clearCart();
+                    //     console.log("Order data cleared successfully");
+                    // }
                 } catch (error) {
                     console.error("Error in success screen:", error);
                     Alert.alert('Error', 'No se pudo actualizar el estado de la orden');

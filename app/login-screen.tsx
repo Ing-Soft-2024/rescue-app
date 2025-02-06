@@ -34,12 +34,7 @@ export default function AuthLayout() {
     const handleLogin = async (email: string, password: string) => {
 
 
-        try {
-            const response = await devConsumer.consume('GET');
-            console.log("DEV GET", response);
-        } catch (error) {
-            console.log("NO ANDA EL DEV GET");
-        }
+       
         
         setIsLoading(true);
         setError('');

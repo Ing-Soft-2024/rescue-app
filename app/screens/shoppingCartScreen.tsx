@@ -22,7 +22,7 @@ export default function ShoppingCartScreen() {
     const [businessData, setBusinessData] = useState<any>(null);
 
     if (!process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']) {
-        console.log('EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY is not set', process.env['EXPO_PUBLIC_MERCADOPAGO_PUBLIC_KEY']);
+        
         throw new Error('MERCADOPAGO_PUBLIC_KEY is not set');
     }
     const generateUUID = () => {
@@ -34,18 +34,16 @@ export default function ShoppingCartScreen() {
 
     const { cart, removeFromCart, total, setOrderQR, orderQR, updateCartItem } = useOrders();
 
-    console.log("Cart product business data:", cart[0]?.product?.business);
-    console.log("Cart product businessId:", cart[0]?.product?.businessId);
-
+   
     useEffect(() => {
         const fetchBusinessData = async () => {
             if (cart[0]?.product?.businessId) {
                 try {
-                    console.log("Fetching business data for ID:", cart[0].product.businessId);
+                   
                     const response = await commerceConsumer.consume('GET', {
                         params: { id: cart[0].product.businessId }
                     });
-                    console.log("Business data response:", response);
+                   
                     // Find the specific business in the array
                     const business = response.find((b: any) => b.id === cart[0].product.businessId);
                     setBusinessData(business);

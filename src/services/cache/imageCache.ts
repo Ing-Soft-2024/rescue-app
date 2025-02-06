@@ -26,13 +26,13 @@ class ImageCacheService {
         
         // Check if image is in cache
         if (this.cache[cacheKey]) {
-            console.log('Using cached image for:', cacheKey);
+           
             return this.cache[cacheKey];
         }
 
         // If not in cache, download and store
         try {
-            console.log('Downloading image for:', cacheKey);
+            
             const imageData = await StorageController.download(imagePath);
             this.cache[cacheKey] = imageData;
             return imageData;

@@ -39,13 +39,13 @@ export default function CompanyScreen() {
       const fetchCompanyData = async () => {
         try {
           setIsLoading(true);
-          console.log("Fetching company with ID:", id);
+       
           
           const companyData = await commerceDetailsConsumer.consume('GET', {
             params: { id: Number(id) },
           });
 
-          console.log("Received company data:", companyData);
+          
 
           if (companyData) {
             setCompany({

@@ -45,7 +45,7 @@ export default function RegisterScreen() {
                     password,
                 }
             });
-            console.log('Registration successful:', response);
+           
             Alert.alert('Éxito', 'Registro exitoso', [
                 { text: 'OK', onPress: () => router.push('/login-screen') }
             ]);

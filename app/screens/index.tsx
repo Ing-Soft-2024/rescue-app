@@ -166,7 +166,7 @@ export default function homeScreen() {
     await signOut();
   };
 
-  console.log('Session data:', session);
+  
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

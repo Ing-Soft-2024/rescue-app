@@ -19,14 +19,14 @@ export default function HistoryScreen() {
                 return;
             }
 
-            console.log("Fetching orders for user:", session.user.id);
+            
             const resp = await orderConsumer.consume('GET', { 
                 queryParams: { 
                     userId: Number(session.user.id)
                 } 
             });
             
-            console.log("Orders response:", resp);
+            
             setOrders(resp);
         } catch (error) {
             console.error("Error fetching orders:", error);
