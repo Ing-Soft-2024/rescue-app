@@ -71,6 +71,8 @@ export default function HistoryScreen() {
                 return 'Aceptado';
             case 'canceled':
                 return 'Cancelado';
+            case 'scanned':
+                return 'Pago pendiente';
             default:
                 return status;
         }
@@ -82,11 +84,11 @@ export default function HistoryScreen() {
                 <Text style={styles.date}>
                     Fecha: {new Date(item.createdAt).toLocaleDateString()}
                 </Text>
-                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-                    <Text style={styles.statusText}>
-                        {getStatusText(item.status)}
-                    </Text>
-                </View>
+            </View>
+            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+                <Text style={styles.statusText}>
+                    {getStatusText(item.status)}
+                </Text>
             </View>
             <Text style={styles.businessId}>
                 Comercio: {item.business?.name || 'No disponible'}
@@ -181,7 +183,6 @@ const styles = StyleSheet.create({
     date: {
         fontSize: 18,
         fontWeight: '600',
-        marginBottom: 5,
         color: '#333',
     },
     businessId: {
@@ -218,15 +219,14 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     orderHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: 5,
     },
     statusBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+        alignSelf: 'flex-start',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
         borderRadius: 12,
+        marginBottom: 10,
     },
     statusText: {
         color: 'white',

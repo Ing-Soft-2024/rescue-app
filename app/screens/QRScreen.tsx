@@ -156,22 +156,25 @@ export default function QRScreen() {
                 response.checkoutURL, 
                 "myapp://screens/checkout/"
             );
-
-            if (result.type === 'success') {
-                if (result.url.includes("success")) {
+            // console.log("RESULT", result);
+            // console.log("RESULT TYPE", result.type);
+           // console.log("RESULT URL", result.url);
+           // console.log("RESULT URL INCLUDES SUCCESS", result.url.includes("success"));
+            // if (result.type === 'success') {
+            //     if (result.url.includes("success")) {
                     
-                    await orderDetailsConsumer.consume('PATCH', {
-                        params: { id: orderId },
-                        data: {
-                            status: "completed_mercadopago"
-                        }
-                    });
-                    router.navigate("/screens/checkout/success");
+            //         await orderDetailsConsumer.consume('PATCH', {
+            //             params: { id: orderId },
+            //             data: {
+            //                 status: "completed_mercadopago"
+            //             }
+            //         });
+            //         router.navigate("/screens/checkout/success");
 
-                } else if (result.url.includes("failure")) {
-                    router.navigate("/screens/checkout/failure");
-                }
-            }
+            //     } else if (result.url.includes("failure")) {
+            //         router.navigate("/screens/checkout/failure");
+            //     }
+            // }
         } catch (error) {
             console.error("Error processing Mercado Pago payment:", error);
             Alert.alert('Error', 'Hubo un error al procesar el pago');

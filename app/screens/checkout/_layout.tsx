@@ -18,6 +18,15 @@ export default function CheckoutLayout() {
                 }}
             />
             <Stack.Screen name="success" />
+            <Stack.Screen 
+                name="successmercadopago"
+                options={{
+                    title: 'Success',
+                    headerShown: true,
+                    gestureEnabled: false,
+                    headerBackVisible: false
+                }}
+            />
             <Stack.Screen name="failure" />
         </Stack>
     );
