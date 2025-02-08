@@ -28,7 +28,7 @@ export default function AppLayout() {
                     title: 'Comercios',
                     tabBarIcon: ({ color }) => <FontAwesome5 size={28} name="store" color={color} />,
                     tabBarLabel: ({ color }) => (
-                    <Text style={{ color: '#D4685E' }}>Comercios</Text>
+                        <Text style={{ color: '#D4685E', fontSize: 11 }}>Locales</Text>
                     ),
                 }}
             />
