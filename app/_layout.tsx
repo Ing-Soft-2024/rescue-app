@@ -1,11 +1,14 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { OrdersProvider } from '@/src/context/ordersContext';
+import { SessionProvider } from '@/src/context/session.context';
+import { LocationProvider } from '../src/providers/LocationProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,11 +30,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    // <ThemeProvider value={DefaultTheme}>
+    <SessionProvider>
+      <OrdersProvider>
+        <LocationProvider>
+          <Slot />
+        </LocationProvider>
+      </OrdersProvider>
+    </SessionProvider>
+    // </ThemeProvider>
   );
 }
